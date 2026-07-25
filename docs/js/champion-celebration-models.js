@@ -66,7 +66,7 @@ export const STAGE_HEIGHTS = Object.freeze({
   plinthTop: 1.12,
   trophyRest: 1.58,
   trophyCarry: 2.02,
-  trophyLift: 3.38,
+  trophyLift: 3.58,
   teamJump: 0.32,
 });
 

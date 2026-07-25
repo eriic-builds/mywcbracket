@@ -1,6 +1,6 @@
 {
  "type": "module",
  "scripts": {
-  "test": "node tests/scoring.mjs && node tests/builder.mjs && node tests/share.mjs && node tests/compare.mjs && node tests/backup.mjs && node tests/storage.mjs && node tests/production-regressions.mjs && node tests/landing-ballpit.mjs && node tests/animation-performance.mjs && node tests/bracket-tree.mjs && node tests/bracketmap.mjs && node tests/matchcards.mjs && node tests/champion-celebration.mjs && node tests/map-frozen.mjs && node tests/match-details.mjs && node tests/golden.mjs && node tests/parse.mjs"
+    "test": "node tests/scoring.mjs && node tests/builder.mjs && node tests/share.mjs && node tests/compare.mjs && node tests/backup.mjs && node tests/storage.mjs && node tests/production-regressions.mjs && node tests/landing-ballpit.mjs && node tests/animation-performance.mjs && node tests/performance-budgets.mjs && node tests/bracket-tree.mjs && node tests/bracketmap.mjs && node tests/matchcards.mjs && node tests/champion-celebration.mjs && node tests/map-frozen.mjs && node tests/match-details.mjs && node tests/golden.mjs && node tests/parse.mjs"
  }
 }

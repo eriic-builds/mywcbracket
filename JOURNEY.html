@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>How We Built a Social Bracket Platform in a Weekend — SLED</title>
+<title>From an Excel Attachment to a Live App in Six Days — Eric Lam</title>
+<meta name="description" content="How a World Cup bracket challenge became three public repos and a live social app — built with AI, for $0, in six days. The full story: the wins, the walls, and the workflow.">
 <style>
 :root{
   --bg:#09090f;--panel:#13131d;--panel2:#1a1a28;--border:#252535;
@@ -16,37 +17,40 @@ html{scroll-behavior:smooth}
 body{font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);padding-bottom:120px}
 
 /* NAV */
-.topnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+.topnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
   padding:12px 32px;background:rgba(9,9,15,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
 .topnav .logo{font-weight:800;font-size:.95rem;color:var(--gold);letter-spacing:-.01em;margin-right:4px}
-.topnav a{font-size:.84rem;font-weight:600;color:var(--muted);text-decoration:none;padding:5px 12px;border-radius:999px;transition:.15s}
+.topnav a{font-size:.82rem;font-weight:600;color:var(--muted);text-decoration:none;padding:5px 11px;border-radius:999px;transition:.15s}
 .topnav a:hover{color:var(--text);background:var(--panel2)}
 .topnav .live{margin-left:auto;font-size:.84rem;font-weight:700;padding:7px 16px;border-radius:999px;
   color:#04121a;background:linear-gradient(120deg,var(--teal),var(--blue));text-decoration:none;white-space:nowrap}
 .topnav .live:hover{filter:brightness(1.1)}
 
 /* SECTIONS */
-section{max-width:900px;margin:0 auto;padding:80px 32px 0}
-@media(max-width:640px){section{padding:60px 18px 0}.topnav{padding:10px 18px}}
+section{max-width:860px;margin:0 auto;padding:76px 32px 0}
+@media(max-width:640px){section{padding:56px 18px 0}.topnav{padding:10px 18px}}
 
-/* HERO */
-.hero{max-width:900px;margin:0 auto;padding:90px 32px 60px;text-align:center}
-.kicker{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+/* HERO / COLD OPEN */
+.hero{max-width:860px;margin:0 auto;padding:80px 32px 30px}
+.kicker{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   color:var(--teal);background:rgba(47,214,176,.1);border:1px solid rgba(47,214,176,.3);border-radius:999px;padding:4px 14px;margin-bottom:22px}
-.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.1;font-weight:800;
-  background:linear-gradient(120deg,#ffffff 20%,var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:18px}
-.hero .sub{font-size:1.15rem;color:var(--text2);max-width:620px;margin:0 auto 32px}
-.hero-stats{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:40px}
-.stat{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 24px;text-align:center;min-width:130px}
-.stat .n{font-size:2rem;font-weight:800;background:linear-gradient(120deg,var(--gold),#ff9f43);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1}
-.stat .l{font-size:.78rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.hero h1{font-size:clamp(1.9rem,4.6vw,3.1rem);line-height:1.12;font-weight:800;
+  background:linear-gradient(120deg,#ffffff 20%,var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:20px}
+.hero .sub{font-size:1.12rem;color:var(--text2);max-width:640px}
+.hero-stats{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 22px;text-align:center;min-width:118px}
+.stat .n{font-size:1.8rem;font-weight:800;background:linear-gradient(120deg,var(--gold),#ff9f43);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1}
+.stat .l{font-size:.74rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
 
-/* CHAPTER HEADINGS */
+/* CHAPTERS */
 .ch{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
-h2{font-size:1.7rem;font-weight:800;line-height:1.2;margin-bottom:10px}
-h3{font-size:1.1rem;font-weight:700;margin:24px 0 6px}
+h2{font-size:1.65rem;font-weight:800;line-height:1.2;margin-bottom:6px}
+.epigraph{font-size:1.02rem;font-style:italic;color:var(--gold);margin:2px 0 18px;font-weight:500}
+h3{font-size:1.08rem;font-weight:700;margin:24px 0 6px}
 p{color:var(--text2);margin-bottom:14px}
 p b,p strong{color:var(--text)}
+ul.plain{color:var(--text2);padding-left:20px;line-height:1.9;margin-bottom:14px}
+ul.plain b{color:var(--text)}
 
 /* CARDS */
 .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin:16px 0}
@@ -55,26 +59,22 @@ p b,p strong{color:var(--text)}
 @media(max-width:600px){.grid2{grid-template-columns:1fr}}
 
 /* TIMELINE */
-.timeline{position:relative;margin:32px 0}
+.timeline{position:relative;margin:28px 0}
 .timeline::before{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;background:var(--border)}
-.tl-item{position:relative;padding:0 0 32px 56px}
-.tl-dot{position:absolute;left:12px;top:4px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#04121a;z-index:1}
-.tl-dot.blue{background:var(--blue)}
-.tl-dot.teal{background:var(--teal)}
-.tl-dot.gold{background:var(--gold)}
-.tl-dot.purple{background:var(--purple)}
-.tl-dot.green{background:var(--green)}
+.tl-item{position:relative;padding:0 0 30px 56px}
+.tl-dot{position:absolute;left:12px;top:4px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;color:#04121a;z-index:1}
+.tl-dot.blue{background:var(--blue)}.tl-dot.teal{background:var(--teal)}.tl-dot.gold{background:var(--gold)}
+.tl-dot.purple{background:var(--purple)}.tl-dot.green{background:var(--green)}
 .tl-label{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.tl-item h3{margin:0 0 6px;font-size:1.05rem}
+.tl-item h3{margin:0 0 6px;font-size:1.02rem}
+.tl-item p{font-size:.94rem}
 
-/* INSIGHT BOX */
-.insight{background:linear-gradient(120deg,rgba(77,166,255,.1),rgba(47,214,176,.1));border:1px solid rgba(47,214,176,.35);border-radius:16px;padding:22px 26px;margin:24px 0}
-.insight .ic{font-size:1.6rem;margin-bottom:10px}
+/* INSIGHT / PULL BOXES */
+.insight{background:linear-gradient(120deg,rgba(77,166,255,.1),rgba(47,214,176,.1));border:1px solid rgba(47,214,176,.35);border-radius:16px;padding:22px 26px;margin:22px 0}
+.insight .ic{font-size:1.5rem;margin-bottom:8px}
 .insight h3{color:var(--teal);margin:0 0 8px}
 .insight p{margin-bottom:0}
-
-/* QUOTE */
-.quote{border-left:3px solid var(--gold);padding:10px 20px;margin:20px 0;font-style:italic;color:var(--text2);font-size:1.05rem}
+.quote{border-left:3px solid var(--gold);padding:8px 20px;margin:20px 0;font-style:italic;color:var(--text2);font-size:1.04rem}
 .quote b{color:var(--gold);font-style:normal}
 
 /* URL PILL */
@@ -82,14 +82,26 @@ p b,p strong{color:var(--text)}
   border-radius:10px;padding:10px 14px;word-break:break-all;color:var(--teal);margin:10px 0;line-height:1.5}
 .urlbox .hl{color:var(--gold)}
 
+/* FRAMEWORK CARD (GCSE) */
+.framework{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+@media(max-width:680px){.framework{grid-template-columns:1fr 1fr}}
+.fw{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:14px 14px;text-align:center}
+.fw .lt{font-size:1.5rem;font-weight:800;background:linear-gradient(120deg,var(--blue),var(--teal));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.fw .nm{font-weight:700;font-size:.9rem;margin:2px 0 4px}
+.fw .ds{font-size:.78rem;color:var(--muted);line-height:1.45}
+.fw-flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin:14px 0;font-size:.86rem;color:var(--text2)}
+.fw-flow .n{background:var(--panel2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;font-weight:600}
+.fw-flow .a{color:var(--muted)}
+
 /* DEMO STEPS */
 .steps{counter-reset:step;display:flex;flex-direction:column;gap:12px;margin:16px 0}
 .step{counter-increment:step;display:flex;gap:16px;align-items:flex-start;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
 .step::before{content:counter(step);flex:0 0 32px;height:32px;border-radius:50%;background:linear-gradient(120deg,var(--blue),var(--teal));color:#04121a;font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center}
 .step-body h4{font-size:.95rem;margin:0 0 4px}
 .step-body p{font-size:.9rem;margin:0;color:var(--muted)}
+.step-body .see{color:var(--teal);font-weight:700}
 
-/* PILL TAGS */
+/* TAGS */
 .tag{display:inline-block;font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 10px;margin:2px;vertical-align:middle}
 .t-blue{background:rgba(77,163,255,.15);color:var(--blue);border:1px solid rgba(77,163,255,.4)}
 .t-teal{background:rgba(47,214,176,.13);color:var(--teal);border:1px solid rgba(47,214,176,.4)}
@@ -97,25 +109,33 @@ p b,p strong{color:var(--text)}
 .t-green{background:rgba(94,203,116,.13);color:var(--green);border:1px solid rgba(94,203,116,.4)}
 .t-purple{background:rgba(178,141,255,.13);color:var(--purple);border:1px solid rgba(178,141,255,.4)}
 
-/* DIVIDER */
-hr{border:none;border-top:1px solid var(--border);margin:60px 0}
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}
 
-/* AI SECTION */
-.ai-card{background:linear-gradient(135deg,rgba(178,141,255,.1),rgba(77,166,255,.08));border:1px solid rgba(178,141,255,.35);border-radius:16px;padding:24px 28px;margin:16px 0}
+/* AI CONVO */
+.ai-card{background:linear-gradient(135deg,rgba(178,141,255,.1),rgba(77,166,255,.08));border:1px solid rgba(178,141,255,.35);border-radius:16px;padding:22px 26px;margin:16px 0}
 .ai-card h3{color:var(--purple);margin-top:0}
 .convo{display:flex;flex-direction:column;gap:10px;margin:14px 0}
-.msg{border-radius:12px;padding:10px 14px;font-size:.9rem;line-height:1.5;max-width:85%}
+.msg{border-radius:12px;padding:10px 14px;font-size:.9rem;line-height:1.5;max-width:88%}
 .msg.user{background:var(--panel2);border:1px solid var(--border);align-self:flex-end;color:var(--text)}
 .msg.ai{background:rgba(178,141,255,.12);border:1px solid rgba(178,141,255,.3);color:var(--text2)}
-.msg .who{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.msg .who{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
 .msg.user .who{color:var(--gold)}
 .msg.ai .who{color:var(--purple)}
 
+hr{border:none;border-top:1px solid var(--border);margin:60px auto 0;max-width:860px}
+
 /* CLOSING */
-.closing{text-align:center;padding:80px 32px}
-.closing h2{font-size:2rem;background:linear-gradient(120deg,var(--gold),#ff9f43);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
+.closing{text-align:center;padding:80px 32px 20px;max-width:760px;margin:0 auto}
+.closing h2{font-size:1.9rem;background:linear-gradient(120deg,var(--gold),#ff9f43);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
 .cta{display:inline-block;font-weight:800;font-size:1rem;padding:14px 28px;border-radius:14px;color:#04121a;background:linear-gradient(120deg,var(--teal),var(--blue));text-decoration:none;transition:.15s}
 .cta:hover{filter:brightness(1.1);transform:translateY(-2px)}
+.repolinks{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:26px}
+.repolinks a{font-size:.84rem;font-weight:600;color:var(--text2);text-decoration:none;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:8px 14px;transition:.15s}
+.repolinks a:hover{border-color:var(--teal);color:var(--text)}
+.repolinks a small{display:block;color:var(--muted);font-weight:500;font-size:.74rem}
 
 a{color:var(--blue)}
 code{background:var(--panel2);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.85em;color:var(--teal)}
@@ -124,274 +144,310 @@ code{background:var(--panel2);border:1px solid var(--border);border-radius:5px;p
 <body>
 
 <nav class="topnav">
-  <span class="logo">⚽ SLED WC26 Bracket</span>
-  <a href="#problem">The Problem</a>
-  <a href="#insight">The Insight</a>
-  <a href="#build">The Build</a>
-  <a href="#demo">Demo Guide</a>
-  <a href="#ai">Built with AI</a>
-  <a href="https://eriic-builds.github.io/sled-mywcbracket/" target="_blank" class="live">🔴 Open Live Site →</a>
+  <span class="logo">⚽ The Bracket Project</span>
+  <a href="#open">The Payoff</a>
+  <a href="#spark">The Spark</a>
+  <a href="#repo1">Repo 1</a>
+  <a href="#repo2">Repo 2</a>
+  <a href="#repo3">Repo 3</a>
+  <a href="#walls">The Walls</a>
+  <a href="#return">The Return</a>
+  <a href="#demo">See It Live</a>
+  <a href="https://eriic-builds.github.io/sled-mywcbracket/" target="_blank" class="live">🔴 Open the app →</a>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="kicker">SLED · World Cup 2026 · Built with Claude Code</div>
-  <h1>We built a live social bracket platform in a weekend — for free.</h1>
-  <p class="sub">One person. An AI coding partner. Zero dollars. A fully deployed, privacy-first app with real live World Cup data, share links, and a leaderboard for the whole team.</p>
+<!-- ═══════════ COLD OPEN — the last thing first ═══════════ -->
+<div class="hero" id="open">
+  <div class="kicker">A build story · July 2026</div>
+  <h1>Last week, a leader in my org asked if he could share my side project with everyone.</h1>
+  <p class="sub">Six days earlier, that project was an Excel attachment in my inbox.</p>
+
   <div class="hero-stats">
+    <div class="stat"><div class="n">6</div><div class="l">days</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">public repos</div></div>
+    <div class="stat"><div class="n">~190</div><div class="l">commits</div></div>
     <div class="stat"><div class="n">$0</div><div class="l">monthly cost</div></div>
-    <div class="stat"><div class="n">7</div><div class="l">test suites</div></div>
-    <div class="stat"><div class="n">3×</div><div class="l">daily live sync</div></div>
-    <div class="stat"><div class="n">100%</div><div class="l">client-side</div></div>
-    <div class="stat"><div class="n">~2min</div><div class="l">deploy time</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">builder</div></div>
   </div>
 </div>
 
-<!-- THE PROBLEM -->
-<section id="problem">
-  <div class="ch">Chapter 1</div>
-  <h2>The problem — we all had brackets, no way to compare</h2>
-  <p>The World Cup started. The team had a shared bracket workbook — each person picked their winners, calculated points, tracked their champion. But it was all siloed. Everyone's dashboard lived on their own machine. There was no way to see how you stacked up against a coworker without emailing spreadsheets around.</p>
+<section style="padding-top:36px">
+  <p>Here's the moment that made it real. A coworker opens a link I texted them. No login, no install, no instructions. Their screen fills with a live World Cup dashboard — my bracket, scored against real match results that update themselves three times a day. One button: <b>"Add to my leaderboard."</b> They tap it. Now we're ranked against each other, and every match that finishes reshuffles the standings automatically.</p>
+  <p>No server. No database. No one's name exposed anywhere they didn't choose. Total running cost: <b>zero dollars, forever</b>.</p>
+  <p>This page is the story of how that got built — and honestly, the story of everything I learned building it. The wins, the walls I hit, and the workflow that emerged.</p>
 
-  <div class="card">
-    <h3>What already existed</h3>
-    <p><code>my-wc26-bracket</code> — a Python tool that reads your Excel bracket, scores it against live results, and generates a personal dashboard. One person, one machine, no sharing.</p>
-    <p style="margin-bottom:0">It was great for your own view. But brackets are more fun when you can compare.</p>
-  </div>
-
-  <div class="quote">"Could I do like a share link that adds that user into your dashboard so we're not compromising everyone who doesn't want it to be surfaceable?"</div>
-
-  <p>That single question unlocked the whole design. The constraint was tight: <b>it had to be free</b> (no backend bills) and <b>privacy-first</b> (coworkers' real names should never appear anywhere they didn't choose).</p>
+  <div class="quote">Hi everyone — welcome. I'm Eric, a Cloud Solution Architect at Microsoft, which means <b>I get to help people make progress with AI</b>. This project was me turning that lens on myself: set a vision, understand the outcome, and use every tool available to shape it into something real.</div>
 </section>
 
-<!-- THE INSIGHT -->
-<section id="insight">
-  <div class="ch">Chapter 2</div>
-  <h2>The insight — the URL is the database</h2>
+<!-- ═══════════ CH 1 — ordinary world ═══════════ -->
+<section id="spark">
+  <div class="ch">Chapter 1</div>
+  <h2>An Excel sheet in my inbox</h2>
+  <p class="epigraph">Every big build starts as a small annoyance.</p>
+
+  <p>A leader in my org kicked off a World Cup bracket challenge. The format was classic office fun: he emailed out an Excel workbook, everyone filled in their picks — 31 knockout games, a champion, a tiebreaker — and emailed it back. He'd tally the scores as the tournament went on.</p>
+  <p>I filled mine out like everyone else. But staring at that spreadsheet, I couldn't stop seeing what it <em>could</em> be. All the drama of a World Cup bracket — the upsets, the busted picks, the "my champion is still alive" tension — flattened into cells and columns. The data was begging to be visual.</p>
+
+  <div class="card">
+    <h3>The first move: design before code</h3>
+    <p>I opened <b>Microsoft Cowork</b> and started designing what I wished existed: a glassmorphism dashboard, KPI cards for points confirmed and points still attainable, and the piece I was proudest of — a <b>bracket map</b> that draws your entire predicted path through the tournament and overlays what actually happened.</p>
+    <p style="margin-bottom:0">The original plan was modest: view my dashboard in Cowork and schedule a sync to pull in new results. That would have been the end of it — a nice personal artifact. It wasn't the end of it.</p>
+  </div>
+
+  <p>Instead of keeping it as a prompt, I packaged the whole design as a <b>markdown build kit</b> — a spec anyone could hand to an AI and get the same dashboard with their own picks. Version 6, then version 7, each one tighter. I didn't know the term yet, but I'd stumbled into the idea that would shape everything after: <b>the spec is the real product</b>. The code is just its output.</p>
+</section>
+
+<!-- ═══════════ CH 2 — repo 1 ═══════════ -->
+<section id="repo1">
+  <div class="ch">Chapter 2 · Repo 1 — <a href="https://github.com/eriic-builds/wc26-bracket" target="_blank">wc26-bracket</a></div>
+  <h2>Crossing into GitHub</h2>
+  <p class="epigraph">The project you keep postponing is usually the door to the next level.</p>
+
+  <p>Hosting something on GitHub Pages had been on my someday-list for a long time. This was finally the excuse. If my dashboard lived at a URL, I could check it from anywhere, the data could refresh itself, and — this part mattered to me — <b>the entire build process would be preserved in commit history</b>, reverse-engineerable by anyone, including future me.</p>
+  <p>So I opened <b>GitHub Copilot</b> and we started. What began as one hardcoded HTML file got pulled apart, deliberately, into an actual architecture:</p>
+
+  <ul class="plain">
+    <li><b>The data layer</b> — my picks and the live results extracted into <code>data/*.json</code>, so content and presentation stopped being tangled together</li>
+    <li><b>The generator</b> — <code>build_dashboard.py</code>, which turns picks + results into the finished dashboard</li>
+    <li><b>The sync engine</b> — <code>fetch_results.py</code>, pulling finished games from FIFA's public feed</li>
+    <li><b>The automation</b> — a GitHub Action running the sync three times a day, timed to after each match block, committing new results and redeploying automatically</li>
+  </ul>
+
+  <p><b>125 commits in six days.</b> That number isn't a flex — it's what learning in public looks like. Every one of those commits is me figuring out git, workflows, CI, and deployment by actually doing it, with the receipts preserved.</p>
+
+  <div class="insight">
+    <div class="ic">⚙️</div>
+    <h3>The machine that builds itself</h3>
+    <p>Once the sync Action was live, something clicked. I wasn't maintaining a webpage — I'd built a small machine. Games finish, a bot fetches the scores, commits them, redeploys the site. I could close my laptop for the weekend and the dashboard stayed current. That's the difference between making a thing and building a system.</p>
+  </div>
+</section>
+
+<!-- ═══════════ CH 3 — repo 2 ═══════════ -->
+<section id="repo2">
+  <div class="ch">Chapter 3 · Repo 2 — <a href="https://github.com/eriic-builds/my-wc26-bracket" target="_blank">my-wc26-bracket</a></div>
+  <h2>The first wall: nobody follows instructions</h2>
+  <p class="epigraph">Ship the product, not the instructions.</p>
+
+  <p>Proud of the build kit, I shared it. And then I watched what happened: <b>nothing</b>. The person I shared it with was never going to walk through repo setup, Python scripts, and deployment steps to get their own dashboard. Of course they weren't. I wouldn't have either, a month earlier.</p>
+  <p>That stung for about an hour, and then it reframed the whole problem. The friction wasn't in my instructions — it was in the existence of instructions. The goal had to become: <b>you drop in your Excel bracket, and your dashboard just appears</b>.</p>
+
+  <div class="card">
+    <h3>What that took</h3>
+    <p>Everything the Python generator did on my machine had to happen in the visitor's browser instead. Copilot and I ported the entire render engine to client-side JavaScript — parsing the workbook with SheetJS, validating it, scoring it against live results, drawing the bracket map. Their spreadsheet never leaves their device.</p>
+    <p style="margin-bottom:0">And because a port this size is exactly where subtle bugs breed, we built a <b>golden test</b>: the JavaScript engine's output is compared byte-for-byte against the original Python's. Not "looks the same" — <em>identical</em>. That test has caught real regressions ever since.</p>
+  </div>
+
+  <p>For people without a workbook at all, we added an interactive builder — tap winners round by round, get the same dashboard. The tool stopped being mine and became anyone's.</p>
+</section>
+
+<!-- ═══════════ CH 4 — repo 3 ═══════════ -->
+<section id="repo3">
+  <div class="ch">Chapter 4 · Repo 3 — <a href="https://github.com/eriic-builds/sled-mywcbracket" target="_blank">sled-mywcbracket</a></div>
+  <h2>The big idea: social, with no backend</h2>
+  <p class="epigraph">The URL is the database.</p>
+
+  <p>Individual dashboards were working. But brackets are a social game — the whole point is seeing how you rank against your friends. Every obvious way to build that meant a backend: accounts, a database, hosting bills, and — the real dealbreaker — <b>a central place where my coworkers' real names would live</b>, whether they opted in or not.</p>
+  <p>The question I kept turning over: <em>could a share link itself carry the bracket — so adding someone to your leaderboard never touches a server at all?</em></p>
 
   <div class="insight">
     <div class="ic">💡</div>
-    <h3>Your whole bracket fits in a link</h3>
-    <p>31 games. 31 binary choices (win/lose). That's 31 bits of information — plus your display name and a tiebreaker score. It all fits in about 140 characters. You can encode it directly into a URL and send it like a text message.</p>
+    <h3>It fits in a link</h3>
+    <p>A bracket is 31 win/lose choices — 31 bits — plus a display name and a tiebreaker. Encoded, that's about 140 characters riding in the URL fragment (the part after <code>#</code>). And by HTTP's own rules, <b>browsers never send the fragment to any server</b>. Not to GitHub, not to anyone. The privacy isn't a policy — it's physics.</p>
   </div>
 
-  <p>Every share link looks like this:</p>
-  <div class="urlbox">https://eriic-builds.github.io/sled-mywcbracket/<span class="hl">#b=eyJ2IjoxLCJiIjoiMDEwMTEwMDEw...</span></div>
+  <div class="urlbox">https://eriic-builds.github.io/sled-mywcbracket/<span class="hl">#b=eyJ2IjoxLCJiIjoiMDEwMTEwMDEw…</span> ← this <em>is</em> the bracket</div>
 
-  <p>The part after <code>#</code> is your entire bracket — encoded, self-contained, requiring no server to decode. The recipient's browser unpacks it directly.</p>
-
-  <div class="grid2">
-    <div class="card">
-      <h3>🔒 Structural privacy</h3>
-      <p style="margin-bottom:0">The <code>#fragment</code> part of a URL is <b>never sent to any server</b> — that's how HTTP works. Not even GitHub's logs see it. Your picks and name literally cannot leak from the infrastructure.</p>
-    </div>
-    <div class="card">
-      <h3>💸 Zero cost</h3>
-      <p style="margin-bottom:0">No database. No API. No auth. No serverless functions. Just a static HTML file on GitHub Pages — which is <b>free forever</b>. The link is the storage.</p>
-    </div>
-  </div>
-
-  <h3>Where everything lives</h3>
   <div class="card" style="padding:0;overflow:hidden">
     <table>
       <thead><tr><th>Thing</th><th>Where it lives</th></tr></thead>
       <tbody>
-        <tr><td><b>Your bracket</b></td><td>Your browser's localStorage — on your device only</td></tr>
-        <tr><td><b>A share link</b></td><td>Entirely inside the URL you send — nothing written anywhere</td></tr>
-        <tr><td><b>Rivals you've added</b></td><td>Your browser's localStorage — your device only</td></tr>
-        <tr><td><b>Live match results</b></td><td>A JSON file on GitHub, synced 3× a day by a bot</td></tr>
-        <tr><td><b>Any server-side data</b></td><td style="color:var(--green)">None. Zero.</td></tr>
+        <tr><td><b>Your bracket</b></td><td>Your browser's storage — your device only</td></tr>
+        <tr><td><b>A share link</b></td><td>Entirely inside the URL you send</td></tr>
+        <tr><td><b>Rivals you've added</b></td><td>Your browser's storage — your device only</td></tr>
+        <tr><td><b>Live results</b></td><td>A JSON file on GitHub, synced 3× a day</td></tr>
+        <tr><td><b>Server-side data</b></td><td style="color:var(--green)">None. There is no server.</td></tr>
       </tbody>
     </table>
   </div>
+
+  <h3>Where the workflow leveled up</h3>
+  <p>For this third build I changed how I worked. I'd been reading what the people actually shipping with AI agents do — and the pattern is consistent: they don't prompt, they <b>brief</b>. So before any code, I wrote one. Every brief since has followed the same four-part shape:</p>
+
+  <div class="framework">
+    <div class="fw"><div class="lt">G</div><div class="nm">Goal</div><div class="ds">The outcome, stated so sharply you'd know if you missed</div></div>
+    <div class="fw"><div class="lt">C</div><div class="nm">Context</div><div class="ds">Constraints, history, who it's for, what already exists</div></div>
+    <div class="fw"><div class="lt">S</div><div class="nm">Source</div><div class="ds">The ground truth to build from — repos, data, prior art</div></div>
+    <div class="fw"><div class="lt">E</div><div class="nm">Expectations</div><div class="ds">Acceptance criteria — what done looks like, verifiably</div></div>
+  </div>
+
+  <p>Then the division of labor that made the weekend possible:</p>
+
+  <div class="fw-flow">
+    <span class="n">I write the brief</span><span class="a">→</span>
+    <span class="n">Fable 5 turns it into staged plans</span><span class="a">→</span>
+    <span class="n">I review &amp; adjust the plans</span><span class="a">→</span>
+    <span class="n">Cheaper models (Opus 4.8, GPT 5.5) execute the mechanical work</span><span class="a">→</span>
+    <span class="n">Fable 5 reviews the output</span><span class="a">→</span>
+    <span class="n">I approve each stage</span>
+  </div>
+
+  <p>The expensive model does the thinking twice — once planning, once reviewing — and the cheaper models do the typing. My job moved up a level: <b>setting direction, catching drift, and making the judgment calls</b>. Five staged plans, each one shipped and verified before the next began: share links, the add-to-leaderboard loop, the standings and diff view, then polish and hardening.</p>
+
+  <div class="card">
+    <h3>The Technical Taste Council</h3>
+    <p>One more thing I built for this phase — a judgment framework. I'm not a developer by trade, and my honest gap wasn't syntax, it was <em>taste</em>: knowing when something is quietly over-engineered, badly named, or built for the wrong horizon. So I wrote a council of named voices into the repo's instructions, each owning a domain, and the AI channels them on every non-trivial call:</p>
+    <ul class="plain" style="font-size:.94rem">
+      <li><b>Karpathy</b> — simplest thing that works; no abstraction without a reason it's needed <em>now</em></li>
+      <li><b>Hanselman</b> — name things for the next human; every error says what broke and what to do</li>
+      <li><b>Russinovich</b> — know what's underneath; what breaks under load, bad input, slow networks</li>
+      <li><b>Willison</b> — verify, don't trust; if a claim can be checked, check it before stating it</li>
+      <li><b>Naval</b> — does this feature earn its complexity? Prefer decisions that keep future options open</li>
+      <li><b>Sean Grove</b> — the spec is the artifact; code drifts, intent shouldn't</li>
+      <li><b>Yegge &amp; Litt</b> — small reviewable increments, in structures I can still modify myself later</li>
+    </ul>
+    <p style="margin-bottom:0">Real example of it working: when the "add a rival" feature could have grown a "re-share someone else's bracket" option, the council flagged it — re-broadcasting a coworker's picks without their consent is exactly the leak this design exists to prevent. It's documented in the spec as a <em>decision</em>, not an omission.</p>
+  </div>
 </section>
 
-<!-- THE BUILD -->
-<section id="build">
-  <div class="ch">Chapter 3</div>
-  <h2>The build — 5 stages, one session at a time</h2>
-  <p>The whole thing was planned, architected, and built in conversation with Claude Code. Each stage was a reviewable increment — shipped and verified before the next one started.</p>
+<!-- ═══════════ CH 5 — the walls ═══════════ -->
+<section id="walls">
+  <div class="ch">Chapter 5</div>
+  <h2>The walls (every single one taught me something)</h2>
+  <p class="epigraph">The bugs you hit yourself are the lessons you keep.</p>
 
   <div class="timeline">
     <div class="tl-item">
-      <div class="tl-dot blue">0</div>
-      <div class="tl-label">Stage 0 · Foundation</div>
-      <h3>Repo setup + safety net</h3>
-      <p>Forked the Python bracket tool into a new public repo. Set up GitHub Pages deployment. Wrote a golden test (byte-for-byte snapshot of the rendered dashboard) so any future change that breaks the render would fail CI immediately. Froze the test inputs so the daily results sync couldn't silently break the tests.</p>
-      <div><span class="tag t-teal">CI/CD</span><span class="tag t-blue">GitHub Pages</span><span class="tag t-gold">Golden tests</span></div>
+      <div class="tl-dot red" style="background:var(--red)">✕</div>
+      <div class="tl-label">Deploy day</div>
+      <h3>GitHub Pages refused to deploy</h3>
+      <p>The workflow could <em>configure</em> a Pages site but couldn't <em>create</em> one — a permissions subtlety I'd never have guessed. One API call to enable it manually, re-run the workflow, green. Lesson: when automation fails, the gap is usually in what the token is allowed to do, not what the code does.</p>
     </div>
     <div class="tl-item">
-      <div class="tl-dot teal">1</div>
-      <div class="tl-label">Stage 1 · Share links</div>
-      <h3>Encode your bracket into a URL</h3>
-      <p>Built <code>share.js</code> — a pure function that encodes 31 picks + your display name + tiebreaker into a base64 URL fragment. Added a "share as" alias field so you can share under initials instead of your real name. 500-bracket fuzz test confirmed round-trip accuracy.</p>
-      <div><span class="tag t-blue">share.js</span><span class="tag t-teal">Privacy alias</span><span class="tag t-gold">Fuzz tested</span></div>
+      <div class="tl-dot red" style="background:var(--red)">✕</div>
+      <div class="tl-label">Mid-session</div>
+      <h3>My own bot pushed against me</h3>
+      <p>The results sync committed new match data while I was working, and my push got rejected. <code>git pull --rebase</code>, re-run the tests, push. Lesson: once you build automation, you're collaborating with it — plan for it.</p>
     </div>
     <div class="tl-item">
-      <div class="tl-dot gold">2</div>
-      <div class="tl-label">Stage 2 · The social loop</div>
-      <h3>Opening a link → Add to leaderboard</h3>
-      <p>When you open someone's share link, you see their full live-scored dashboard — view only, your own bracket untouched. One button: "➕ Add to my leaderboard." That's it. Person-to-person opt-in. No pool registry, no accounts.</p>
-      <div><span class="tag t-teal">View-only mode</span><span class="tag t-gold">Stash/restore</span><span class="tag t-blue">localStorage</span></div>
+      <div class="tl-dot red" style="background:var(--red)">✕</div>
+      <div class="tl-label">Testing</div>
+      <h3>My tests would have broken every single day</h3>
+      <p>The golden test read the live results file — which the bot rewrites three times a day. It passed today and was guaranteed to fail tomorrow. Fix: freeze a snapshot of the inputs and test against that. Lesson: a test that depends on moving data isn't a test, it's a countdown.</p>
     </div>
     <div class="tl-item">
-      <div class="tl-dot purple">3</div>
-      <div class="tl-label">Stage 3 · Leaderboard</div>
-      <h3>Rank everyone you've added</h3>
-      <p>Built <code>compare.js</code> — ranks brackets by confirmed points, then attainable, then name. Per-rival diff: "here are the games still to play where your picks differ, sorted by points at stake." Cap of 20 rivals, deduplicated by content hash.</p>
-      <div><span class="tag t-purple">compare.js</span><span class="tag t-gold">Standings</span><span class="tag t-teal">Diff view</span></div>
+      <div class="tl-dot red" style="background:var(--red)">✕</div>
+      <div class="tl-label">Data loss</div>
+      <h3>Viewing the demo silently deleted user edits</h3>
+      <p>Opening the demo bracket wiped your what-if score edits — a quiet destroyer that unit tests missed and a browser walkthrough caught. Fix: stash the user's state before any preview, restore it after. Lesson: test the flows a real person actually takes, not just the functions.</p>
     </div>
     <div class="tl-item">
-      <div class="tl-dot green">4</div>
-      <div class="tl-label">Round 2 · Polish &amp; hardening</div>
-      <h3>Promoted to main — fixed real issues</h3>
-      <p>Renamed from pilot to <code>sled-mywcbracket</code>. Fixed navigation (🏠 Home never deletes your bracket). Rebuilt the bracket map's "Actual path" view — it was showing blank cells when your picks busted; now it reads real results directly. Fixed connector lines. Answered the revocation question honestly.</p>
-      <div><span class="tag t-gold">Bracket rebuild</span><span class="tag t-teal">Non-destructive nav</span><span class="tag t-blue">5 new tests</span></div>
+      <div class="tl-dot red" style="background:var(--red)">✕</div>
+      <div class="tl-label">Round 2</div>
+      <h3>Eight blank cells in the bracket map</h3>
+      <p>When someone's picks all busted early, the "actual path" view went blank — the code derived reality by walking the user's pick tree, which dead-ends when picks die. Rebuilt it to read each slot straight from real results. We reproduced the worst case first, fixed it, then locked it with five new tests. Lesson: reproduce before you fix, and pin the fix with a test so it can never quietly return.</p>
     </div>
-  </div>
-
-  <div class="card">
-    <h3>The honest bumps 🪨</h3>
-    <p>Things that went wrong and what they taught:</p>
-    <ul style="color:var(--text2);padding-left:20px;line-height:2">
-      <li><b>GitHub Pages wouldn't deploy</b> — the workflow token can configure Pages but can't create it. Fixed by enabling it via the API once, manually.</li>
-      <li><b>The sync bot pushed mid-session</b> — git rejected the push. Fixed with <code>git pull --rebase</code>.</li>
-      <li><b>The golden test would break every day</b> — it was reading live results that change 3× daily. Fixed by freezing a copy of the inputs.</li>
-      <li><b>Demo viewing deleted what-if edits</b> — a silent data loss bug. Fixed with a stash/restore pattern.</li>
-      <li><b>Blank cells in the bracket map</b> — 8 blank cells when all picks bust. The old code derived "who advanced" from the pick tree (dead-ends when picks bust). Fixed by reading directly from real results.</li>
-    </ul>
   </div>
 </section>
 
-<!-- DEMO GUIDE -->
+<!-- ═══════════ CH 6 — the return ═══════════ -->
+<section id="return">
+  <div class="ch">Chapter 6</div>
+  <h2>The return: back to where it started</h2>
+  <p class="epigraph">You know it worked when the person who sent the spreadsheet asks for the link.</p>
+
+  <p>Which brings the story back to the cold open. The same leader who kicked this off with an Excel attachment saw the finished app and asked if he could <b>share it broadly</b>. The circle closed: spreadsheet in, platform out.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>What I set out to learn</h3>
+      <ul class="plain" style="font-size:.94rem;margin-bottom:0">
+        <li>GitHub Copilot, hands-on and in anger</li>
+        <li>Git, commits, CI/CD, and living in the CLI</li>
+        <li>AI architecture: briefs, specs, staged plans</li>
+        <li>Publishing real, public, working software</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>What I actually learned</h3>
+      <ul class="plain" style="font-size:.94rem;margin-bottom:0">
+        <li>All of that — plus how to <b>develop taste</b>, deliberately</li>
+        <li>That the brief is where the leverage lives</li>
+        <li>That review is a skill you can get better at fast</li>
+        <li>That "ship the product, not the instructions" applies to almost everything</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ai-card">
+    <h3>What the collaboration really looked like</h3>
+    <div class="convo">
+      <div class="msg user"><div class="who">Me</div>"I'm worried about cost — I want it free. And privacy: these are my coworkers' real names. Could a share link add that user to your dashboard, so we're not compromising anyone who doesn't want to be surfaceable?"</div>
+      <div class="msg ai"><div class="who">The AI</div>That constraint pair — free + private — eliminates every backend option and points at one architecture: the URL fragment carries the bracket. It's never sent to a server, so there's nowhere for a name to leak from. Here's a five-stage plan…</div>
+      <div class="msg user"><div class="who">Me</div>"Rebuild the bracket map logic — when my picks bust, the actual path still has to flow through every round. And sometimes the connector lines don't connect."</div>
+      <div class="msg ai"><div class="who">The AI</div>Reproduced your worst case: 8 blank cells, and the broken lines are the same bug — blank boxes have no geometry to connect to. Root cause found, fixed, and locked with 5 new tests. Zero blanks now.</div>
+    </div>
+    <p style="margin-bottom:0;font-size:.92rem">Notice what's in my half: outcomes, constraints, and quality bars — not code. That's the job now. The clearer I made the goal, context, sources, and expectations, the better everything downstream got. Every time the output missed, the root cause was in my brief.</p>
+  </div>
+
+  <p>And I'm still learning — that's not a disclaimer, it's the design. All three repos are public with full commit history precisely so the process can be inspected, including the missteps. If you look through the code and see something I should have done differently, <b>I genuinely want to hear it</b>. That feedback loop is the whole reason to build in the open.</p>
+</section>
+
+<!-- ═══════════ DEMO ═══════════ -->
 <section id="demo">
-  <div class="ch">Chapter 4</div>
-  <h2>Demo guide — show this live in 5 minutes</h2>
-  <p>Open <a href="https://eriic-builds.github.io/sled-mywcbracket/" target="_blank">eriic-builds.github.io/sled-mywcbracket</a> and walk through these steps.</p>
+  <div class="ch">See it live</div>
+  <h2>Five minutes, five moments</h2>
+  <p>Open <a href="https://eriic-builds.github.io/sled-mywcbracket/" target="_blank">the live app</a> and hit these beats — each one leads with what you'll see.</p>
 
   <div class="steps">
     <div class="step">
       <div class="step-body">
-        <h4>Drop your bracket Excel — or tap "Try the demo"</h4>
-        <p>The whole bracket parses and renders in your browser. Nothing leaves your machine. Notice the live scores — real results, synced automatically from FIFA's feed 3× a day.</p>
+        <h4><span class="see">You'll see:</span> a full live-scored dashboard appear from a spreadsheet</h4>
+        <p>Drop a bracket Excel on the landing page — or tap "See a demo first." Everything parses and renders in the browser; the scores are real results, synced from FIFA's feed three times a day.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-body">
-        <h4>Click "🔗 Share link" — edit the "Share as" name</h4>
-        <p>Type your initials in the alias field. Watch the URL in the box update instantly — your bracket is encoding into that URL in real time. Copy it.</p>
+        <h4><span class="see">You'll see:</span> your entire bracket compress into a URL, live</h4>
+        <p>Click "🔗 Share link" and type initials into the "share as" field — watch the link re-encode with every keystroke. That string <em>is</em> the bracket. Copy it.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-body">
-        <h4>Open the link in a new window (or have someone else open it)</h4>
-        <p>The full live-scored dashboard renders immediately — no login, no loading spinner, no account. Click "➕ Add to my leaderboard." Their bracket is now on your board.</p>
+        <h4><span class="see">You'll see:</span> someone else's dashboard open instantly from a text message</h4>
+        <p>Open the link in a fresh window: full dashboard, no login, no account, no spinner. Then the one-button social loop — "➕ Add to my leaderboard."</p>
       </div>
     </div>
     <div class="step">
       <div class="step-body">
-        <h4>Click "🏆 Leaderboard"</h4>
-        <p>See both brackets ranked by confirmed points. Click a rival row to see the "where we differ" diff — undecided games only, sorted by how many points are at stake.</p>
+        <h4><span class="see">You'll see:</span> the standings, and exactly where the contest will be decided</h4>
+        <p>Open "🏆 Leaderboard" — everyone ranked by confirmed points, then attainable. Click a rival for the diff: only the games still to play where your picks differ, sorted by points at stake.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-body">
-        <h4>Switch to "Actual path" on the bracket map</h4>
-        <p>Toggle between "My picks" and "Actual path." The actual view reads every slot from real results — blue triangles (▲) show where the real winner differs from your pick. Undecided slots show "Winner M97"-style placeholders.</p>
+        <h4><span class="see">You'll see:</span> reality overlaid on your predictions</h4>
+        <p>On the bracket map, toggle "My picks" → "Actual path." Blue ▲ marks where the real tournament diverged from your bracket; undecided slots show "Winner M97"-style placeholders. The truth flows through every round even if every one of your picks busted.</p>
       </div>
-    </div>
-  </div>
-
-  <div class="insight" style="margin-top:32px">
-    <div class="ic">🔐</div>
-    <h3>Privacy talking point</h3>
-    <p>Ask: "Where does your data go when you open a share link?" Answer: nowhere. The <code>#b=...</code> fragment is decoded entirely in the browser. GitHub's servers never see it. No cookie, no log entry, no database row. The only thing that touches a server is fetching the static HTML file and the JSON results — same as loading any webpage.</p>
-  </div>
-</section>
-
-<!-- BUILT WITH AI -->
-<section id="ai">
-  <div class="ch">Chapter 5</div>
-  <h2>What "built with AI" actually looked like</h2>
-  <p>This wasn't vibe coding — paste a prompt, get a messy result, repeat. It was a genuine engineering collaboration: planning, architecture decisions, debugging, testing, and shipping — all in conversation.</p>
-
-  <div class="ai-card">
-    <h3>How the sessions worked</h3>
-    <div class="convo">
-      <div class="msg user"><div class="who">Eric</div>"Could I do like a share link that adds that user into your dashboard — not compromising everyone who doesn't want it to be surfaceable?"</div>
-      <div class="msg ai"><div class="who">Claude Code</div>That's the architecture: the URL fragment IS the database. 31 binary picks fit in ~80 characters. The fragment is never sent to any server — HTTP spec. Zero cost, structural privacy. Here's the plan across 5 stages...</div>
-      <div class="msg user"><div class="who">Eric</div>"there seems to be a failure in deploying github pages — can you review and fix that before we continue"</div>
-      <div class="msg ai"><div class="who">Claude Code</div>Found it — the workflow token can configure Pages but can't create the site. One API call to enable it, then re-run the workflow. Done. Moving on to Stage 2...</div>
-      <div class="msg user"><div class="who">Eric</div>"rebuild the bracket map logic — when the user doesn't select the winners it still has to show throughout the actual path"</div>
-      <div class="msg ai"><div class="who">Claude Code</div>Reproduced with a worst-case all-losers bracket: 8 blank cells. Root cause: the old code walked the pick tree, which dead-ends when picks bust. Fix: read directly from D.RES[feeder_code][2]. Zero blanks. New test suite locks it forever.</div>
-    </div>
-  </div>
-
-  <div class="grid2">
-    <div class="card">
-      <h3>What the AI handled well</h3>
-      <ul style="color:var(--text2);padding-left:18px;line-height:2;font-size:.95rem">
-        <li>Architecture decisions with real tradeoffs</li>
-        <li>Spotting edge cases before they hit prod</li>
-        <li>Writing and running tests immediately</li>
-        <li>Debugging from symptoms to root cause</li>
-        <li>Consistent code style across sessions</li>
-        <li>Honest answers ("no, you can't revoke a link")</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>What the human provided</h3>
-      <ul style="color:var(--text2);padding-left:18px;line-height:2;font-size:.95rem">
-        <li>The core insight (share link = social loop)</li>
-        <li>The real constraints ($0, privacy)</li>
-        <li>Direction when the scope could expand</li>
-        <li>Final approval on each stage</li>
-        <li>The team context that shaped the design</li>
-        <li>Quality bar ("this is amazing — ship it")</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>The Technical Taste Council</h3>
-    <p>Every non-trivial decision was filtered through a set of named engineering voices — Karpathy (simplest thing that works), Hanselman (name things for clarity, no silent failures), Russinovich (know what's underneath), Naval (does this earn its complexity?), and others. It gave the AI a consistent judgment framework across sessions instead of making arbitrary calls.</p>
-    <p style="margin-bottom:0">Example: three attempts at positioning the 🏠 Home button. First try was wrong (margin-right: auto pushed everything right). Second try added a wrapper div (unnecessary complexity). Third: <em>Karpathy + Litt say just put Home first in the flat centered group — that's enough.</em> One line change.</p>
-  </div>
-
-  <div class="insight">
-    <div class="ic">🎯</div>
-    <h3>The real lesson</h3>
-    <p>AI-assisted development doesn't mean "AI writes everything." It means <b>you stay at the level of outcomes</b> — what should this do, what are the constraints, does this feel right — while the AI handles the implementation details, finds the edge cases, writes the tests, and explains the tradeoffs. The human's job shifts from typing code to making decisions.</p>
-  </div>
-</section>
-
-<!-- WHAT'S NEXT -->
-<section id="next">
-  <div class="ch">Chapter 6</div>
-  <h2>What's next</h2>
-  <div class="grid2">
-    <div class="card">
-      <h3>🏆 Use it right now</h3>
-      <p>The QFs are live. SF is next week (Jul 14–15), Final is Jul 19 at MetLife. Share your link, add your teammates, watch the leaderboard update in real time as results come in.</p>
-      <p style="margin-bottom:0"><a href="https://eriic-builds.github.io/sled-mywcbracket/" target="_blank">eriic-builds.github.io/sled-mywcbracket →</a></p>
-    </div>
-    <div class="card">
-      <h3>🔮 What this proves</h3>
-      <p style="margin-bottom:0">A non-developer can go from "I have an idea" to a deployed, tested, production-ready app with real users — in a few sessions. The constraint isn't technical skill anymore. It's <b>having a clear enough idea of what you want</b>.</p>
     </div>
   </div>
 </section>
 
 <hr>
 
-<!-- CLOSING -->
+<!-- ═══════════ CLOSING ═══════════ -->
 <div class="closing">
-  <h2>Open it. Share your bracket. Compare.</h2>
-  <p style="color:var(--text2);max-width:480px;margin:0 auto 28px">The Final is July 19. There's still time to add everyone to your leaderboard and settle this.</p>
-  <a href="https://eriic-builds.github.io/sled-mywcbracket/" target="_blank" class="cta">Open the live site →</a>
-  <p style="color:var(--muted);font-size:.8rem;margin-top:40px">Built July 7–8, 2026 · <a href="dev-docs/ANALYSIS.html">Full technical analysis →</a> · <a href="https://github.com/eriic-builds/sled-mywcbracket">GitHub →</a></p>
+  <h2>Set a vision. Understand the outcome. Build.</h2>
+  <p style="color:var(--text2);margin:0 auto 28px;max-width:560px">Six days from a spreadsheet to a platform — not because the tools did it for me, but because the tools removed everything between the idea and the work. The constraint isn't technical skill anymore. It's knowing, clearly, what you want to exist.</p>
+  <a href="https://eriic-builds.github.io/sled-mywcbracket/" target="_blank" class="cta">Open the live app →</a>
+
+  <div class="repolinks">
+    <a href="https://github.com/eriic-builds/wc26-bracket" target="_blank">📦 wc26-bracket<small>Repo 1 · the machine that builds itself</small></a>
+    <a href="https://github.com/eriic-builds/my-wc26-bracket" target="_blank">📦 my-wc26-bracket<small>Repo 2 · drop your Excel, get your dashboard</small></a>
+    <a href="https://github.com/eriic-builds/sled-mywcbracket" target="_blank">📦 sled-mywcbracket<small>Repo 3 · the social layer, zero backend</small></a>
+  </div>
+
+  <p style="color:var(--muted);font-size:.8rem;margin-top:40px">Eric Lam · Built July 2–8, 2026 · <a href="dev-docs/ANALYSIS.html">Full technical deep-dive →</a></p>
 </div>
 
-</div>
 </body>
 </html>

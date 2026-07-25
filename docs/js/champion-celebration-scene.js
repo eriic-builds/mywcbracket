@@ -45,6 +45,9 @@ const PHONE_CAMERA = Object.freeze({
   targetZ: 0,
 });
 const GROUND_TROPHY_CARRY_HEIGHT = 1.84;
+const TROPHY_BASE_GRIP_SPAN = 0.34;
+const TROPHY_BASE_GRIP_RISE = 0.02;
+const TROPHY_BASE_GRIP_FORWARD = 0.05;
 const CAPTAIN_ENTRY_YAW = headingYaw(
   STAGE_LAYOUT.captainEntryX,
   STAGE_LAYOUT.captainGroundZ,
@@ -373,23 +376,31 @@ function setMaterialOpacity(materials, opacity) {
   }
 }
 
-function poseWalk(rig, progress, cycles = 2.4) {
-  const swing = Math.sin(progress * Math.PI * 2 * cycles);
+function poseWalk(rig, progress, cycles = 2.4, weight = 1) {
+  const phase = progress * Math.PI * 2 * cycles;
+  const swing = Math.sin(phase);
   const stride = Math.abs(swing);
-  rig.joints.leftHip.rotation.x = swing * 0.46;
-  rig.joints.rightHip.rotation.x = -swing * 0.46;
-  rig.joints.leftKnee.rotation.x = Math.max(0, -swing) * 0.45;
-  rig.joints.rightKnee.rotation.x = Math.max(0, swing) * 0.45;
-  rig.joints.leftShoulder.rotation.x = -swing * 0.42;
-  rig.joints.rightShoulder.rotation.x = swing * 0.42;
-  rig.joints.leftElbow.rotation.x = -0.18 - stride * 0.24;
-  rig.joints.rightElbow.rotation.x = -0.18 - stride * 0.24;
-  rig.joints.leftFoot.rotation.x = Math.max(0, swing) * 0.16;
-  rig.joints.rightFoot.rotation.x = Math.max(0, -swing) * 0.16;
-  rig.joints.hips.position.y = 1.19 + stride * 0.028;
-  rig.joints.chest.rotation.z = Math.sin(progress * Math.PI * cycles) * 0.04;
-  rig.joints.chest.rotation.y = swing * 0.035;
-  rig.joints.head.rotation.y = -swing * 0.04;
+  const bounce = 0.5 - 0.5 * Math.cos(phase * 2);
+  const strideWeight = clamp(weight, 0, 1);
+  const leadLeft = Math.max(0, -swing);
+  const leadRight = Math.max(0, swing);
+  const trailLeft = Math.max(0, swing);
+  const trailRight = Math.max(0, -swing);
+
+  rig.joints.leftHip.rotation.x = swing * 0.43 * strideWeight;
+  rig.joints.rightHip.rotation.x = -swing * 0.43 * strideWeight;
+  rig.joints.leftKnee.rotation.x = (leadLeft * 0.52 + trailLeft * 0.18) * strideWeight;
+  rig.joints.rightKnee.rotation.x = (leadRight * 0.52 + trailRight * 0.18) * strideWeight;
+  rig.joints.leftShoulder.rotation.x = -swing * 0.4 * strideWeight;
+  rig.joints.rightShoulder.rotation.x = swing * 0.4 * strideWeight;
+  rig.joints.leftElbow.rotation.x = -0.18 - stride * 0.22 * strideWeight;
+  rig.joints.rightElbow.rotation.x = -0.18 - stride * 0.22 * strideWeight;
+  rig.joints.leftFoot.rotation.x = (leadRight * 0.14 - trailRight * 0.06) * strideWeight;
+  rig.joints.rightFoot.rotation.x = (leadLeft * 0.14 - trailLeft * 0.06) * strideWeight;
+  rig.joints.hips.position.y = 1.186 + bounce * 0.02 * strideWeight;
+  rig.joints.chest.rotation.z = Math.sin(phase * 0.5) * 0.03 * strideWeight;
+  rig.joints.chest.rotation.y = swing * 0.03 * strideWeight;
+  rig.joints.head.rotation.y = -swing * 0.03 * strideWeight;
 }
 
 function poseCaptainCrowdHype(rig, amount) {
@@ -453,6 +464,7 @@ export async function createChampionScene({
   let width = 1;
   let height = 1;
   let profile = "desktop";
+  let projectionDirty = true;
   let renderer = null;
   let effects = null;
   const ownedGeometries = [];
@@ -478,8 +490,21 @@ export async function createChampionScene({
   const trophyCarrierQuaternion = new THREE.Quaternion();
   const leftGripWorld = new THREE.Vector3();
   const rightGripWorld = new THREE.Vector3();
+  const trophyBottomWorld = new THREE.Vector3();
+  const trophyBaseLeftWorld = new THREE.Vector3();
+  const trophyBaseRightWorld = new THREE.Vector3();
+  const trophyGripAxisX = new THREE.Vector3();
+  const trophyGripAxisY = new THREE.Vector3();
+  const trophyGripAxisZ = new THREE.Vector3();
+  const trophyWorldQuaternion = new THREE.Quaternion();
   const leftHandWorld = new THREE.Vector3();
   const rightHandWorld = new THREE.Vector3();
+  const leftHandleTargetWorld = new THREE.Vector3();
+  const rightHandleTargetWorld = new THREE.Vector3();
+  const leftBaseTargetWorld = new THREE.Vector3();
+  const rightBaseTargetWorld = new THREE.Vector3();
+  const leftTargetWorld = new THREE.Vector3();
+  const rightTargetWorld = new THREE.Vector3();
   const shoulderWorld = new THREE.Vector3();
   const elbowWorld = new THREE.Vector3();
   const targetDirection = new THREE.Vector3();
@@ -643,7 +668,11 @@ export async function createChampionScene({
     const liftPush = progress.lift;
     const holdBreath = Math.sin(timeSeconds * 0.2) * 0.035 * progress.finalHold;
     const cameraX = THREE.MathUtils.lerp(config.startX, config.endX, carryPush);
-    camera.fov = config.fov - liftPush * (profile === "phone" ? 0.6 : 1.2);
+    const nextFov = config.fov - liftPush * (profile === "phone" ? 0.6 : 1.2);
+    if (Math.abs(camera.fov - nextFov) > 1e-4) {
+      camera.fov = nextFov;
+      projectionDirty = true;
+    }
     camera.position.set(
       cameraX,
       config.y + liftPush * (profile === "phone" ? 0.38 : 0.1),
@@ -656,7 +685,10 @@ export async function createChampionScene({
       config.targetZ + carryPush * 0.08,
     );
     camera.lookAt(cameraTarget);
-    camera.updateProjectionMatrix();
+    if (projectionDirty) {
+      camera.updateProjectionMatrix();
+      projectionDirty = false;
+    }
   }
 
   function profileTeammateX(index) {
@@ -747,7 +779,7 @@ export async function createChampionScene({
         progress.captainEntry,
       );
       captain.root.rotation.y = CAPTAIN_ENTRY_YAW;
-      poseWalk(captain, progress.captainEntry, 2.45);
+      poseWalk(captain, progress.captainEntry, 3.2);
       const lateralLean = Math.sin(progress.captainEntry * Math.PI);
       captain.joints.chest.rotation.z = -0.055 * lateralLean;
       captain.joints.head.rotation.z = 0.025 * lateralLean;
@@ -778,7 +810,7 @@ export async function createChampionScene({
         CAPTAIN_TROPHY_YAW,
         pathTurn,
       );
-      poseWalk(captain, progress.approach, 1.7);
+      poseWalk(captain, progress.approach, 2.6);
       poseCaptainCrowdHype(captain, progress.crowdHype);
       captain.joints.head.rotation.y -=
         captain.root.rotation.y * 0.62 * progress.crowdHype;
@@ -823,13 +855,16 @@ export async function createChampionScene({
         CAPTAIN_JOIN_YAW,
         arrivalTurn,
       );
-      poseWalk(captain, progress.carry, 4);
+      poseWalk(captain, progress.carry, 4.2);
       captain.joints.chest.rotation.z =
         -0.045 * Math.sin(progress.carry * Math.PI);
       captain.anchors.trophyCarrier.position.y +=
         Math.sin(progress.carry * Math.PI * 8) * 0.022;
       return;
     }
+
+    const joinSettle = smoothUnit((progress.join - 0.72) / 0.28);
+    const joinStrideWeight = 1 - joinSettle;
 
     captain.root.position.x = lerp(
       STAGE_LAYOUT.captainPodiumApproachX,
@@ -841,7 +876,7 @@ export async function createChampionScene({
       STAGE_LAYOUT.captainFinalZ,
       progress.join,
     );
-    if (progress.join < 1) poseWalk(captain, progress.join, 5);
+    if (progress.join < 1) poseWalk(captain, progress.join, 4.9, joinStrideWeight);
     captain.root.rotation.y = interpolateYaw(
       CAPTAIN_JOIN_YAW,
       CAPTAIN_TROPHY_YAW,
@@ -853,15 +888,22 @@ export async function createChampionScene({
       progress.join,
     );
     const anticipation = progress.teamAnticipation * (1 - progress.lift);
+    const liftHero = smoothUnit((progress.lift - 0.84) / 0.16);
+    const liftHeightBonus = progress.lift * 0.16;
     captain.anchors.trophyCarrier.position.set(
       0,
       lerp(joinedCarryHeight, captainLiftTarget, progress.lift) -
         baseHeight +
-        (progress.join < 1 ? Math.sin(progress.join * Math.PI * 10) * 0.018 : 0),
-      lerp(0.5 - anticipation * 0.06, 0.18, progress.lift),
+        liftHeightBonus +
+        (progress.join < 1
+          ? Math.sin(progress.join * Math.PI * 10) * 0.018 * joinStrideWeight
+          : 0),
+      lerp(0.5 - anticipation * 0.06, 0.34, progress.lift),
     );
-    captain.joints.chest.rotation.x -= anticipation * 0.035;
-    captain.joints.head.rotation.x = -anticipation * 0.045 + 0.04 * progress.lift;
+    captain.joints.chest.rotation.x =
+      captain.joints.chest.rotation.x - anticipation * 0.035 + liftHero * 0.022;
+    captain.joints.head.rotation.x =
+      -anticipation * 0.045 + 0.04 * progress.lift + liftHero * 0.018;
   }
 
   function updateTeam(timeSeconds, progress) {
@@ -974,10 +1016,56 @@ export async function createChampionScene({
     if (grip <= 0) return;
     trophy.anchors.leftGrip.getWorldPosition(leftGripWorld);
     trophy.anchors.rightGrip.getWorldPosition(rightGripWorld);
+    trophy.anchors.bottom.getWorldPosition(trophyBottomWorld);
+    trophy.root.getWorldQuaternion(trophyWorldQuaternion);
+    trophyGripAxisX.set(1, 0, 0).applyQuaternion(trophyWorldQuaternion);
+    trophyGripAxisY.set(0, 1, 0).applyQuaternion(trophyWorldQuaternion);
+    trophyGripAxisZ.set(0, 0, 1).applyQuaternion(trophyWorldQuaternion);
+    trophyBaseLeftWorld
+      .copy(trophyBottomWorld)
+      .addScaledVector(trophyGripAxisX, -TROPHY_BASE_GRIP_SPAN)
+      .addScaledVector(trophyGripAxisY, TROPHY_BASE_GRIP_RISE)
+      .addScaledVector(trophyGripAxisZ, TROPHY_BASE_GRIP_FORWARD);
+    trophyBaseRightWorld
+      .copy(trophyBottomWorld)
+      .addScaledVector(trophyGripAxisX, TROPHY_BASE_GRIP_SPAN)
+      .addScaledVector(trophyGripAxisY, TROPHY_BASE_GRIP_RISE)
+      .addScaledVector(trophyGripAxisZ, TROPHY_BASE_GRIP_FORWARD);
     captain.anchors.leftHand.getWorldPosition(leftHandWorld);
     captain.anchors.rightHand.getWorldPosition(rightHandWorld);
-    leftHandWorld.lerp(rightGripWorld, grip);
-    rightHandWorld.lerp(leftGripWorld, grip);
+    const straightHandleMatch =
+      leftHandWorld.distanceToSquared(leftGripWorld) +
+      rightHandWorld.distanceToSquared(rightGripWorld);
+    const crossedHandleMatch =
+      leftHandWorld.distanceToSquared(rightGripWorld) +
+      rightHandWorld.distanceToSquared(leftGripWorld);
+    if (crossedHandleMatch < straightHandleMatch) {
+      leftHandleTargetWorld.copy(rightGripWorld);
+      rightHandleTargetWorld.copy(leftGripWorld);
+    } else {
+      leftHandleTargetWorld.copy(leftGripWorld);
+      rightHandleTargetWorld.copy(rightGripWorld);
+    }
+
+    const straightBaseMatch =
+      leftHandWorld.distanceToSquared(trophyBaseLeftWorld) +
+      rightHandWorld.distanceToSquared(trophyBaseRightWorld);
+    const crossedBaseMatch =
+      leftHandWorld.distanceToSquared(trophyBaseRightWorld) +
+      rightHandWorld.distanceToSquared(trophyBaseLeftWorld);
+    if (crossedBaseMatch < straightBaseMatch) {
+      leftBaseTargetWorld.copy(trophyBaseRightWorld);
+      rightBaseTargetWorld.copy(trophyBaseLeftWorld);
+    } else {
+      leftBaseTargetWorld.copy(trophyBaseLeftWorld);
+      rightBaseTargetWorld.copy(trophyBaseRightWorld);
+    }
+
+    const liftHoldBlend = smoothUnit(progress.lift / 0.14);
+    leftTargetWorld.lerpVectors(leftHandleTargetWorld, leftBaseTargetWorld, liftHoldBlend);
+    rightTargetWorld.lerpVectors(rightHandleTargetWorld, rightBaseTargetWorld, liftHoldBlend);
+    leftHandWorld.lerp(leftTargetWorld, grip);
+    rightHandWorld.lerp(rightTargetWorld, grip);
     captain.setHandGrip(progress.handClose);
     solveArmToTarget(captain.arms.left, leftHandWorld);
     solveArmToTarget(captain.arms.right, rightHandWorld);
@@ -1021,6 +1109,7 @@ export async function createChampionScene({
     height = nextHeight;
     profile = width <= 600 ? "phone" : "desktop";
     camera.aspect = width / height;
+    projectionDirty = true;
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, CELEBRATION_DPR_LIMIT));
     renderer.setSize(width, height, false);
     effects.setProfile(profile);

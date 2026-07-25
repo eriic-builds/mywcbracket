@@ -9,6 +9,79 @@ import { flagImg, teamCode3 } from "./flags.js";
 const DASH = "\u2013";
 const LINKEDIN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>';
 const GITHUB_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.57.1.78-.25.78-.55v-2c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.41.35.78 1.05.78 2.12v3.14c0 .3.2.66.79.55A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>';
+const BRACKET_TREE_CACHE = new Map();
+const STATE_CACHE = new WeakMap();
+const DASHBOARD_HTML_CACHE = new WeakMap();
+
+function picksMemoSignature(picks) {
+  return [
+    picks?.entrant,
+    picks?.tiebreaker,
+    picks?.freebie_match,
+    picks?.champ,
+    picks?.runner,
+    (picks?.r16_win || []).join(","),
+    (picks?.qf_win || []).join(","),
+    (picks?.sf_win || []).join(","),
+    (picks?.r32 || []).map(match => `${match[0]}:${match[4]}`).join("|"),
+  ].join("||");
+}
+
+function liveMemoSignature(live) {
+  const resKeys = Object.keys(live?.res || {}).sort();
+  const koKeys = Object.keys(live?.ko_fix || {}).sort();
+  return [
+    live?.refreshed || "",
+    resKeys.length,
+    koKeys.length,
+    resKeys[0] || "",
+    resKeys[resKeys.length - 1] || "",
+    koKeys[0] || "",
+    koKeys[koKeys.length - 1] || "",
+  ].join("||");
+}
+
+function memoizedState(picks, live, topology) {
+  if (!picks || !live || !topology) return computeState(picks, live, topology);
+  let byLive = STATE_CACHE.get(picks);
+  if (!byLive) {
+    byLive = new WeakMap();
+    STATE_CACHE.set(picks, byLive);
+  }
+  let byTopology = byLive.get(live);
+  if (!byTopology) {
+    byTopology = new WeakMap();
+    byLive.set(live, byTopology);
+  }
+  const cached = byTopology.get(topology);
+  const nextPicksSig = picksMemoSignature(picks);
+  const nextLiveSig = liveMemoSignature(live);
+  if (cached && cached.picksSig === nextPicksSig && cached.liveSig === nextLiveSig) {
+    return cached.state;
+  }
+  const state = computeState(picks, live, topology);
+  byTopology.set(topology, {
+    picksSig: nextPicksSig,
+    liveSig: nextLiveSig,
+    state,
+  });
+  return state;
+}
+
+function bracketTreeKey(koFeed) {
+  return Object.keys(koFeed)
+    .sort((left, right) => left.localeCompare(right))
+    .map(code => `${code}:${koFeed[code].join(",")}`)
+    .join("|");
+}
+
+function cachedBracketTree(koFeed) {
+  const key = bracketTreeKey(koFeed);
+  if (!BRACKET_TREE_CACHE.has(key)) {
+    BRACKET_TREE_CACHE.set(key, deriveBracketTree({ ko_feed: koFeed }));
+  }
+  return BRACKET_TREE_CACHE.get(key);
+}
 
 function localRefreshed(utcIso) {
   try {
@@ -511,7 +584,7 @@ function renderMiniOverview(tree, D, mode) {
 }
 
 export function buildBracket(D, mode = "actual") {
-  const tree = deriveBracketTree({ ko_feed: D.KO_FEED });
+  const tree = cachedBracketTree(D.KO_FEED);
   const columns = tree.columns.map((column) => {
     const center = column.side === "C";
     const cards = center
@@ -965,11 +1038,13 @@ function shead(sid, icon, title, cap) {
 
 // ── the full dashboard (inner HTML of div.wrap) ───────────────────────────────
 export function renderDashboard(picks, live, topology) {
-  const D = computeState(picks, live, topology);
+  const D = memoizedState(picks, live, topology);
   if (typeof window !== "undefined") window.WCSTATS = D.WCSTATS;  // hover-card stats
+  const cachedHtml = DASHBOARD_HTML_CACHE.get(D);
+  if (cachedHtml) return cachedHtml;
   const r32_win = D.R32.map(m => m[4]);
   const syncBtn = D.SYNC_URL ? `<a class="synbtn glass" id="syncBtn" href="${esc(D.SYNC_URL)}" target="_blank" rel="noopener" title="Pull the latest results"><span class="syn-ic">\u{1F504}</span><span class="syn-tx">Sync now</span></a>` : "";
-  return '<div class="topbar"><div class="brand"><span class="orb"></span><div>2026 FIFA World Cup - Bracket Dashboard - MSFT SLED<small>Live results vs your picks</small></div></div>' +
+  const html = '<div class="topbar"><div class="brand"><span class="orb"></span><div>2026 FIFA World Cup - Bracket Dashboard - MSFT SLED<small>Live results vs your picks</small></div></div>' +
     '<div class="upd-group">' +
     `<div class="refreshed glass" id="topRefreshed" title="Results auto-sync from FIFA\u2019s live feed a few times a day, no manual refresh needed"><span class="rf-dot"></span>Last Synced: ${localRefreshed(D.REFRESHED)}</div>` +
     syncBtn + '</div>' +
@@ -1083,4 +1158,6 @@ export function renderDashboard(picks, live, topology) {
       `<a href="https://github.com/eriic-builds/sled-mywcbracket" target="_blank" rel="noopener" aria-label="This project on GitHub" title="GitHub repo">${GITHUB_ICON}</a>` +
       '</span></div>' : "") + '</div>' +
     '</div></div>';   // close .content, .shell
+  DASHBOARD_HTML_CACHE.set(D, html);
+  return html;
 }

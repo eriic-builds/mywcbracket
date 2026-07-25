@@ -381,6 +381,7 @@ export function initMatchDetails(root, detailsState, portraitState) {
   let closeFocusTarget = null;
   let lastPointer = null;
   let touchOpenedAt = 0;
+  let layoutFrame = 0;
   const warnedPortraits = new Set();
 
   function rememberGuidance(key) {
@@ -564,6 +565,12 @@ export function initMatchDetails(root, detailsState, portraitState) {
     if (!portraitFrame || !container) return;
     const availableWidth = container.clientWidth;
     if (!availableWidth) return;
+    const mode = availableWidth < MIN_PORTRAIT_FRAME_WIDTH ? "scaled" : "native";
+    const cachedWidth = Number(container.dataset.portraitWidth || 0);
+    const cachedMode = container.dataset.portraitMode || "";
+    if (cachedMode === mode && Math.abs(cachedWidth - availableWidth) < 1) return;
+    container.dataset.portraitWidth = String(availableWidth);
+    container.dataset.portraitMode = mode;
     if (availableWidth < MIN_PORTRAIT_FRAME_WIDTH) {
       const scale = availableWidth / MIN_PORTRAIT_FRAME_WIDTH;
       portraitFrame.style.width = `${MIN_PORTRAIT_FRAME_WIDTH}px`;
@@ -584,6 +591,15 @@ export function initMatchDetails(root, detailsState, portraitState) {
 
   function portraitEmbedFits() {
     return window.innerWidth >= 560 && window.innerHeight >= 500;
+  }
+
+  function scheduleGeometryRefresh() {
+    if (layoutFrame) return;
+    layoutFrame = requestAnimationFrame(() => {
+      layoutFrame = 0;
+      if (portraitFrame) sizePortraitFrame(portraitFrame.parentElement);
+      if (currentCard && factcard.classList.contains("show")) positionFactCard(currentCard);
+    });
   }
 
   function loadHoverPortrait(card, availability) {
@@ -1050,8 +1066,7 @@ export function initMatchDetails(root, detailsState, portraitState) {
     if (record) openMatchDialog(record, currentCard);
   }, { signal });
   window.addEventListener("resize", () => {
-    if (portraitFrame) sizePortraitFrame(portraitFrame.parentElement);
-    if (currentCard && factcard.classList.contains("show")) positionFactCard(currentCard);
+    scheduleGeometryRefresh();
   }, { signal });
 
   document.addEventListener("keydown", event => {
@@ -1088,6 +1103,10 @@ export function initMatchDetails(root, detailsState, portraitState) {
 
   return () => {
     controller.abort();
+    if (layoutFrame) {
+      cancelAnimationFrame(layoutFrame);
+      layoutFrame = 0;
+    }
     clearTimeout(guidanceReminderTimer);
     hideFactCard();
     closeDialog();

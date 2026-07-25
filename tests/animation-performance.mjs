@@ -62,11 +62,36 @@ check("team stat card coalesces pointer tracking into translate", () => {
   assert.doesNotMatch(interact, /extracted VERBATIM/);
 });
 
+check("connector redraw uses lifecycle caches and coalesced scheduling", () => {
+  const connectorSection = between(interact, "function drawConnectors()", "window.__drawConn=drawConnectors;");
+  assert.match(interact, /var connectorCache=\{/);
+  assert.match(interact, /function getConnectorContext\(\)/);
+  assert.match(interact, /function scheduleConnectorDraw\(delay\)/);
+  assert.match(connectorSection, /var context=getConnectorContext\(\);if\(!context\)return;/);
+  assert.match(connectorSection, /var fromCard=context\.cardsByCode\[row\.dataset\.feeder\]/);
+  assert.match(connectorSection, /context\.teamsByCode\[row\.dataset\.feeder\]/);
+  assert.match(connectorSection, /var rounds=context\.rounds;/);
+  assert.match(connectorSection, /var finalCard=context\.finalCard;/);
+  assert.doesNotMatch(connectorSection, /bracket\.querySelector\('\.mcard\[data-match-code="'\+row\.dataset\.feeder/);
+  assert.match(interact, /scheduleConnectorDraw\(60\)/);
+});
+
 check("static match fact-card positioning remains an intentional exception", () => {
   assert.match(matchDetails, /function positionFactCard\(card\)/);
   assert.match(matchDetails, /factcard\.style\.left/);
   assert.match(matchDetails, /factcard\.style\.top/);
   assert.doesNotMatch(matchDetails, /requestAnimationFrame\([^)]*positionFactCard/);
+});
+
+check("match details geometry refresh is frame-throttled and memoized", () => {
+  const runtime = between(matchDetails, "const controller = new AbortController();", "return () => {");
+  assert.match(runtime, /let layoutFrame = 0/);
+  assert.match(runtime, /function scheduleGeometryRefresh\(\)/);
+  assert.match(runtime, /if \(layoutFrame\) return;/);
+  assert.match(runtime, /layoutFrame = requestAnimationFrame\(\(\) => \{/);
+  assert.match(runtime, /container\.dataset\.portraitWidth = String\(availableWidth\)/);
+  assert.match(runtime, /container\.dataset\.portraitMode = mode/);
+  assert.match(runtime, /window\.addEventListener\("resize", \(\) => \{[\s\S]*scheduleGeometryRefresh\(\)/);
 });
 
 check("runtime CSS names every transitioned property", () => {

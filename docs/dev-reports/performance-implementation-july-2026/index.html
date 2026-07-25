@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Performance Implementation Review - July 2026</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0f161f;
+  --panel: #172230;
+  --panel2: #1d2c3d;
+  --line: #34495f;
+  --text: #edf3fa;
+  --muted: #aac0d8;
+  --blue: #4fb8ff;
+  --green: #8fda61;
+  --gold: #f1c45c;
+  --red: #ff8f8f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% -10%, rgba(79, 184, 255, .2), transparent 42rem),
+    radial-gradient(circle at 95% 0%, rgba(143, 218, 97, .1), transparent 28rem),
+    var(--bg);
+  color: var(--text);
+  font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+}
+main {
+  width: min(1080px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 36px 0 64px;
+}
+header {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--panel), var(--panel2));
+  padding: 24px;
+}
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: .1em;
+  color: var(--green);
+  font-size: .78rem;
+}
+h1 {
+  margin: 8px 0 10px;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.05;
+}
+.sub {
+  margin: 0;
+  color: var(--muted);
+  max-width: 74ch;
+}
+.kpis {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+.kpi {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(0, 0, 0, .12);
+}
+.kpi b {
+  display: block;
+  font-size: 1.35rem;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+.tabs button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--panel);
+  cursor: pointer;
+}
+.tabs button.on {
+  color: #04141f;
+  background: linear-gradient(135deg, var(--blue), #79d7ff);
+  border-color: transparent;
+}
+.panel {
+  display: none;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.panel.on { display: block; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+.card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, .14);
+  padding: 14px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: .74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.b-done { color: #12200a; background: var(--green); }
+.b-now { color: #031722; background: var(--blue); }
+.b-next { color: #2d1f00; background: var(--gold); }
+.b-risk { color: #2a0606; background: var(--red); }
+.details {
+  margin-top: 10px;
+  border-top: 1px dashed var(--line);
+  padding-top: 10px;
+  color: var(--muted);
+}
+summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.steps {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+.steps li { margin: 4px 0; }
+.progress {
+  margin-top: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #0b1118;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.progress i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--green));
+}
+.code {
+  margin-top: 10px;
+  white-space: pre-wrap;
+  background: #0d141c;
+  border: 1px solid #2d3d50;
+  border-radius: 10px;
+  padding: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .85rem;
+}
+.small { color: var(--muted); font-size: .92rem; }
+.eli5 {
+  border-left: 4px solid var(--blue);
+  padding-left: 10px;
+  margin: 8px 0;
+}
+footer {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: .85rem;
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">sled-mywcbracket / performance implementation</p>
+    <h1>What changed, why it changed, and what you can learn</h1>
+    <p class="sub">This report now includes the autopilot continuation. Focus: champion cutscene pacing + runtime efficiency, then connector redraw caching, render memoization, and match-details geometry throttling. Style follows Technical Taste Council: small, measurable, reviewable increments.</p>
+    <div class="kpis">
+      <div class="kpi"><b>7</b>code files improved</div>
+      <div class="kpi"><b>6</b>targeted test suites passed</div>
+      <div class="kpi"><b>5</b>ranked plans prepared</div>
+      <div class="kpi"><b>0</b>contract regressions found</div>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Report sections">
+    <button class="on" data-tab="done">Implemented Now</button>
+    <button data-tab="plans">Execution Plans</button>
+    <button data-tab="why">Why These Choices</button>
+    <button data-tab="eli5">ELI5 Learning</button>
+    <button data-tab="verify">How To Verify</button>
+  </nav>
+
+  <section class="panel on" id="done">
+    <h2>Implemented Now</h2>
+    <div class="grid">
+      <article class="card">
+        <span class="badge b-done">Done</span>
+        <h3>Champion walk feels faster</h3>
+        <p>In champion scene logic, captain gait cadence was increased across entry, approach, carry, and join phases. This keeps choreography intact but removes the slow-walk feel.</p>
+        <div class="details">
+          File: docs/js/champion-celebration-scene.js
+        </div>
+      </article>
+
+      <article class="card">
+        <span class="badge b-done">Done</span>
+        <h3>Per-frame camera cost reduced</h3>
+        <p>Projection matrix updates now happen only when camera projection inputs actually change (FOV/aspect), not every frame.</p>
+        <div class="details">
+          File: docs/js/champion-celebration-scene.js
+        </div>
+      </article>
+
+      <article class="card">
+        <span class="badge b-done">Done</span>
+        <h3>Bracket tree derivation cached</h3>
+        <p>Render pipeline now caches derived bracket-tree structure by ko_feed signature to avoid repeated immutable structure computation.</p>
+        <div class="details">
+          File: docs/js/render.js
+        </div>
+      </article>
+
+      <article class="card">
+        <span class="badge b-now">Validated</span>
+        <h3>No regressions in critical guards</h3>
+        <p>Snapshot, scoring, match-details, animation, and the new performance-budget guardrails were re-run after autopilot plan execution and all passed.</p>
+        <div class="details">Suites: tests/performance-budgets.mjs, tests/match-details.mjs, tests/animation-performance.mjs, tests/map-frozen.mjs, tests/golden.mjs, tests/scoring.mjs</div>
+      </article>
+
+      <article class="card">
+        <span class="badge b-done">Done</span>
+        <h3>Connector redraw hot path cached</h3>
+        <p>Interaction layer now caches stable bracket references, match lookup maps, and curtain metadata, reducing repeated selector scans during connector redraw.</p>
+        <div class="details">File: docs/js/interact.js</div>
+      </article>
+
+      <article class="card">
+        <span class="badge b-done">Done</span>
+        <h3>Render state + dashboard HTML memoized</h3>
+        <p>Render pipeline now reuses derived state and dashboard HTML for unchanged picks/live/topology signatures, reducing avoidable full recompute work.</p>
+        <div class="details">File: docs/js/render.js</div>
+      </article>
+
+      <article class="card">
+        <span class="badge b-done">Done</span>
+        <h3>Match-details geometry throttled</h3>
+        <p>Resize-driven positioning and portrait sizing work is frame-throttled and width-memoized to reduce layout thrash while preserving dialog/fact-card behavior.</p>
+        <div class="details">File: docs/js/match-details.js</div>
+      </article>
+
+      <article class="card">
+        <span class="badge b-done">Done</span>
+        <h3>Performance budget suite enforced</h3>
+        <p>Added a dedicated non-flaky performance budget test suite, then wired it into npm test so hot-path anti-patterns fail fast in local runs and CI.</p>
+        <div class="details">Files: tests/performance-budgets.mjs, package.json</div>
+      </article>
+    </div>
+  </section>
+
+  <section class="panel" id="plans">
+    <h2>Execution Plans (Ranked)</h2>
+    <p class="small">Leverage order: highest value and lowest risk first.</p>
+
+    <article class="card">
+      <span class="badge b-now">#1 Do First</span>
+      <h3>Champion cutscene pace and frame stability</h3>
+      <div class="progress"><i style="width:32%"></i></div>
+      <details>
+        <summary>What is done vs next</summary>
+        <ol class="steps">
+          <li>Done: gait speed tuning and camera projection gating.</li>
+          <li>Next: timeline window compression and effect-budget tuning by device.</li>
+          <li>Next: update timing assertions only where intentional.</li>
+        </ol>
+      </details>
+    </article>
+
+    <article class="card">
+      <span class="badge b-done">#2 Done</span>
+      <h3>Connector and interaction redraw optimization</h3>
+      <div class="progress"><i style="width:100%"></i></div>
+      <details>
+        <summary>Planned steps</summary>
+        <ol class="steps">
+          <li>Done: cached stable bracket/SVG refs and per-layout lookup maps.</li>
+          <li>Done: replaced repeated selector scans in drawConnectors hot path.</li>
+          <li>Done: coalesced structural redraw scheduling + safe invalidation.</li>
+        </ol>
+      </details>
+    </article>
+
+    <article class="card">
+      <span class="badge b-done">#3 Done</span>
+      <h3>Render state memoization and partial refresh</h3>
+      <div class="progress"><i style="width:100%"></i></div>
+      <details>
+        <summary>Planned steps</summary>
+        <ol class="steps">
+          <li>Done: memoized derived state by picks/live/topology signatures.</li>
+          <li>Done: cached full dashboard HTML by memoized state object.</li>
+          <li>Done: protected byte-level contracts with golden/map validation.</li>
+        </ol>
+      </details>
+    </article>
+
+    <article class="card">
+      <span class="badge b-done">#4 Done</span>
+      <h3>Match-details and hover layout throttle</h3>
+      <div class="progress"><i style="width:100%"></i></div>
+      <details>
+        <summary>Planned steps</summary>
+        <ol class="steps">
+          <li>Done: frame-throttled resize geometry refresh to one RAF.</li>
+          <li>Done: portrait sizing now memo-checks width/mode before writes.</li>
+          <li>Done: kept accessibility, focus, and fallback behavior intact.</li>
+        </ol>
+      </details>
+    </article>
+
+    <article class="card">
+      <span class="badge b-done">#5 Done</span>
+      <h3>Performance budget regression suite</h3>
+      <div class="progress"><i style="width:100%"></i></div>
+      <details>
+        <summary>Planned steps</summary>
+        <ol class="steps">
+          <li>Done: added dedicated structural budget guards in tests/performance-budgets.mjs.</li>
+          <li>Done: wired suite into npm test so CI runs it automatically.</li>
+          <li>Done: kept checks hermetic, deterministic, and source-actionable.</li>
+        </ol>
+      </details>
+    </article>
+  </section>
+
+  <section class="panel" id="why">
+    <h2>Why These Choices (Council-Guided)</h2>
+    <div class="grid">
+      <article class="card">
+        <span class="badge b-now">Karpathy + Sean Grove</span>
+        <h3>Small first slice</h3>
+        <p>Start with the smallest change that directly solves the pain (slow avatars) before broad refactors.</p>
+      </article>
+      <article class="card">
+        <span class="badge b-now">Russinovich</span>
+        <h3>Runtime cost visibility</h3>
+        <p>Removed unnecessary per-frame projection updates because that cost happens every frame and scales with duration.</p>
+      </article>
+      <article class="card">
+        <span class="badge b-now">Willison/Hamel</span>
+        <h3>Verify, not vibe</h3>
+        <p>Ran champion and animation guard tests immediately after edits; did not claim improvements without validation.</p>
+      </article>
+      <article class="card">
+        <span class="badge b-now">Naval + Litt</span>
+        <h3>Leverage and maintainability</h3>
+        <p>Added a tiny render cache that compounds over many renders and stays understandable for future edits.</p>
+      </article>
+      <article class="card">
+        <span class="badge b-risk">Yegge</span>
+        <h3>Reviewable increments</h3>
+        <p>Kept scope tight so you can review and approve one high-signal increment instead of a large risky batch.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="panel" id="eli5">
+    <h2>ELI5: Learning Moments</h2>
+    <div class="eli5">
+      <p><b>1) Faster walk:</b> The players were taking small slow steps. We told them to move their legs faster, so they reach places with more energy.</p>
+    </div>
+    <div class="eli5">
+      <p><b>2) Less repeated math:</b> The camera was redoing a heavy math update every frame even when nothing changed. Now it only does that when needed.</p>
+    </div>
+    <div class="eli5">
+      <p><b>3) Reuse map setup:</b> If you build the same Lego base 100 times, that is wasteful. We now save that base and reuse it when the shape is the same.</p>
+    </div>
+    <div class="eli5">
+      <p><b>4) Why this matters:</b> Less repeated work means smoother animation and less battery/CPU use, especially on smaller devices.</p>
+    </div>
+    <div class="eli5">
+      <p><b>5) Connector caching idea:</b> Instead of re-searching the whole bracket every redraw, we keep a quick address book of important nodes and reuse it until layout/view changes.</p>
+    </div>
+    <div class="eli5">
+      <p><b>6) Resize throttling idea:</b> When the window keeps resizing, we wait for the next paint frame and do one position update, not dozens of repeated geometry reads.</p>
+    </div>
+    <div class="eli5">
+      <p><b>7) Budget tests idea:</b> We wrote a checklist robot that inspects hot paths and fails if expensive patterns come back, so performance stays protected over time.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="verify">
+    <h2>How To Verify</h2>
+    <p>Run these commands from the repository root:</p>
+    <div class="code">node tests/match-details.mjs
+  node tests/animation-performance.mjs
+  node tests/performance-budgets.mjs
+  node tests/map-frozen.mjs
+  node tests/golden.mjs
+  node tests/scoring.mjs
+  npm test</div>
+    <p class="small">Result from this implementation pass: targeted suites and full npm test passed.</p>
+
+    <h3>Files changed in this pass</h3>
+    <div class="code">docs/js/champion-celebration-scene.js
+  + Gait/pose/lift polish and stabilization updates
+
+  docs/js/champion-celebration-timeline.js
+  + Retimed phase windows for faster, cleaner lift flow
+
+  docs/js/interact.js
+  + Connector redraw caching, lookup maps, and coalesced structural scheduling
+
+  docs/js/render.js
+  + State and dashboard HTML memoization layers
+
+  docs/js/match-details.js
+  + Resize geometry throttling + portrait sizing memo checks
+
+  tests/animation-performance.mjs
+  + New guards for connector caching and match-details throttling
+
+  tests/performance-budgets.mjs
+  + Dedicated performance budget regression suite
+
+  package.json
+  + npm test wiring now includes performance budget suite</div>
+  </section>
+
+  <footer>
+    Report generated for performance implementation kickoff, July 2026.
+  </footer>
+</main>
+
+<script>
+const buttons = [...document.querySelectorAll('.tabs button')];
+const panels = [...document.querySelectorAll('.panel')];
+for (const button of buttons) {
+  button.addEventListener('click', () => {
+    buttons.forEach(b => b.classList.toggle('on', b === button));
+    const id = button.dataset.tab;
+    panels.forEach(panel => panel.classList.toggle('on', panel.id === id));
+  });
+}
+</script>
+</body>
+</html>

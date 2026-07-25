@@ -240,16 +240,16 @@ check("timeline owns every approved phase boundary", () => {
     [
       ["opening", 0, 3.2],
       ["cleared-hold", 3.2, 3.4],
-      ["captain-entry", 3.4, 5],
-      ["trophy-approach", 5, 7.2],
-      ["trophy-grab", 7.2, 9.2],
-      ["carry-reveal", 9.2, 12.9],
-      ["captain-joins", 12.9, 17.2],
-      ["team-settle", 17.2, 21.2],
-      ["lift-jump", 21.2, 24.2],
-      ["payoff-build", 24.2, 26.2],
-      ["champion-hold", 26.2, 28.5],
-      ["restore", 28.5, 30],
+      ["captain-entry", 3.4, 4.8],
+      ["trophy-approach", 4.8, 6.9],
+      ["trophy-grab", 6.9, 9],
+      ["carry-reveal", 9, 12],
+      ["captain-joins", 12, 15.6],
+      ["team-settle", 15.6, 18.2],
+      ["lift-jump", 18.2, 21],
+      ["payoff-build", 21, 23.2],
+      ["champion-hold", 23.2, 28.2],
+      ["restore", 28.2, 30],
     ],
   );
   for (const phase of CELEBRATION_PHASES) {
@@ -282,9 +282,16 @@ check("V2 timing owns trophy handoff, one lift jump, and payoff", () => {
     return peaks;
   };
 
-  assert.equal(sampledPeaks(synchronizedJumpEnvelope, 21.2, 24.2), 1);
-  assert.equal(synchronizedJumpEnvelope(21.19), 0);
-  assert.equal(synchronizedJumpEnvelope(24.21), 0);
+  assert.equal(
+    sampledPeaks(
+      synchronizedJumpEnvelope,
+      CELEBRATION_TIMING.jumpStart,
+      CELEBRATION_TIMING.jumpEnd,
+    ),
+    1,
+  );
+  assert.equal(synchronizedJumpEnvelope(CELEBRATION_TIMING.jumpStart - 0.01), 0);
+  assert.equal(synchronizedJumpEnvelope(CELEBRATION_TIMING.jumpEnd + 0.01), 0);
 
   assert.ok(CELEBRATION_TIMING.captainWalkStart < CELEBRATION_TIMING.openingEnd);
   assert.ok(CELEBRATION_TIMING.clearedHoldEnd - CELEBRATION_TIMING.openingEnd <= 0.2);
@@ -295,10 +302,17 @@ check("V2 timing owns trophy handoff, one lift jump, and payoff", () => {
   assert.equal(phaseAt(3.1).id, "opening");
   assert.equal(celebrationProgressAt(7.2).approach, 1);
   assert.equal(celebrationProgressAt(17.2).join, 1);
-  assert.equal(celebrationProgressAt(13.2).captainTravel, 0.5);
+  const travelMidpoint =
+    (CELEBRATION_TIMING.carryStart + CELEBRATION_TIMING.joinEnd) / 2;
+  assert.ok(
+    Math.abs(celebrationProgressAt(travelMidpoint).captainTravel - 0.5) < 1e-12,
+  );
   assert.ok(celebrationProgressAt(19).teamSettle > 0);
   assert.ok(celebrationProgressAt(19.7).teamAnticipation > 0.65);
-  assert.equal(celebrationProgressAt(18.34).teamAnticipation, 0);
+  assert.equal(
+    celebrationProgressAt(CELEBRATION_TIMING.teamAnticipationStart - 0.01).teamAnticipation,
+    0,
+  );
   assert.equal("teamBounce" in celebrationProgressAt(20), false);
   assert.equal("pump" in celebrationProgressAt(19), false);
   assert.equal("fakePumps" in celebrationProgressAt(19), false);
@@ -316,9 +330,14 @@ check("V2 timing owns trophy handoff, one lift jump, and payoff", () => {
   assert.ok(CELEBRATION_TIMING.flaresStart < CELEBRATION_TIMING.trophyLiftEnd);
   assert.ok(CELEBRATION_TIMING.confettiStart < CELEBRATION_TIMING.trophyLiftEnd);
   assert.doesNotMatch(timeline, /PUMP_WINDOWS|twoPumpEnvelope|fake-pumps|pumpsStart/);
-  assert.equal(celebrationProgressAt(24.19).payoff, 0);
-  assert.ok(celebrationProgressAt(24.7).payoff > 0);
-  assert.equal(CELEBRATION_TIMING.restoreStart, 28.5);
+  assert.equal(
+    celebrationProgressAt(CELEBRATION_TIMING.payoffStart - 0.01).payoff,
+    0,
+  );
+  assert.ok(
+    celebrationProgressAt(CELEBRATION_TIMING.payoffStart + 0.5).payoff > 0,
+  );
+  assert.equal(CELEBRATION_TIMING.restoreStart, 28.2);
   assert.doesNotMatch(timeline, /TEAM_BOUNCE_WINDOWS|teamBounceEnvelope|teamBounceStart/);
 });
 
@@ -845,7 +864,7 @@ check("shared trophy is smooth, curved, and premium in both surfaces", () => {
 check("the pre-grab beat is a path-facing walk and crowd-hype fist", () => {
   assert.match(timeline, /id: "trophy-approach"/);
   assert.match(timeline, /captainWalkStart: 2\.2/);
-  assert.match(timeline, /trophyApproachEnd: 7\.2/);
+  assert.match(timeline, /trophyApproachEnd: 6\.9/);
   assert.match(timeline, /crowdHypeStart: 3\.85/);
   assert.match(scene, /poseCaptainCrowdHype\(captain, progress\.crowdHype\)/);
   assert.match(scene, /const grip = progress\.grip/);
