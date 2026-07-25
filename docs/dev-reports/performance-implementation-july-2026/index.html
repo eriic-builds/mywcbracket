@@ -226,6 +226,13 @@ footer {
 
       <article class="card">
         <span class="badge b-done">Done</span>
+        <h3>Plan #1 timing and device budgets completed</h3>
+        <p>Celebration mid-phase windows were compressed to remove dead air, and scene profile selection now adapts by viewport and DPR so phone-class devices use lighter effect budgets and lower render cost.</p>
+        <div class="details">Files: docs/js/champion-celebration-timeline.js, docs/js/champion-celebration-scene.js, tests/champion-celebration.mjs</div>
+      </article>
+
+      <article class="card">
+        <span class="badge b-done">Done</span>
         <h3>Bracket tree derivation cached</h3>
         <p>Render pipeline now caches derived bracket-tree structure by ko_feed signature to avoid repeated immutable structure computation.</p>
         <div class="details">
@@ -275,15 +282,15 @@ footer {
     <p class="small">Leverage order: highest value and lowest risk first.</p>
 
     <article class="card">
-      <span class="badge b-now">#1 Do First</span>
+      <span class="badge b-done">#1 Done</span>
       <h3>Champion cutscene pace and frame stability</h3>
-      <div class="progress"><i style="width:32%"></i></div>
+      <div class="progress"><i style="width:100%"></i></div>
       <details>
-        <summary>What is done vs next</summary>
+        <summary>Planned steps</summary>
         <ol class="steps">
           <li>Done: gait speed tuning and camera projection gating.</li>
-          <li>Next: timeline window compression and effect-budget tuning by device.</li>
-          <li>Next: update timing assertions only where intentional.</li>
+          <li>Done: timeline window compression and effect-budget tuning by device.</li>
+          <li>Done: updated intentional timing assertions and revalidated choreography contracts.</li>
         </ol>
       </details>
     </article>
@@ -407,6 +414,7 @@ footer {
     <div class="code">node tests/match-details.mjs
   node tests/animation-performance.mjs
   node tests/performance-budgets.mjs
+  node tests/champion-celebration.mjs
   node tests/map-frozen.mjs
   node tests/golden.mjs
   node tests/scoring.mjs

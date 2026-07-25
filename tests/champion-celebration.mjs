@@ -243,12 +243,12 @@ check("timeline owns every approved phase boundary", () => {
       ["captain-entry", 3.4, 4.8],
       ["trophy-approach", 4.8, 6.9],
       ["trophy-grab", 6.9, 9],
-      ["carry-reveal", 9, 12],
-      ["captain-joins", 12, 15.6],
-      ["team-settle", 15.6, 18.2],
-      ["lift-jump", 18.2, 21],
-      ["payoff-build", 21, 23.2],
-      ["champion-hold", 23.2, 28.2],
+      ["carry-reveal", 9, 11.6],
+      ["captain-joins", 11.6, 14.66],
+      ["team-settle", 14.66, 17],
+      ["lift-jump", 17, 19.6],
+      ["payoff-build", 19.6, 22],
+      ["champion-hold", 22, 28.2],
       ["restore", 28.2, 30],
     ],
   );
@@ -774,6 +774,7 @@ check("scene is one bounded local Three.js runtime with explicit failure paths",
   assert.match(scene, /const CAPTAIN_ENTRY_YAW = headingYaw/);
   assert.match(scene, /const TEAM_CELEBRATION_POSES = Object\.freeze/);
   assert.match(scene, /const TEAM_ANTICIPATION_POSES = Object\.freeze/);
+  assert.match(scene, /function celebrationProfileForViewport\(width, height, devicePixelRatio = 1\)/);
   assert.match(scene, /TEAM_CELEBRATION_POSES\[index % TEAM_CELEBRATION_POSES\.length\]/);
   assert.match(scene, /captain\.root\.rotation\.y = CAPTAIN_ENTRY_YAW/);
   assert.match(scene, /interpolateYaw\(\s*CAPTAIN_JOIN_YAW,/);

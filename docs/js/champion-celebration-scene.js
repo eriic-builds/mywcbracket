@@ -24,6 +24,7 @@ import {
 } from "./champion-celebration-timeline.js";
 
 export const CELEBRATION_DPR_LIMIT = 1.5;
+const PHONE_CELEBRATION_DPR_LIMIT = 1.25;
 
 const IDENTITY_CACHE = new Map();
 const DESKTOP_CAMERA = Object.freeze({
@@ -214,6 +215,14 @@ function lerp(start, end, progress) {
 function smoothUnit(value) {
   const progress = clamp(value, 0, 1);
   return progress * progress * (3 - 2 * progress);
+}
+
+function celebrationProfileForViewport(width, height, devicePixelRatio = 1) {
+  if (!Number.isFinite(width) || !Number.isFinite(height)) return "desktop";
+  if (width <= 600 || height <= 480) return "phone";
+  if (width <= 760 && devicePixelRatio >= 1.5) return "phone";
+  if (width <= 900 && devicePixelRatio >= 2) return "phone";
+  return "desktop";
 }
 
 function stableHash(value) {
@@ -463,7 +472,11 @@ export async function createChampionScene({
   let contextLost = false;
   let width = 1;
   let height = 1;
-  let profile = "desktop";
+  let profile = celebrationProfileForViewport(
+    Math.max(canvas.clientWidth || 0, canvas.width || 0),
+    Math.max(canvas.clientHeight || 0, canvas.height || 0),
+    typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1,
+  );
   let projectionDirty = true;
   let renderer = null;
   let effects = null;
@@ -1107,10 +1120,13 @@ export async function createChampionScene({
     if (destroyed || contextLost || nextWidth < 2 || nextHeight < 2) return;
     width = nextWidth;
     height = nextHeight;
-    profile = width <= 600 ? "phone" : "desktop";
+    profile = celebrationProfileForViewport(width, height, devicePixelRatio || 1);
     camera.aspect = width / height;
     projectionDirty = true;
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, CELEBRATION_DPR_LIMIT));
+    const profileDprCap = profile === "phone"
+      ? Math.min(CELEBRATION_DPR_LIMIT, PHONE_CELEBRATION_DPR_LIMIT)
+      : CELEBRATION_DPR_LIMIT;
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, profileDprCap));
     renderer.setSize(width, height, false);
     effects.setProfile(profile);
     applyProfileComposition();
