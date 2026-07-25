@@ -1,5 +1,5 @@
 // Share-link test: encode/decode round-trips exactly
-// (dev-docs/zero-backend-social-loop/BRIEF.md invariants 1 & 8),
+// (dev-docs/[01]-zero-backend-social-loop/BRIEF.md invariants 1 & 8),
 // including emoji names, and malformed links always throw — never a partial bracket.
 // Run: node tests/share.mjs
 import fs from "fs";

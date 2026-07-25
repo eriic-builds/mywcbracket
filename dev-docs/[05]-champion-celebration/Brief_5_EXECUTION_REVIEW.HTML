@@ -1,0 +1,1778 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Brief 5 Execution Review - Champion Celebration</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.55;
+    }
+    button, input { font: inherit; }
+    button {
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+    button.primary {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+    }
+    button.primary:hover { background: var(--cp-accent-hover); }
+    a { color: var(--cp-link); }
+    code, pre {
+      font-family: Consolas, "Courier New", Courier, monospace;
+    }
+    code {
+      border: 1px solid var(--cp-border);
+      border-radius: 6px;
+      background: var(--cp-surface-soft);
+      padding: 1px 5px;
+    }
+    pre {
+      overflow: auto;
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-bg-elevated);
+      padding: 14px;
+      color: var(--cp-text);
+    }
+    .app-shell {
+      display: grid;
+      grid-template-columns: 284px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      border-right: 1px solid var(--cp-border);
+      background: var(--cp-bg-elevated);
+      padding: 20px 16px;
+    }
+    .brand {
+      border-bottom: 1px solid var(--cp-border);
+      padding: 4px 4px 18px;
+      margin-bottom: 16px;
+    }
+    .brand strong { display: block; font-size: 1rem; }
+    .brand span { display: block; color: var(--cp-text-muted); font-size: 0.82rem; margin-top: 4px; }
+    .nav-title {
+      margin: 16px 8px 8px;
+      color: var(--cp-text-muted);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .nav-list { display: grid; gap: 3px; }
+    .nav-list a {
+      display: block;
+      border-left: 3px solid transparent;
+      border-radius: 8px;
+      color: var(--cp-text-muted);
+      padding: 7px 9px;
+      text-decoration: none;
+      font-size: 0.86rem;
+    }
+    .nav-list a:hover,
+    .nav-list a.active {
+      border-left-color: var(--cp-accent);
+      background: var(--cp-accent-soft);
+      color: var(--cp-text);
+    }
+    .sidebar-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .sidebar-actions button:last-child { grid-column: 1 / -1; }
+    main {
+      min-width: 0;
+      padding: 28px clamp(16px, 4vw, 56px) 72px;
+    }
+    .hero {
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      background: var(--cp-surface);
+      padding: clamp(24px, 5vw, 52px);
+      box-shadow:
+        0 0 2px color-mix(in srgb, var(--cp-text) 12%, transparent),
+        0 1px 2px color-mix(in srgb, var(--cp-text) 14%, transparent);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(140deg, var(--cp-accent-soft), transparent);
+      pointer-events: none;
+    }
+    .hero > * { position: relative; }
+    .eyebrow {
+      color: var(--cp-accent);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, h4 { line-height: 1.2; }
+    h1 {
+      max-width: 22ch;
+      margin: 10px 0 14px;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      letter-spacing: -0.035em;
+    }
+    h2 { margin: 0; font-size: clamp(1.35rem, 2.8vw, 2rem); }
+    h3 { margin: 0 0 8px; font-size: 1.08rem; }
+    h4 { margin: 0 0 6px; font-size: 0.98rem; }
+    .hero-copy {
+      max-width: 78ch;
+      color: var(--cp-text-soft);
+      font-size: 1.04rem;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .metric,
+    .card,
+    .plan-card,
+    .callout {
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      background: var(--cp-surface);
+      box-shadow:
+        0 0 2px color-mix(in srgb, var(--cp-text) 12%, transparent),
+        0 1px 2px color-mix(in srgb, var(--cp-text) 14%, transparent);
+    }
+    .metric { padding: 14px; }
+    .metric b { display: block; font-size: 1.45rem; }
+    .metric span { color: var(--cp-text-muted); font-size: 0.78rem; }
+    .confidence {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--cp-border);
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .confidence::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .confidence.high { color: var(--cp-success); }
+    .confidence.medium { color: var(--cp-warning); }
+    .confidence.low { color: var(--cp-danger); }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 18px 0;
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-panel-strong);
+      padding: 10px;
+    }
+    .toolbar .spacer { flex: 1; }
+    .toolbar input {
+      min-width: min(100%, 260px);
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      padding: 8px 10px;
+    }
+    .section-block {
+      scroll-margin-top: 82px;
+      margin-top: 18px;
+    }
+    details.section,
+    details.plan-review {
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      background: var(--cp-surface);
+      box-shadow:
+        0 0 2px color-mix(in srgb, var(--cp-text) 12%, transparent),
+        0 1px 2px color-mix(in srgb, var(--cp-text) 14%, transparent);
+    }
+    details.section > summary,
+    details.plan-review > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    details.section > summary::-webkit-details-marker,
+    details.plan-review > summary::-webkit-details-marker { display: none; }
+    details.section > summary::after,
+    details.plan-review > summary::after {
+      content: "+";
+      margin-left: auto;
+      color: var(--cp-accent);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    details[open] > summary::after { content: "-"; }
+    .section-number {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      border-radius: 0.625rem;
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      font-weight: 800;
+    }
+    .summary-copy { min-width: 0; }
+    .summary-copy p {
+      margin: 4px 0 0;
+      color: var(--cp-text-muted);
+      font-size: 0.84rem;
+    }
+    .section-content {
+      border-top: 1px solid var(--cp-border);
+      padding: 20px;
+    }
+    .grid-2,
+    .grid-3,
+    .plan-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .plan-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card,
+    .plan-card,
+    .callout { padding: 16px; }
+    .card p,
+    .plan-card p,
+    .callout p { margin: 6px 0 0; color: var(--cp-text-soft); }
+    .callout {
+      border-left: 5px solid var(--cp-accent);
+      background: var(--cp-accent-soft);
+    }
+    .callout.success { border-left-color: var(--cp-success); }
+    .callout.warning { border-left-color: var(--cp-warning); }
+    .callout.danger { border-left-color: var(--cp-danger); }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .tag {
+      border: 1px solid var(--cp-border);
+      border-radius: 999px;
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-muted);
+      padding: 3px 8px;
+      font-size: 0.72rem;
+    }
+    .rank-table,
+    .matrix,
+    .risk-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .rank-table th,
+    .rank-table td,
+    .matrix th,
+    .matrix td,
+    .risk-table th,
+    .risk-table td {
+      border-bottom: 1px solid var(--cp-border);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .rank-table th,
+    .matrix th,
+    .risk-table th {
+      color: var(--cp-text-muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .score {
+      display: inline-grid;
+      place-items: center;
+      min-width: 46px;
+      border-radius: 999px;
+      background: var(--cp-accent-soft);
+      color: var(--cp-accent);
+      padding: 4px 8px;
+      font-weight: 800;
+    }
+    .score-track {
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--cp-surface-soft);
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .score-track i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--cp-accent);
+      transform-origin: left center;
+    }
+    .diagram-wrap {
+      overflow: auto;
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      background: var(--cp-bg-elevated);
+      padding: 12px;
+    }
+    .diagram {
+      display: block;
+      min-width: 720px;
+      width: 100%;
+      height: auto;
+    }
+    .diagram .box {
+      fill: var(--cp-surface);
+      stroke: var(--cp-border-strong);
+      stroke-width: 1.5;
+    }
+    .diagram .accent-box {
+      fill: var(--cp-accent-soft);
+      stroke: var(--cp-accent);
+      stroke-width: 2;
+    }
+    .diagram .line {
+      fill: none;
+      stroke: var(--cp-border-strong);
+      stroke-width: 2;
+    }
+    .diagram .accent-line {
+      fill: none;
+      stroke: var(--cp-accent);
+      stroke-width: 2.5;
+    }
+    .diagram text {
+      fill: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 13px;
+    }
+    .diagram .small { fill: var(--cp-text-muted); font-size: 11px; }
+    .plan-review { margin-top: 12px; }
+    .plan-review[hidden] { display: none; }
+    .plan-rank {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--cp-accent-soft);
+      color: var(--cp-accent);
+      font-weight: 800;
+    }
+    .plan-review .section-content { padding-top: 16px; }
+    .plan-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .file-list {
+      margin: 8px 0 0;
+      padding-left: 20px;
+    }
+    .file-list li { margin: 4px 0; }
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      list-style: none;
+    }
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      min-height: 34px;
+      padding-left: 44px;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface-soft);
+      color: var(--cp-accent);
+      font-weight: 800;
+    }
+    .risk-high { color: var(--cp-danger); font-weight: 700; }
+    .risk-medium { color: var(--cp-warning); font-weight: 700; }
+    .risk-low { color: var(--cp-success); font-weight: 700; }
+    .decision {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--cp-border);
+    }
+    .decision:last-child { border-bottom: 0; }
+    .decision b { color: var(--cp-accent); }
+    .eli5-card {
+      border: 1px dashed var(--cp-border-strong);
+      border-radius: 16px;
+      background: var(--cp-bg-elevated);
+      padding: 18px;
+    }
+    .footer-note {
+      margin-top: 22px;
+      color: var(--cp-text-muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+    .no-results {
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-muted);
+      padding: 12px;
+      margin-top: 12px;
+    }
+    [hidden] { display: none !important; }
+
+    @media (max-width: 1100px) {
+      .hero-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        width: auto;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--cp-border);
+      }
+      .nav-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .sidebar-actions {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .sidebar-actions button:last-child { grid-column: auto; }
+      .toolbar { position: static; }
+    }
+    @media (max-width: 680px) {
+      main { padding-inline: 12px; }
+      .hero-grid,
+      .grid-2,
+      .plan-grid { grid-template-columns: 1fr; }
+      .sidebar { padding: 14px 12px 12px; }
+      .brand { padding: 0 4px 10px; }
+      .nav-title { margin: 8px 4px 4px; }
+      .nav-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 2px 8px;
+      }
+      .nav-list a {
+        padding: 6px 8px;
+        font-size: 0.76rem;
+        line-height: 1.25;
+      }
+      .sidebar-actions {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 10px;
+      }
+      .sidebar-actions button {
+        padding: 8px 4px;
+        font-size: 0.76rem;
+      }
+      .decision { grid-template-columns: 1fr; }
+      .rank-table,
+      .matrix,
+      .risk-table { font-size: 0.8rem; }
+      .rank-table th,
+      .rank-table td,
+      .matrix th,
+      .matrix td,
+      .risk-table th,
+      .risk-table td { padding: 8px 5px; }
+    }
+    @media print {
+      .sidebar,
+      .toolbar { display: none; }
+      .app-shell { display: block; }
+      main { padding: 0; }
+      details { break-inside: avoid; }
+      details > .section-content { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Execution review navigation">
+      <div class="brand">
+        <strong>Brief 5 Execution Review</strong>
+        <span>Champion celebration production planning</span>
+      </div>
+      <div class="nav-title">Sections</div>
+      <nav class="nav-list">
+        <a href="#executive-summary">1. Executive Summary</a>
+        <a href="#ranked-recommendations">2. Ranked Recommendations</a>
+        <a href="#codebase-discovery">3. Codebase Discovery</a>
+        <a href="#architecture-overview">4. Architecture Overview</a>
+        <a href="#dependency-data-flow">5. Dependency &amp; Data Flow</a>
+        <a href="#plan-reviews">6. PLAN Reviews</a>
+        <a href="#risks-edge-cases">7. Risks &amp; Edge Cases</a>
+        <a href="#alternatives">8. Alternatives Considered</a>
+        <a href="#reasoning-summary">9. Reasoning Trace Summary</a>
+        <a href="#learning-mode">10. Learning Mode</a>
+        <a href="#senior-notices">11. Senior Engineer View</a>
+        <a href="#execution-order">12. Execution Order</a>
+        <a href="#lessons-learned">13. Lessons Learned</a>
+      </nav>
+      <div class="sidebar-actions">
+        <button type="button" id="expandAll">Expand all</button>
+        <button type="button" id="collapseAll">Collapse all</button>
+        <button type="button" id="themeToggle">Toggle theme</button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <div class="eyebrow">Primary executive and engineering review artifact</div>
+        <h1>Build the celebration safely, then refine it deliberately.</h1>
+        <p class="hero-copy">
+          The codebase analysis found a feature with three different difficulty classes:
+          browser lifecycle safety, production-quality procedural 3D, and evidence-driven release.
+          The recommended response is seven ranked plans. Plan 01 must run first because it proves
+          the hidden trigger, race handling, accessibility isolation, and exact restoration before
+          the project incurs the cost of models, choreography, or effects. The completed local pass
+          then used game-design and 3D-modeling review to refine the curtain, player anatomy, stadium,
+          championship banner, plinth continuity, and final composition without changing the 30-second
+          contract.
+        </p>
+        <div class="hero-grid">
+          <div class="metric"><b>7</b><span>execution plans</span></div>
+          <div class="metric"><b>1st</b><span>activation and lifecycle spine</span></div>
+          <div class="metric"><b>0</b><span>new runtime dependencies</span></div>
+          <div class="metric"><b>1</b><span>persistent celebration canvas</span></div>
+        </div>
+        <div class="tag-row">
+          <span class="confidence high">High confidence: architecture, lifecycle, and visual execution</span>
+          <span class="confidence high">Intentional silence: no audio surface</span>
+          <span class="tag">Full-scale soft-matte clay scene</span>
+          <span class="tag">Centered frontal staging</span>
+          <span class="tag">Two-arm trophy contact</span>
+          <span class="tag">Center-out card curtain</span>
+          <span class="tag">2026 champions banner</span>
+          <span class="tag">No build step</span>
+          <span class="tag">Vanilla ES modules</span>
+          <span class="tag">Local Three.js</span>
+          <span class="tag">Static GitHub Pages</span>
+        </div>
+      </header>
+
+      <div class="toolbar" aria-label="Review controls">
+        <label for="planSearch"><strong>Filter PLAN reviews</strong></label>
+        <input id="planSearch" type="search" placeholder="Search trophy, fallback, lifecycle...">
+        <span class="spacer"></span>
+        <button type="button" id="openPlans" class="primary">Open all plans</button>
+        <button type="button" id="printReview">Print / Save PDF</button>
+      </div>
+
+      <section class="section-block" id="executive-summary">
+        <details class="section" open>
+          <summary>
+            <span class="section-number">1</span>
+            <span class="summary-copy">
+              <h2>Executive Summary</h2>
+              <p>The decisive findings, recommendation, and first move.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div class="callout success">
+              <h3>Recommendation</h3>
+              <p>
+                Execute seven plans in order and begin with
+                <a href="plans/PLAN-01-activation-and-lifecycle-spine.md">Plan 01</a>.
+                Do not start with character modeling. The highest-leverage risk is not art quality;
+                it is opening a body-level modal from one of four simultaneously rendered bracket
+                variants without selecting the wrong champion, leaking a late import, double-counting
+                touch input, corrupting map state, or failing to restore focus and GPU work.
+              </p>
+            </div>
+            <div class="callout warning" style="margin-top:14px">
+              <h3>Local implementation update</h3>
+              <p>
+                The seven plans have now been implemented locally. A final council pass corrected two
+                lifecycle gaps: replay now remounts the same canvas and browser WebGL context, and the
+                modal isolates all current and dynamically added body siblings instead of relying on
+                a fixed ID list. Sound was subsequently removed from production, the mock, tests, and
+                plans; intentional silence is now an explicit invariant. A final visual pass replaced
+                the simultaneous dissolve with a scene-ready card-and-connector cascade, raised the
+                figures into rounded clay avatars, rebuilt the trophy with smooth curved geometry,
+                and added a local <code>2026 WORLD CUP CHAMPIONS</code> banner. A subsequent frontal
+                rebuild aligned camera, tunnel, trophy, plinth, podium, team, flag, and banner to one
+                centerline; changed the captain to a rear-to-front viewer-facing entrance; added
+                articulated hands, named trophy grips, and deterministic two-bone arm targeting;
+                lowered the overhead target to a physically reachable height; replaced lateral camera
+                tracking with a centered push; consolidated the review mock onto the production scene;
+                and kept the empty plinth dismissal during the carry.
+              </p>
+            </div>
+            <div class="grid-3" style="margin-top:14px">
+              <div class="card">
+                <h3>What was discovered</h3>
+                <p>
+                  The dashboard already has strong lifecycle patterns, but the celebration crosses
+                  render output, interactions, lazy imports, four trophy mounts, WebGL,
+                  byte-locked fixtures, accessibility, and responsive map state.
+                </p>
+              </div>
+              <div class="card">
+                <h3>Why seven plans</h3>
+                <p>
+                  Fewer plans would create a 3D mega-task no reviewer could meaningfully approve.
+                  More plans would split the same modules without independent acceptance. Seven
+                  matches the real dependency seams.
+                </p>
+              </div>
+              <div class="card">
+                <h3>What not to do</h3>
+                <p>
+                  Do not maintain a second mock renderer, clone the live WebGL canvas, add a framework,
+                  load remote models or media, parent the trophy to one hand, use an unreachable hero
+                  target, or treat a passing regenerated snapshot as proof.
+                </p>
+              </div>
+            </div>
+            <h3 style="margin-top:20px">Council influence</h3>
+            <ul>
+              <li><strong>Karpathy:</strong> prove the smallest complete vertical slice first.</li>
+              <li><strong>Russinovich:</strong> make renderer, timing, allocation, and failure costs explicit.</li>
+              <li><strong>Willison/Hamel:</strong> test exact claims and distrust visual confidence.</li>
+              <li><strong>Sean Grove:</strong> keep timing and interfaces in durable specs.</li>
+              <li><strong>Hanselman/Litt:</strong> name boundaries so the owner can maintain them later.</li>
+              <li><strong>Yegge/Naval:</strong> use small reviewable checkpoints and protect leverage.</li>
+            </ul>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="ranked-recommendations">
+        <details class="section" open>
+          <summary>
+            <span class="section-number">2</span>
+            <span class="summary-copy">
+              <h2>Ranked Recommendations</h2>
+              <p>Next-action leverage scores, not a measure of whether later gates are optional.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div class="callout">
+              <h3>How to read the score</h3>
+              <p>
+                The leverage score estimates how much the next piece of work unlocks while reducing
+                rework. Plan 07 is mandatory even though its next-action leverage is lower; it cannot
+                produce value until the implementation exists.
+              </p>
+            </div>
+            <div style="overflow:auto;margin-top:14px">
+              <table class="rank-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Recommendation</th>
+                    <th>Leverage</th>
+                    <th>Why now</th>
+                    <th>Confidence</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><a href="plans/PLAN-01-activation-and-lifecycle-spine.md">Activation and lifecycle spine</a></td>
+                    <td><span class="score">10.0</span><div class="score-track"><i style="transform:scaleX(1)"></i></div></td>
+                    <td>Unlocks every later plan and eliminates the most expensive integration failures first.</td>
+                    <td><span class="confidence high">High</span></td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td><a href="plans/PLAN-02-trophy-continuity.md">Trophy continuity</a></td>
+                    <td><span class="score">9.3</span><div class="score-track"><i style="transform:scaleX(.93)"></i></div></td>
+                    <td>Solves the visual hero and the hardest browser capture seam before choreography.</td>
+                    <td><span class="confidence high">High</span></td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td><a href="plans/PLAN-03-scene-runtime-and-country-identity.md">Scene runtime and country identity</a></td>
+                    <td><span class="score">8.9</span><div class="score-track"><i style="transform:scaleX(.89)"></i></div></td>
+                    <td>Establishes one bounded renderer and local team identity before model volume grows.</td>
+                    <td><span class="confidence high">High</span></td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td><a href="plans/PLAN-04-stadium-and-player-rigs.md">Stadium and player rigs</a></td>
+                    <td><span class="score">8.4</span><div class="score-track"><i style="transform:scaleX(.84)"></i></div></td>
+                    <td>Creates inspectable geometry and anchors so later animation does not hide bad foundations.</td>
+                    <td><span class="confidence medium">Medium</span></td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td><a href="plans/PLAN-05-choreography-and-camera.md">Choreography and camera</a></td>
+                    <td><span class="score">8.1</span><div class="score-track"><i style="transform:scaleX(.81)"></i></div></td>
+                    <td>Turns the approved timing contract into deterministic pose and camera functions.</td>
+                    <td><span class="confidence medium">Medium</span></td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td><a href="plans/PLAN-06-payoff-effects-and-fallbacks.md">Payoff effects and fallbacks</a></td>
+                    <td><span class="score">7.7</span><div class="score-track"><i style="transform:scaleX(.77)"></i></div></td>
+                    <td>Adds the emotional payoff while becoming the single owner of bounded fallbacks.</td>
+                    <td><span class="confidence medium">Medium</span></td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td><a href="plans/PLAN-07-integrated-release-gate.md">Integrated release gate</a></td>
+                    <td><span class="score">6.6</span><div class="score-track"><i style="transform:scaleX(.66)"></i></div></td>
+                    <td>Produces no feature alone, but converts implementation claims into release evidence.</td>
+                    <td><span class="confidence high">High</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="codebase-discovery">
+        <details class="section" open>
+          <summary>
+            <span class="section-number">3</span>
+            <span class="summary-copy">
+              <h2>Codebase Discovery</h2>
+              <p>What the repository actually does today and which assumptions changed after inspection.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div class="grid-2">
+              <div class="card">
+                <h3>Static product contract</h3>
+                <p>
+                  The site is GitHub Pages from <code>docs/</code>, with vanilla HTML, CSS, and ES
+                  modules. There is no frontend build or package runtime dependency. User data stays
+                  local; public results are generated by GitHub Actions.
+                </p>
+              </div>
+              <div class="card">
+                <h3>Four bracket variants coexist</h3>
+                <p>
+                  Mirrored Actual, mirrored My picks, Sideways Actual, and Sideways My picks are all
+                  rendered simultaneously. CSS chooses the visible pair via
+                  <code>.brk-wrap[data-view][data-layout]</code>.
+                </p>
+              </div>
+              <div class="card">
+                <h3>Champion identity is already correct</h3>
+                <p>
+                  <code>displayedChampion()</code> keeps the user's champion before M104 and switches
+                  Actual to the real winner after M104. The trigger must read the active DOM box at
+                  activation time rather than duplicate scoring logic.
+                </p>
+              </div>
+              <div class="card">
+                <h3>Lifecycle ownership is centralized</h3>
+                <p>
+                  <code>main.js</code> destroys interactions, match details, and trophy instances
+                  before dashboard replacement. Celebration must join this lifecycle with its own
+                  generation token.
+                </p>
+              </div>
+              <div class="card">
+                <h3>The trophy has mature safeguards</h3>
+                <p>
+                  <code>trophy.js</code> already handles bounded passive rendering, intersection,
+                  visibility, reduced motion, phone fallback, resize, context loss, and disposal.
+                  The missing seam is explicit capture/suspension.
+                </p>
+              </div>
+              <div class="card">
+                <h3>Render output is byte-locked</h3>
+                <p>
+                  <code>tests/map-frozen.mjs</code> and <code>tests/golden.mjs</code> protect the
+                  mirrored markup. Adding one trigger attribute requires a deliberate fail-update-review
+                  workflow.
+                </p>
+              </div>
+            </div>
+            <div class="callout warning" style="margin-top:14px">
+              <h3>Important correction discovered</h3>
+              <p>
+                The baseline originally described <code>pickBox()</code> as shared by mirrored and
+                Sideways output. Current source shows mirrored uses <code>pickBox()</code> and
+                Sideways uses <code>legacyPickBox()</code>. The baseline and plans were corrected.
+                This is a good example of why current source outranks stale planning prose.
+              </p>
+            </div>
+            <h3 style="margin-top:20px">Frontal rebuild decision record</h3>
+            <div class="grid-2">
+              <div class="card">
+                <h3>Observation</h3>
+                <p>The clay pass still read as a side-view scene. Camera, tunnel, trophy, plinth, team, flag, and banner used competing centerlines, and the hands only approximated trophy contact.</p>
+              </div>
+              <div class="card">
+                <h3>Evidence</h3>
+                <p>Desktop and phone key frames exposed asymmetric staging and trophy drift. Rig measurements also showed the former <code>4.55</code> lift target exceeded the captain's upper-arm plus forearm reach. The standalone mock visibly differed from production.</p>
+              </div>
+              <div class="card">
+                <h3>Reasoning</h3>
+                <p>Direct camera interaction requires one frontal axis. Physical contact requires placing the trophy first, reading real grip targets, and solving both arms afterward. Review accuracy requires one renderer, not two implementations that imitate each other.</p>
+              </div>
+              <div class="card">
+                <h3>Decision</h3>
+                <p>Center every hero element at <code>x = 0</code>, move the captain rear-to-front, keep the trophy in scene space on a captain-owned carrier, add named left/right grips, solve both arms analytically, lower the lift to <code>3.68</code>, and make the review harness call <code>createChampionScene()</code>.</p>
+              </div>
+              <div class="card">
+                <h3>Tradeoffs</h3>
+                <p>The frontal camera sacrifices some lateral parallax, and procedural avatars remain stylized rather than photoreal. In exchange, viewer interaction, symmetry, hand contact, phone framing, and production/review consistency become much stronger.</p>
+              </div>
+              <div class="card">
+                <h3>Lesson learned</h3>
+                <p>A cinematic pose is not valid because it looks dramatic in isolation. It must be reachable by the rig, inspectable at key frames, and produced by the same code reviewers are approving.</p>
+              </div>
+            </div>
+            <h3 style="margin-top:20px">Current file ownership</h3>
+            <div style="overflow:auto">
+              <table class="matrix">
+                <thead>
+                  <tr><th>File</th><th>Current responsibility</th><th>Celebration implication</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><code>docs/js/render.js</code></td><td>Scored state and all dashboard HTML.</td><td>Add one mirrored trigger contract only.</td></tr>
+                  <tr><td><code>docs/js/interact.js</code></td><td>Active bracket, layout/view, map Escape, connector redraw, hover card.</td><td>Own delegated trigger/reset, split and tag connector halves, suppress redraw while transformed, then redraw after restore.</td></tr>
+                  <tr><td><code>docs/js/main.js</code></td><td>Dashboard lifecycle and lazy trophy import.</td><td>Own celebration generation, duplicate guard, controller teardown.</td></tr>
+                  <tr><td><code>docs/js/trophy.js</code></td><td>Live trophy WebGL/fallback lifecycle.</td><td>Expose capture and external suspension without breaking manual pause.</td></tr>
+                  <tr><td><code>docs/js/trophy-geometry.js</code></td><td>Shared independent trophy sculpture and named grip anchors.</td><td>Provide stable contact geometry without sharing disposable scene objects.</td></tr>
+                  <tr><td><code>docs/js/champion-celebration-scene.js</code></td><td>Frontal camera, choreography, world-space trophy carrier, and two-arm solve.</td><td>Place body and trophy first, then solve hands before one render.</td></tr>
+                  <tr><td><code>docs/js/champion-celebration-models.js</code></td><td>Centered stadium, articulated clay rigs, arm metrics, podium, and banner.</td><td>Own physical reach and contact-ready model contracts.</td></tr>
+                  <tr><td><code>dev-docs/[00]-dev-reports/[05]-champion-celebration/mock.js</code></td><td>Playback and scrub controls around the production scene controller.</td><td>Review can no longer drift through duplicate models or camera code.</td></tr>
+                  <tr><td><code>docs/js/flags.js</code></td><td>Canonical local flag mapping.</td><td>Reuse for flag URL and sampled country palette.</td></tr>
+                  <tr><td><code>tests/*.mjs</code></td><td>Hermetic Node tests and source guards.</td><td>Test pure timing/state; source-audit browser-only APIs.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="architecture-overview">
+        <details class="section" open>
+          <summary>
+            <span class="section-number">4</span>
+            <span class="summary-copy">
+              <h2>Architecture Overview</h2>
+              <p>The proposed production module boundaries and why they exist.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div class="diagram-wrap" aria-label="Architecture diagram">
+              <svg class="diagram" viewBox="0 0 980 500" role="img" aria-labelledby="archTitle archDesc">
+                <title id="archTitle">Champion celebration architecture</title>
+                <desc id="archDesc">Dashboard render and interaction feed a race-safe controller, which owns scene, models, effects, trophy capture, and exact restoration.</desc>
+                <defs>
+                  <marker id="arrowA" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="var(--cp-border-strong)"></path>
+                  </marker>
+                  <marker id="arrowAccent" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="var(--cp-accent)"></path>
+                  </marker>
+                </defs>
+                <rect class="box" x="20" y="48" width="175" height="72" rx="10"></rect>
+                <text x="107" y="77" text-anchor="middle">render.js</text>
+                <text class="small" x="107" y="99" text-anchor="middle">active champion contract</text>
+
+                <rect class="box" x="20" y="158" width="175" height="72" rx="10"></rect>
+                <text x="107" y="187" text-anchor="middle">interact.js</text>
+                <text class="small" x="107" y="209" text-anchor="middle">active bracket + trigger reset</text>
+
+                <rect class="accent-box" x="260" y="95" width="205" height="100" rx="10"></rect>
+                <text x="362" y="129" text-anchor="middle">main.js</text>
+                <text class="small" x="362" y="151" text-anchor="middle">generation + lazy import</text>
+                <text class="small" x="362" y="169" text-anchor="middle">one controller</text>
+
+                <rect class="accent-box" x="530" y="75" width="210" height="140" rx="10"></rect>
+                <text x="635" y="111" text-anchor="middle">champion-celebration.js</text>
+                <text class="small" x="635" y="135" text-anchor="middle">body-level stage</text>
+                <text class="small" x="635" y="153" text-anchor="middle">snapshot / inert / focus</text>
+                <text class="small" x="635" y="171" text-anchor="middle">clock / fallback / cleanup</text>
+                <text class="small" x="635" y="189" text-anchor="middle">one owner of Escape</text>
+
+                <rect class="box" x="790" y="20" width="165" height="66" rx="10"></rect>
+                <text x="872" y="48" text-anchor="middle">trophy.js</text>
+                <text class="small" x="872" y="68" text-anchor="middle">capture + suspend</text>
+
+                <rect class="box" x="790" y="105" width="165" height="66" rx="10"></rect>
+                <text x="872" y="133" text-anchor="middle">scene.js</text>
+                <text class="small" x="872" y="153" text-anchor="middle">frontal camera / carrier / IK</text>
+
+                <rect class="box" x="790" y="190" width="165" height="66" rx="10"></rect>
+                <text x="872" y="218" text-anchor="middle">models.js</text>
+                <text class="small" x="872" y="238" text-anchor="middle">centered stadium / 7 clay rigs / hands</text>
+
+                <rect class="box" x="790" y="275" width="165" height="66" rx="10"></rect>
+                <text x="872" y="303" text-anchor="middle">timeline.js</text>
+                <text class="small" x="872" y="323" text-anchor="middle">pure 30s contract</text>
+
+                <rect class="box" x="790" y="360" width="165" height="66" rx="10"></rect>
+                <text x="872" y="388" text-anchor="middle">effects.js</text>
+                <text class="small" x="872" y="408" text-anchor="middle">flag / crowd / confetti</text>
+
+                <rect class="box" x="260" y="330" width="205" height="90" rx="10"></rect>
+                <text x="362" y="360" text-anchor="middle">tests + release evidence</text>
+                <text class="small" x="362" y="382" text-anchor="middle">pure tests / source guards</text>
+                <text class="small" x="362" y="400" text-anchor="middle">browser + resource matrix</text>
+
+                <path class="line" d="M195 84 C225 84,230 120,260 130" marker-end="url(#arrowA)"></path>
+                <path class="line" d="M195 194 C225 194,230 170,260 160" marker-end="url(#arrowA)"></path>
+                <path class="accent-line" d="M465 145 L530 145" marker-end="url(#arrowAccent)"></path>
+                <path class="line" d="M740 112 C760 86,770 62,790 54" marker-end="url(#arrowA)"></path>
+                <path class="line" d="M740 133 L790 138" marker-end="url(#arrowA)"></path>
+                <path class="line" d="M740 155 C760 176,770 209,790 223" marker-end="url(#arrowA)"></path>
+                <path class="line" d="M740 178 C760 224,770 292,790 308" marker-end="url(#arrowA)"></path>
+                <path class="line" d="M740 195 C760 260,770 374,790 393" marker-end="url(#arrowA)"></path>
+                <path class="line" d="M590 215 C555 270,510 330,465 360" marker-end="url(#arrowA)"></path>
+              </svg>
+            </div>
+            <div class="grid-2" style="margin-top:14px">
+              <div class="card">
+                <h3>Why these modules</h3>
+                <p>
+                  Each boundary corresponds to a distinct failure mode: trigger state, dashboard
+                  lifecycle, live trophy capture, renderer/resource ownership, model geometry,
+                  deterministic timing, bounded effects, and exact restoration. The scene owns the
+                  centered camera, trophy carrier, and arm solve; trophy geometry owns physical grip
+                  anchors; models own arm lengths and articulated hands. The center-out transition and
+                  generated championship banner remain inside those existing owners. Silence is a
+                  tested product contract, not another runtime module.
+                </p>
+              </div>
+              <div class="card">
+                <h3>Why not more modules</h3>
+                <p>
+                  The scene file is deliberately evolved across Plans 03-06. Splitting every builder
+                  into another file would increase context and disposal coupling without creating a
+                  separately verifiable handoff.
+                </p>
+              </div>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="dependency-data-flow">
+        <details class="section" open>
+          <summary>
+            <span class="section-number">5</span>
+            <span class="summary-copy">
+              <h2>Dependency &amp; Data Flow Analysis</h2>
+              <p>How champion identity, trophy continuity, time, effects, and cleanup move.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div class="diagram-wrap" aria-label="Data flow diagram">
+              <svg class="diagram" viewBox="0 0 1000 430" role="img" aria-labelledby="flowTitle flowDesc">
+                <title id="flowTitle">Celebration data and lifecycle flow</title>
+                <desc id="flowDesc">Four activations select the active champion, pass through a generation guarded import, capture the active trophy, run a deterministic timeline, and restore all dashboard state.</desc>
+                <defs>
+                  <marker id="arrowB" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="var(--cp-border-strong)"></path>
+                  </marker>
+                  <marker id="arrowBAccent" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="var(--cp-accent)"></path>
+                  </marker>
+                </defs>
+                <rect class="box" x="25" y="50" width="150" height="68" rx="10"></rect>
+                <text x="100" y="78" text-anchor="middle">4 activations</text>
+                <text class="small" x="100" y="99" text-anchor="middle">&lt;= 2500ms</text>
+
+                <rect class="box" x="220" y="50" width="170" height="68" rx="10"></rect>
+                <text x="305" y="78" text-anchor="middle">active mirrored box</text>
+                <text class="small" x="305" y="99" text-anchor="middle">team read now</text>
+
+                <rect class="accent-box" x="435" y="40" width="190" height="88" rx="10"></rect>
+                <text x="530" y="72" text-anchor="middle">generation guard</text>
+                <text class="small" x="530" y="94" text-anchor="middle">import + start recheck</text>
+                <text class="small" x="530" y="112" text-anchor="middle">duplicate rejected</text>
+
+                <rect class="box" x="680" y="30" width="175" height="68" rx="10"></rect>
+                <text x="767" y="58" text-anchor="middle">pre-mutation capture</text>
+                <text class="small" x="767" y="79" text-anchor="middle">rect + trophy pixels</text>
+
+                <rect class="box" x="680" y="125" width="175" height="68" rx="10"></rect>
+                <text x="767" y="153" text-anchor="middle">dashboard snapshot</text>
+                <text class="small" x="767" y="174" text-anchor="middle">classes / inert / focus</text>
+
+                <rect class="accent-box" x="435" y="180" width="190" height="92" rx="10"></rect>
+                <text x="530" y="212" text-anchor="middle">logical time</text>
+                <text class="small" x="530" y="234" text-anchor="middle">30s visible-active clock</text>
+                <text class="small" x="530" y="252" text-anchor="middle">no hidden catch-up</text>
+
+                <rect class="box" x="220" y="185" width="170" height="72" rx="10"></rect>
+                <text x="305" y="214" text-anchor="middle">scene frame</text>
+                <text class="small" x="305" y="235" text-anchor="middle">body -> trophy -> grips -> arms</text>
+
+                <rect class="box" x="220" y="285" width="170" height="72" rx="10"></rect>
+                <text x="305" y="314" text-anchor="middle">effects frame</text>
+                <text class="small" x="305" y="335" text-anchor="middle">flag / crowd / confetti</text>
+
+                <rect class="box" x="435" y="305" width="190" height="72" rx="10"></rect>
+                <text x="530" y="334" text-anchor="middle">visibility pause</text>
+                <text class="small" x="530" y="355" text-anchor="middle">clock + RAF only</text>
+
+                <rect class="accent-box" x="680" y="285" width="175" height="92" rx="10"></rect>
+                <text x="767" y="317" text-anchor="middle">one destroy path</text>
+                <text class="small" x="767" y="339" text-anchor="middle">Skip / Escape / finish</text>
+                <text class="small" x="767" y="357" text-anchor="middle">rerender / failure</text>
+
+                <rect class="box" x="885" y="285" width="95" height="92" rx="10"></rect>
+                <text x="932" y="321" text-anchor="middle">exact</text>
+                <text x="932" y="340" text-anchor="middle">restore</text>
+                <text class="small" x="932" y="359" text-anchor="middle">+ redraw</text>
+
+                <path class="line" d="M175 84 L220 84" marker-end="url(#arrowB)"></path>
+                <path class="line" d="M390 84 L435 84" marker-end="url(#arrowB)"></path>
+                <path class="accent-line" d="M625 74 L680 64" marker-end="url(#arrowBAccent)"></path>
+                <path class="line" d="M625 94 C655 112,660 142,680 154" marker-end="url(#arrowB)"></path>
+                <path class="accent-line" d="M530 128 L530 180" marker-end="url(#arrowBAccent)"></path>
+                <path class="line" d="M435 220 L390 220" marker-end="url(#arrowB)"></path>
+                <path class="line" d="M305 257 L305 285" marker-end="url(#arrowB)"></path>
+                <path class="line" d="M530 272 L530 305" marker-end="url(#arrowB)"></path>
+                <path class="line" d="M625 226 C665 242,690 276,710 295" marker-end="url(#arrowB)"></path>
+                <path class="line" d="M390 321 C520 402,660 401,710 360" marker-end="url(#arrowB)"></path>
+                <path class="line" d="M625 341 L680 341" marker-end="url(#arrowB)"></path>
+                <path class="accent-line" d="M855 331 L885 331" marker-end="url(#arrowBAccent)"></path>
+              </svg>
+            </div>
+
+            <h3 style="margin-top:18px">Coverage map</h3>
+            <div style="overflow:auto">
+              <table class="matrix">
+                <thead>
+                  <tr><th>Brief contract</th><th>Primary owner</th><th>Supporting plans</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Mirrored-only four-activation trigger</td><td>Plan 01</td><td>Plan 07 evidence</td></tr>
+                  <tr><td>Lazy import, state isolation, exact restore</td><td>Plan 01</td><td>Plans 02, 05, 07</td></tr>
+                  <tr><td>Continuous trophy source-to-hand story and named contact geometry</td><td>Plan 02</td><td>Plans 03, 04, 05</td></tr>
+                  <tr><td>One bounded Three.js runtime and local identity</td><td>Plan 03</td><td>Plans 06, 07</td></tr>
+                  <tr><td>Centered clay stadium, captain, six teammates, articulated hands, arm metrics, pitch, and banner</td><td>Plan 04</td><td>Plans 05, 06</td></tr>
+                  <tr><td>Approved 30-second choreography, frontal camera, two-arm targeting, and card/line curtain</td><td>Plan 05</td><td>Plans 01, 07</td></tr>
+                  <tr><td>Flag, crowd, confetti, fallbacks, phone</td><td>Plan 06</td><td>Plans 03, 05, 07</td></tr>
+                  <tr><td>Intentional silence</td><td>Plans 01, 05</td><td>Plan 07 source guard</td></tr>
+                  <tr><td>Tests, browser matrix, resource proof</td><td>Plan 07</td><td>All prior plans</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="plan-reviews">
+        <details class="section" open>
+          <summary>
+            <span class="section-number">6</span>
+            <span class="summary-copy">
+              <h2>PLAN Reviews</h2>
+              <p>One review per execution contract, including why it exists and how to verify it.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div id="planReviewList">
+              <details class="plan-review" id="plan-01" data-search="activation lifecycle trigger rolling window inert aria hidden generation import escape connector restore render interact main">
+                <summary>
+                  <span class="plan-rank">1</span>
+                  <span class="summary-copy">
+                    <h3>PLAN-01: Activation and lifecycle spine</h3>
+                    <p>Highest leverage: prove the safe vertical slice before 3D investment.</p>
+                  </span>
+                  <span class="confidence high">High</span>
+                </summary>
+                <div class="section-content">
+                  <div class="plan-meta"><span class="score">10.0 leverage</span><span class="tag">Karpathy</span><span class="tag">Sean Grove</span><span class="tag">Hanselman</span></div>
+                  <div class="grid-2">
+                    <div class="card">
+                      <h4>Goal</h4>
+                      <p>Four valid activations on the active mirrored champion open one body-level static stage, then Skip/Escape/rerender restore everything exactly.</p>
+                    </div>
+                    <div class="card">
+                      <h4>Why this recommendation</h4>
+                      <p>Every later plan depends on correct champion identity, duplicate rejection, import invalidation, background isolation, and idempotent cleanup.</p>
+                    </div>
+                  </div>
+                  <h4 style="margin-top:14px">Key files</h4>
+                  <ul class="file-list">
+                    <li><code>champion-celebration-trigger.js</code>, <code>champion-celebration.js</code></li>
+                    <li><code>render.js</code>, <code>interact.js</code>, <code>main.js</code></li>
+                    <li><code>champion-celebration.css</code>, <code>index.html</code></li>
+                    <li><code>tests/champion-celebration.mjs</code>, matchcards, golden/map fixtures</li>
+                  </ul>
+                  <h4 style="margin-top:14px">Senior-level details carried in the plan</h4>
+                  <ul>
+                    <li>Read source/trophy geometry before stage insertion or overflow locking.</li>
+                    <li>Use click as the single touch/mouse path; reject repeated keyboard events.</li>
+                    <li>Capture Escape before existing document listeners.</li>
+                    <li>Keep the opening backdrop transparent so real bracket curtains remain visible.</li>
+                    <li>Suppress connector redraw while transformed, then force one redraw after restore.</li>
+                  </ul>
+                  <p><a href="plans/PLAN-01-activation-and-lifecycle-spine.md">Open full Plan 01</a></p>
+                </div>
+              </details>
+
+              <details class="plan-review" id="plan-02" data-search="trophy capture canvas drawimage synchronous suspension shared geometry svg fallback webgl continuity named grips">
+                <summary>
+                  <span class="plan-rank">2</span>
+                  <span class="summary-copy">
+                    <h3>PLAN-02: Trophy continuity</h3>
+                    <p>Make one physical trophy story survive canvas, SVG fallback, plinth, and handoff.</p>
+                  </span>
+                  <span class="confidence high">High</span>
+                </summary>
+                <div class="section-content">
+                  <div class="plan-meta"><span class="score">9.3 leverage</span><span class="tag">Russinovich</span><span class="tag">Litt</span></div>
+                  <div class="grid-2">
+                    <div class="card">
+                      <h4>Goal</h4>
+                      <p>Extract a shared procedural trophy factory, capture the active visible source, suspend live GPU work, and settle a non-blank trophy ghost onto the plinth.</p>
+                    </div>
+                    <div class="card">
+                      <h4>Why this recommendation</h4>
+                      <p>The trophy is the visual hero and the most browser-specific continuity risk. A cloned WebGL canvas is blank; the plan requires render-then-copy in one synchronous turn.</p>
+                    </div>
+                  </div>
+                  <h4 style="margin-top:14px">Critical acceptance</h4>
+                  <ul>
+                    <li>Desktop captures current pixels; phone uses the local SVG fallback.</li>
+                    <li>No <code>await</code> between <code>renderNow()</code> and <code>drawImage()</code>.</li>
+                    <li>Manual pause survives external celebration suspension.</li>
+                    <li>Hidden trophy slots and late trophy imports never run behind the stage.</li>
+                    <li>Every independent trophy exposes named left/right grip anchors for later arm targeting.</li>
+                  </ul>
+                  <p><a href="plans/PLAN-02-trophy-continuity.md">Open full Plan 02</a></p>
+                </div>
+              </details>
+
+              <details class="plan-review" id="plan-03" data-search="scene runtime country identity flags palette renderer dpr context loss one canvas threejs resize resource tracker">
+                <summary>
+                  <span class="plan-rank">3</span>
+                  <span class="summary-copy">
+                    <h3>PLAN-03: Scene runtime and country identity</h3>
+                    <p>Create one bounded renderer and deterministic local flag-based identity.</p>
+                  </span>
+                  <span class="confidence high">High</span>
+                </summary>
+                <div class="section-content">
+                  <div class="plan-meta"><span class="score">8.9 leverage</span><span class="tag">Karpathy</span><span class="tag">Russinovich</span></div>
+                  <div class="grid-2">
+                    <div class="card">
+                      <h4>Goal</h4>
+                      <p>Render a static centered night-stadium trophy frame with one retained local Three.js canvas/context, a straight-on camera at <code>x = 0</code>, bounded DPR, local flag sampling, projection anchors, resize, and per-run disposal.</p>
+                    </div>
+                    <div class="card">
+                      <h4>Why this recommendation</h4>
+                      <p>Renderer ownership and team identity must stabilize before adding hundreds of instances or seven rigs. Reduced motion avoids importing the scene entirely.</p>
+                    </div>
+                  </div>
+                  <h4 style="margin-top:14px">Hidden engineering details</h4>
+                  <ul>
+                    <li>Wait for SVG decode and rasterize to an explicit small canvas size.</li>
+                    <li>Evict rejected palette-cache promises so replay can retry.</li>
+                    <li>Detach and remount the same canvas/context on replay; never allocate a second.</li>
+                    <li>Keep fallback visible until the first successful render.</li>
+                    <li>Use cached stage dimensions; no layout read in <code>renderFrame()</code>.</li>
+                  </ul>
+                  <p><a href="plans/PLAN-03-scene-runtime-and-country-identity.md">Open full Plan 03</a></p>
+                </div>
+              </details>
+
+              <details class="plan-review" id="plan-04" data-search="stadium clay avatar player rigs captain teammates armband c right arm podium stage heights instanced crowd pitch banner anchors articulated hands reach">
+                <summary>
+                  <span class="plan-rank">4</span>
+                  <span class="summary-copy">
+                    <h3>PLAN-04: Stadium and player rigs</h3>
+                    <p>Review geometry and contact points before animation can conceal them.</p>
+                  </span>
+                  <span class="confidence medium">Medium</span>
+                </summary>
+                <div class="section-content">
+                  <div class="plan-meta"><span class="score">8.4 leverage</span><span class="tag">Litt</span><span class="tag">Hanselman</span><span class="tag">Russinovich</span></div>
+                  <div class="grid-2">
+                    <div class="card">
+                      <h4>Goal</h4>
+                      <p>Build one captain, six teammates, bounded smooth clay anatomy, hierarchical joints, articulated palms/fingers/thumbs, arm-length metrics, hand/foot/carrier anchors, a centered textured pitch and podium, four-tier stadium, local championship banner, and bounded instanced crowd.</p>
+                    </div>
+                    <div class="card">
+                      <h4>Why this recommendation</h4>
+                      <p>A static hero-frame gate exposes bad proportions, floating feet, unreadable armbands, and detached hands before choreography adds complexity.</p>
+                    </div>
+                  </div>
+                  <h4 style="margin-top:14px">Key constants</h4>
+                  <ul>
+                    <li>Exactly six teammates and seven total figures.</li>
+                    <li>One shared <code>STAGE_HEIGHTS</code> table.</li>
+                    <li>A reachable <code>trophyLift</code> of <code>3.68</code> and team jump of <code>0.28</code>.</li>
+                    <li>Camera, tunnel, plinth, trophy, team, banner, and future flag share one centerline.</li>
+                    <li>One owner for desktop/phone crowd allocation bounds.</li>
+                    <li>24 radial body segments, 32 head segments, and 10 capsule-cap segments: smooth form with explicit bounds.</li>
+                    <li>Local disposable pitch and <code>2026 WORLD CUP CHAMPIONS</code> textures.</li>
+                    <li>Generic skin/figure variation never inferred from country identity.</li>
+                  </ul>
+                  <p><a href="plans/PLAN-04-stadium-and-player-rigs.md">Open full Plan 04</a></p>
+                </div>
+              </details>
+
+              <details class="plan-review" id="plan-05" data-search="choreography frontal camera timeline 30 seconds viewer acknowledgment trophy approach fake pumps lift jump hidden pause waapi carrier ik grips curtain connector plinth">
+                <summary>
+                  <span class="plan-rank">5</span>
+                  <span class="summary-copy">
+                    <h3>PLAN-05: Choreography and camera</h3>
+                    <p>Turn the approved timing table into deterministic scene-time functions.</p>
+                  </span>
+                  <span class="confidence medium">Medium</span>
+                </summary>
+                <div class="section-content">
+                  <div class="plan-meta"><span class="score">8.1 leverage</span><span class="tag">Sean Grove</span><span class="tag">Willison/Hamel</span><span class="tag">Yegge</span></div>
+                  <div class="grid-2">
+                    <div class="card">
+                      <h4>Goal</h4>
+                      <p>Implement all twelve phases from 0 to 30 seconds with hidden-time pause, a scene-ready center-out card-and-connector curtain, rear-to-front captain entrance, viewer acknowledgment, centered trophy grab/carry, plinth dismissal, pumps, reachable lift, jump, frontal camera, hold, and restore.</p>
+                    </div>
+                    <div class="card">
+                      <h4>Why this recommendation</h4>
+                      <p>Deterministic time enables exact tests, pause/resume correctness, visual review at hero frames, and later effects without independent clocks.</p>
+                    </div>
+                  </div>
+                  <h4 style="margin-top:14px">Critical choreography rules</h4>
+                  <ul>
+                    <li>Direct viewer acknowledgment redirects into a measured trophy approach without early contact.</li>
+                    <li>Keep the trophy in scene space and drive it from the captain's world-space carrier after 8.85s.</li>
+                    <li>Place body and trophy first, read named grip targets second, then solve both arms with stable outward elbow poles.</li>
+                    <li>Keep the lift within measured upper-arm plus forearm reach; do not rely on IK clamping to hide an impossible target.</li>
+                    <li>Two slow partial pumps precede one full lift and one jump.</li>
+                    <li>Drive WAAPI and trophy ghost from the same logical clock.</li>
+                    <li>Move each card separately; split connector elbows so each half follows one card.</li>
+                    <li>Keep cards opaque during initial travel and start only after scene frame zero.</li>
+                    <li>Dismiss the empty plinth from 9.0-10.3s.</li>
+                    <li>Backdrop opacity reveals the real bracket curtains instead of hiding them.</li>
+                  </ul>
+                  <p><a href="plans/PLAN-05-choreography-and-camera.md">Open full Plan 05</a></p>
+                </div>
+              </details>
+
+              <details class="plan-review" id="plan-06" data-search="effects fallback flag cloth crowd confetti lights flashes context loss reduced motion phone responsive instancing">
+                <summary>
+                  <span class="plan-rank">6</span>
+                  <span class="summary-copy">
+                    <h3>PLAN-06: Payoff effects and fallbacks</h3>
+                    <p>Earn the spectacle with bounded procedural detail and one fallback owner.</p>
+                  </span>
+                  <span class="confidence medium">Medium</span>
+                </summary>
+                <div class="section-content">
+                  <div class="plan-meta"><span class="score">7.7 leverage</span><span class="tag">Naval</span><span class="tag">Russinovich</span><span class="tag">Willison/Hamel</span></div>
+                  <div class="grid-2">
+                    <div class="card">
+                      <h4>Goal</h4>
+                      <p>Add segmented flag cloth, layered crowd motion, deterministic instanced confetti, trophy glints, spotlights, flashes, phone composition, reduced motion, and WebGL failure handling.</p>
+                    </div>
+                    <div class="card">
+                      <h4>Why this recommendation</h4>
+                      <p>The emotional payoff belongs after timing and geometry work. Plan 06 also replaces provisional fallbacks with one shared element and one visibility-aware timer.</p>
+                    </div>
+                  </div>
+                  <h4 style="margin-top:14px">Bounded quality</h4>
+                  <ul>
+                    <li>Crowd: 320 desktop / 180 phone.</li>
+                    <li>Confetti: 384 desktop / 192 phone.</li>
+                    <li>DPR: at most 1.5.</li>
+                    <li>No per-frame random values, arrays, geometry, materials, or layout reads.</li>
+                  </ul>
+                  <p><a href="plans/PLAN-06-payoff-effects-and-fallbacks.md">Open full Plan 06</a></p>
+                </div>
+              </details>
+
+              <details class="plan-review" id="plan-07" data-search="release gate verification tests browser matrix performance resource network silence results m104 countries replay">
+                <summary>
+                  <span class="plan-rank">7</span>
+                  <span class="summary-copy">
+                    <h3>PLAN-07: Integrated release gate</h3>
+                    <p>Convert implementation claims into tests, traces, browser evidence, and an auditable result.</p>
+                  </span>
+                  <span class="confidence high">High</span>
+                </summary>
+                <div class="section-content">
+                  <div class="plan-meta"><span class="score">6.6 next-action leverage</span><span class="tag">Willison/Hamel</span><span class="tag">Yegge</span><span class="tag">Hanselman</span></div>
+                  <div class="grid-2">
+                    <div class="card">
+                      <h4>Goal</h4>
+                      <p>Run focused/full tests, frozen diff review, six-country visual checks, exact curtain/world/carry/lift/hero frames, frontal centerline and two-hand-contact checks, pre/post-M104 identity, lifecycle matrix, real context loss, silence checks, resource counts, and privacy/network evidence.</p>
+                    </div>
+                    <div class="card">
+                      <h4>Why this recommendation</h4>
+                      <p>A source guard cannot approve readable acknowledgment, physical reach, two-hand contact, centerline alignment, phone framing, or context-loss behavior. Human visual review and machine evidence are both required.</p>
+                    </div>
+                  </div>
+                  <h4 style="margin-top:14px">Release blockers</h4>
+                  <ul>
+                    <li>Any fixture diff beyond the reviewed mirrored trigger attribute.</li>
+                    <li>Any second canvas/context, changed replay identity, or accumulating listener, timer, or heap trend.</li>
+                    <li>Any sound control, audio module, Web Audio construction, external request, or player likeness.</li>
+                    <li>Any connector half drifting from its card, unreadable banner, duplicate trophy, hand/grip separation, off-axis hero staging, unreachable lift, or plinth visible after 10.3s.</li>
+                    <li>Any required country/input/lifecycle/fallback scenario without evidence.</li>
+                  </ul>
+                  <p><a href="plans/PLAN-07-integrated-release-gate.md">Open full Plan 07</a></p>
+                </div>
+              </details>
+            </div>
+            <div class="no-results" id="noPlanResults" hidden>No plan reviews match that search.</div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="risks-edge-cases">
+        <details class="section" open>
+          <summary>
+            <span class="section-number">7</span>
+            <span class="summary-copy">
+              <h2>Risks &amp; Edge Cases</h2>
+              <p>The quiet failures a weaker implementation is most likely to miss.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div style="overflow:auto">
+              <table class="risk-table">
+                <thead>
+                  <tr><th>Severity</th><th>Risk</th><th>Why it matters</th><th>Plan control</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td class="risk-high">High</td><td>Wrong champion copy</td><td>All four bracket variants exist; a global selector can celebrate a hidden box.</td><td>Plan 01 resolves active bracket on every event.</td></tr>
+                  <tr><td class="risk-high">High</td><td>Scrollbar-shift trophy jump</td><td>Measuring after <code>overflow:hidden</code> changes layout width.</td><td>Plans 01-02 capture before every mutation.</td></tr>
+                  <tr><td class="risk-high">High</td><td>Blank WebGL capture</td><td>Canvas cloning or delayed copy loses the drawing buffer.</td><td>Plan 02 render-and-copy synchronously.</td></tr>
+                  <tr><td class="risk-high">High</td><td>Late import resurrects scene</td><td>Home/rerender/Skip can happen before dynamic import resolves.</td><td>Plan 01 uses a separate generation token and destroys stale controllers.</td></tr>
+                  <tr><td class="risk-high">High</td><td>Hidden-time catch-up</td><td>Wall clock can jump across grab, lift, or finish.</td><td>Plan 05 uses a pausable logical clock; Plan 06 reuses it for fallback timing.</td></tr>
+                  <tr><td class="risk-high">High</td><td>Invisible curtain animation</td><td>An opaque body-level stage can hide the real bracket opening behind it.</td><td>Plans 01, 03, 05 define transparent opening z-order.</td></tr>
+                  <tr><td class="risk-medium">Medium</td><td>Connector ownership drift</td><td>One elbow path cannot stay attached to two independently moving cards, and resize can redraw against transformed geometry.</td><td>Plan 05 splits/tag halves; Plan 01 suppresses redraw during playback and redraws after restore.</td></tr>
+                  <tr><td class="risk-high">High</td><td>Unreachable trophy pose</td><td>A dramatic target beyond combined arm reach forces visible hand separation even if IK clamps safely.</td><td>Plans 04-05 expose arm lengths and keep the carrier at the reachable <code>3.68</code> lift.</td></tr>
+                  <tr><td class="risk-high">High</td><td>Trophy hand drift</td><td>Parenting to one hand or solving before prop placement disconnects the other hand during pumps/jump.</td><td>Plans 02, 04, and 05 use named trophy grips, a scene-space carrier, and body-to-prop-to-arm update order.</td></tr>
+                  <tr><td class="risk-medium">Medium</td><td>Competing centerlines</td><td>A side-biased camera makes the captain, trophy, team, tunnel, flag, and banner feel like separate scenes.</td><td>Plans 03-06 keep the camera and every hero object centered at <code>x = 0</code>.</td></tr>
+                  <tr><td class="risk-medium">Medium</td><td>Review/production drift</td><td>A duplicate mock can look approved while production behaves differently.</td><td>The review harness imports <code>createChampionScene()</code> and owns controls only.</td></tr>
+                  <tr><td class="risk-medium">Medium</td><td>Banner/flag competition</td><td>The payoff flag can hide the event title and country reward.</td><td>Plans 04 and 06 reserve banner space, lower the flag, and review desktop/phone hero frames.</td></tr>
+                  <tr><td class="risk-medium">Medium</td><td>Empty plinth continuity</td><td>A stand that remains after the grab makes the carry feel staged rather than physical.</td><td>Plan 05 lowers, shrinks, fades, and hides it from 9.0-10.3s.</td></tr>
+                  <tr><td class="risk-medium">Medium</td><td>Fallback contract drift</td><td>Reduced motion, init failure, and context loss could diverge.</td><td>Plan 06 is the single final fallback owner.</td></tr>
+                  <tr><td class="risk-medium">Medium</td><td>Silence contract regression</td><td>A leftover mock control or future Web Audio path would recreate a removed product surface.</td><td>Plan 07 source guards production and mock files.</td></tr>
+                  <tr><td class="risk-medium">Medium</td><td>Per-frame garbage</td><td>New arrays/random/materials each frame create jank and nondeterminism.</td><td>Plans 03, 06, 07 use source guards and preallocation.</td></tr>
+                  <tr><td class="risk-low">Controlled</td><td>Baseline documentation drift</td><td>Planning prose can be stale even when code is correct.</td><td>Baseline corrected; execution re-verifies current source.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="alternatives">
+        <details class="section">
+          <summary>
+            <span class="section-number">8</span>
+            <span class="summary-copy">
+              <h2>Alternative Approaches Considered</h2>
+              <p>What was rejected and the tradeoff behind each decision.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div class="decision"><b>One giant implementation plan</b><span>Rejected. It would mix lifecycle, renderer, modeling, choreography, effects, and release evidence into one handoff that cannot be reviewed meaningfully.</span></div>
+            <div class="decision"><b>Maintain a duplicate standalone renderer</b><span>Rejected after visual drift appeared. The review keeps its controls but now instantiates <code>createChampionScene()</code>, so it reviews production camera, models, trophy contact, and choreography directly.</span></div>
+            <div class="decision"><b>Video or 2D overlay</b><span>Rejected. It breaks the approved procedural 3D direction, team identity flexibility, and trophy continuity.</span></div>
+            <div class="decision"><b>Remote model, texture, or media</b><span>Rejected. It violates static/local constraints, adds network failure, complicates licensing, and weakens privacy.</span></div>
+            <div class="decision"><b>Add a framework/build step</b><span>Rejected. Existing no-build ES modules are sufficient, match repository conventions, and remain owner-editable.</span></div>
+            <div class="decision"><b>Reparent the live trophy scene</b><span>Rejected. The live renderer has independent controls/lifecycle; cross-scene reparenting would couple contexts and teardown. Capture plus independent shared geometry is safer.</span></div>
+            <div class="decision"><b>Parent the cutscene trophy to one hand</b><span>Rejected. One hand would own the prop while the other visually chases it. A scene-space carrier plus two named grip targets makes both contacts explicit.</span></div>
+            <div class="decision"><b>Keep the side-biased camera for more parallax</b><span>Rejected. It weakened direct viewer interaction and exposed competing centerlines. A centered perspective push preserves depth while making the captain's performance and trophy contact easier to read.</span></div>
+            <div class="decision"><b>Ninth fallback-only plan</b><span>Rejected after council review. Fallback is cross-cutting, but Plan 06 already owns the necessary controller, effects, CSS, and context-loss files.</span></div>
+            <div class="decision"><b>Static source tests only</b><span>Rejected. They cannot prove visual choreography, context-loss behavior, phone framing, or resource stability after replay.</span></div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="reasoning-summary">
+        <details class="section">
+          <summary>
+            <span class="section-number">9</span>
+            <span class="summary-copy">
+              <h2>Reasoning Trace Summary</h2>
+              <p>A concise decision record based on evidence, without private chain-of-thought.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <ol class="steps">
+              <li><strong>Loaded the governing context.</strong> Repository instructions, Technical Taste Council, brief, baseline, project history, existing plan examples, source, tests, and the mock boundary.</li>
+              <li><strong>Verified current architecture.</strong> Confirmed four bracket variants, active selection in <code>interact.js</code>, dashboard lifecycle in <code>main.js</code>, trophy safeguards, local flags, and frozen render contracts.</li>
+              <li><strong>Corrected stale assumptions.</strong> Current source uses separate mirrored and Sideways champion helpers; the baseline was updated instead of forcing code to match stale prose.</li>
+              <li><strong>Identified dependency seams.</strong> Trigger/lifecycle, trophy continuity, renderer/identity, models, choreography, effects/fallbacks, and release evidence each have distinct failure modes and acceptance.</li>
+              <li><strong>Drafted seven plans.</strong> The count was selected to create independent review gates without fragmenting the same files into artificial tasks.</li>
+              <li><strong>Ran a second council review.</strong> Three lenses challenged architecture/leverage, browser reliability/performance, and execution clarity.</li>
+              <li><strong>Applied the council findings.</strong> Geometry capture moved before layout mutation; opening z-order became explicit; trophy motion moved to the logical clock; fallback/crowd constants gained single owners; and connector redraw was added.</li>
+              <li><strong>Produced this review artifact.</strong> It connects discoveries, rationale, architecture, risks, plans, and learning guidance for a new engineer.</li>
+              <li><strong>Ran the post-implementation council pass.</strong> It found replay canvas/context churn and a brittle body-root isolation allowlist.</li>
+              <li><strong>Applied the final findings.</strong> Replay now preserves strict canvas/context identity, and modal isolation covers current and dynamic body siblings with a focus trap.</li>
+              <li><strong>Applied the final scope decision.</strong> Sound was removed from production, the standalone mock, timeline APIs, tests, plans, and acceptance language; silence is now enforced.</li>
+              <li><strong>Applied the game-design and 3D-modeling pass.</strong> The opening became a center-out card-and-line curtain, figures gained bounded anatomy and kit detail, the stadium gained pitch/roof/crowd depth, a local championship banner became the reward focal point, and the empty plinth now leaves during the carry.</li>
+              <li><strong>Closed the center-column exception.</strong> A final adversarial review found that M104's two incoming center-tagged connector halves were skipped by both animation branches. They now use M104's exact downward transform and opacity, while the generic round cascade is explicitly limited to left and right columns.</li>
+              <li><strong>Re-audited the scene from game-design and 3D-modeling perspectives.</strong> The camera remained side-biased, hero objects used competing centerlines, simplified hands could not prove contact, the mock had drifted, and the old <code>4.55</code> lift exceeded physical arm reach.</li>
+              <li><strong>Applied the frontal rebuild.</strong> Every hero object now shares <code>x = 0</code>, the captain enters rear-to-front and performs toward the viewer, the trophy uses named grips and a world-space carrier, both arms use allocation-free analytic targeting, the reachable lift is <code>3.68</code>, and the review harness renders production directly.</li>
+            </ol>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="learning-mode">
+        <details class="section">
+          <summary>
+            <span class="section-number">10</span>
+            <span class="summary-copy">
+              <h2>Learning Mode (ELI5)</h2>
+              <p>The same architecture explained without assuming WebGL or browser-lifecycle experience.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div class="eli5-card">
+              <h3>Imagine a theater built inside the bracket page.</h3>
+              <p>
+                The champion box is a secret door. Four quick knocks open the theater. Before the
+                curtain moves, the app takes a careful photo of where everything is: which bracket
+                is showing, where the trophy is, whether the big table is expanded, where the page
+                is scrolled, and which control has keyboard focus.
+              </p>
+              <p>
+                The app then puts a safe fence around the dashboard so people cannot click or tab
+                into controls behind the show. It does not throw the dashboard away; it keeps the
+                real bracket visible long enough for the left and right halves to slide apart like
+                curtains. The cards nearest the center leave first, and each half of a connecting
+                line travels with the card it touches, so the transition feels joined rather than
+                like unrelated layers fading away.
+              </p>
+              <p>
+                The trophy is tricky. Copying the trophy canvas normally creates an empty picture,
+                so the app must ask the trophy to draw one last frame and copy those pixels
+                immediately. That picture settles onto the stage. Later, a separately built 3D
+                version takes over while the captain's hand covers the switch.
+              </p>
+              <p>
+                Holding the trophy is like asking a person to grab two handles. First the app moves
+                the trophy to the right place. Then it asks the trophy where its left and right
+                handles are. Finally, it bends each arm toward one handle and curls the clay fingers.
+                The trophy is not tied to one hand, and it never rises higher than the arms can
+                physically reach.
+              </p>
+              <p>
+                One master clock tells the captain, camera, lights, flag, and confetti what
+                moment they are in. If the browser tab is hidden, the clock stops. When the user
+                returns, the show continues instead of jumping ahead.
+              </p>
+              <p>
+                When the show ends or is skipped, one cleanup routine removes the theater, stops
+                graphics, and puts every dashboard detail back exactly where it was.
+              </p>
+            </div>
+            <div class="grid-3" style="margin-top:14px">
+              <div class="card"><h3>Plan 01</h3><p>Build the secret door and emergency exits.</p></div>
+              <div class="card"><h3>Plans 02-04</h3><p>Build the trophy, stage, stadium, and people.</p></div>
+              <div class="card"><h3>Plans 05-06</h3><p>Teach the show to move, celebrate, and fail safely.</p></div>
+              <div class="card"><h3>Plan 07</h3><p>Prove the complete silent experience with release evidence.</p></div>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="senior-notices">
+        <details class="section">
+          <summary>
+            <span class="section-number">11</span>
+            <span class="summary-copy">
+              <h2>What a Senior Engineer Would Notice</h2>
+              <p>Signals that distinguish a robust plan from a demo that merely works once.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div class="grid-2">
+              <div class="card">
+                <h3>Measurement order is part of correctness</h3>
+                <p>Locking overflow can change page width. Source rectangles and trophy pixels must be captured before any stage insertion, class, inert, or overflow mutation.</p>
+              </div>
+              <div class="card">
+                <h3>Visibility is not lifecycle</h3>
+                <p>Hiding a canvas does not stop RAF, WebGL, observers, or late promises. Every resource needs an explicit owner and destroy path.</p>
+              </div>
+              <div class="card">
+                <h3>One clock prevents drift</h3>
+                <p>WAAPI, Three.js, and fallback timing cannot each use their own wall clock. They consume one logical visible-active time source.</p>
+              </div>
+              <div class="card">
+                <h3>Resource bounds are product decisions</h3>
+                <p>DPR and instance counts are named constants because visual ambition without bounds becomes a reliability bug on phones.</p>
+              </div>
+              <div class="card">
+                <h3>Current source beats old documentation</h3>
+                <p>The corrected <code>pickBox</code> ownership shows why an engineer verifies assumptions before encoding them in plans or abstractions.</p>
+              </div>
+              <div class="card">
+                <h3>Human review is still necessary</h3>
+                <p>Tests can prove timing and cleanup, but only a person can approve acknowledgment readability, two-hand trophy contact, frontal centerline alignment, full-scale spatial cues, and composition.</p>
+              </div>
+              <div class="card">
+                <h3>One visual can have two owners</h3>
+                <p>A connector joining independent cards cannot obey both transforms as one path. Split it at a stable midpoint so each half has one owner and one timing contract.</p>
+              </div>
+              <div class="card">
+                <h3>Physical reach is an acceptance criterion</h3>
+                <p>An IK solver can clamp safely and still produce a visibly broken pose. Validate the desired prop target against measured arm lengths before solving.</p>
+              </div>
+              <div class="card">
+                <h3>A review surface should not imitate production</h3>
+                <p>Duplicated cameras, rigs, and choreography inevitably drift. Keep review controls separate, but render the same production scene controller.</p>
+              </div>
+            </div>
+            <div class="callout warning" style="margin-top:14px">
+              <h3>The feature's real leverage</h3>
+              <p>
+                The Easter egg itself is a one-off. The durable value comes from reusable seams:
+                exact body-level modal restoration, a pure activation window, a paused logical
+                clock, shared procedural trophy geometry, bounded scene infrastructure, and
+                evidence-driven release practice.
+              </p>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="execution-order">
+        <details class="section" open>
+          <summary>
+            <span class="section-number">12</span>
+            <span class="summary-copy">
+              <h2>Recommended Execution Order</h2>
+              <p>Dependency-aware checkpoints and what must be true before moving on.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <ol class="steps">
+              <li><strong>Plan 01 - Safe vertical slice.</strong> Do not proceed until trigger identity, stale import rejection, capture-phase Escape, isolation, restore, connector redraw, and byte-lock review pass.</li>
+              <li><strong>Plan 02 - Trophy continuity.</strong> Do not proceed until desktop pixels, phone fallback, suspension, late trophy import, and replay cleanup are proven.</li>
+              <li><strong>Plan 03 - Renderer foundation.</strong> Do not add rigs until one canvas, local identity, bounded DPR, resize, fallback, and disposal are stable.</li>
+              <li><strong>Plan 04 - Static hero geometry.</strong> Approve bounded smooth clay anatomy, articulated hands, measured arm lengths, captain, six teammates, armband, centered podium contact, pitch, full-scale stadium depth, championship banner, phone framing, and shared anchors as still images.</li>
+              <li><strong>Plan 05 - Deterministic choreography.</strong> Approve every timing phase, rear-to-front entrance, frontal centerline, carrier-to-grip-to-arm update order, reachable lift, card/connector cascade, plinth dismissal, and hero frame before adding confetti.</li>
+              <li><strong>Plan 06 - Payoff and resilience.</strong> Add effects within fixed bounds and finalize the one shared fallback contract.</li>
+              <li><strong>Plan 07 - Release evidence.</strong> Run the complete machine/human matrix, including the silence guard. A failed criterion reopens its owning plan; it is not waived here.</li>
+            </ol>
+            <div class="callout danger" style="margin-top:14px">
+              <h3>First action</h3>
+              <p>
+                Start with <a href="plans/PLAN-01-activation-and-lifecycle-spine.md">Plan 01</a>.
+                Do not begin modeling while the trigger and restore contract are unproven.
+              </p>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="section-block" id="lessons-learned">
+        <details class="section" open>
+          <summary>
+            <span class="section-number">13</span>
+            <span class="summary-copy">
+              <h2>Lessons Learned</h2>
+              <p>Transferable engineering lessons from turning a creative brief into mechanical work.</p>
+            </span>
+          </summary>
+          <div class="section-content">
+            <div class="grid-2">
+              <div class="card"><h3>Creative features still need boring foundations.</h3><p>The more cinematic the outcome, the more valuable deterministic state, cleanup, and bounded resources become.</p></div>
+              <div class="card"><h3>Plan around failure modes, not screen areas.</h3><p>Trigger, capture, time, resources, models, effects, and evidence are better boundaries than "front end" versus "animation."</p></div>
+              <div class="card"><h3>Review controls and rendering should have different owners.</h3><p>The review may add play, scrub, team, and fallback controls, but camera, models, trophy contact, and choreography must come from production.</p></div>
+              <div class="card"><h3>One source of truth prevents drift.</h3><p>Phase times, stage heights, crowd limits, and fallback timing each need one named owner.</p></div>
+              <div class="card"><h3>Browser and scene order-of-operations matter.</h3><p>Measure before mutation, render before copying, pose the body before placing the trophy, place the trophy before reading grips, solve arms before rendering, pause before hiding, and restore before redrawing.</p></div>
+              <div class="card"><h3>Tests and human review answer different questions.</h3><p>Use pure tests for state/timing, source guards for browser-only construction, traces for cost, and human review for visual meaning.</p></div>
+              <div class="card"><h3>Transition quality depends on ownership.</h3><p>When cards, lines, trophies, and world layers meet, assign each moving visual one authoritative clock and transform owner.</p></div>
+              <div class="card"><h3>Dramatic is not the same as mechanically valid.</h3><p>Hero poses must fit the rig's real reach and preserve contact in every sampled frame, not only at the final still.</p></div>
+            </div>
+            <div class="callout success" style="margin-top:14px">
+              <h3>Final planning outcome</h3>
+              <p>
+                The brief is translated into seven ranked, self-contained execution contracts and the
+                local implementation now records the final frontal-rebuild decisions. A less capable
+                model can follow one plan at a time without re-deriving the architecture or inventing
+                missing lifecycle, transition, centered staging, trophy-contact, modeling, fallback,
+                performance, or verification decisions.
+              </p>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <p class="footer-note">
+        Planning and implementation review artifact. Production is complete locally; no commit, push,
+        deployment, or cloud-agent execution has occurred.
+      </p>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const sections = [...document.querySelectorAll("details.section")];
+      const planReviews = [...document.querySelectorAll("details.plan-review")];
+      const navLinks = [...document.querySelectorAll(".nav-list a")];
+      const search = document.getElementById("planSearch");
+      const noResults = document.getElementById("noPlanResults");
+
+      const setAll = open => {
+        [...sections, ...planReviews].forEach(item => { item.open = open; });
+      };
+
+      document.getElementById("expandAll").addEventListener("click", () => setAll(true));
+      document.getElementById("collapseAll").addEventListener("click", () => setAll(false));
+      document.getElementById("openPlans").addEventListener("click", () => {
+        document.querySelector("#plan-reviews details.section").open = true;
+        planReviews.forEach(item => { item.open = true; });
+        document.getElementById("plan-reviews").scrollIntoView({ block: "start" });
+      });
+      document.getElementById("printReview").addEventListener("click", () => window.print());
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme");
+        document.documentElement.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+      });
+
+      search.addEventListener("input", () => {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+        planReviews.forEach(plan => {
+          const text = `${plan.dataset.search || ""} ${plan.textContent}`.toLowerCase();
+          const match = !query || text.includes(query);
+          plan.hidden = !match;
+          if (match) visible++;
+        });
+        noResults.hidden = visible !== 0;
+      });
+
+      const targets = navLinks
+        .map(link => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+      const observer = new IntersectionObserver(entries => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        navLinks.forEach(link => {
+          link.classList.toggle("active", link.getAttribute("href") === `#${visible.target.id}`);
+        });
+      }, { rootMargin: "-20% 0px -65% 0px", threshold: [0.05, 0.2, 0.5] });
+      targets.forEach(target => observer.observe(target));
+    })();
+  </script>
+</body>
+</html>

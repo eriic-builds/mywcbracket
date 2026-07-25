@@ -1,17 +1,27 @@
 # Champion celebration brief
 
-Status: refined execution brief pending final mock approval.
+Status: implementation complete and release-authorized.
+
+> **V2 successor:** This file preserves the completed V1 frontal baseline. The storyboard-driven
+> left-to-right revamp is specified in
+> [`../[06]-champion-celebration-v2/BRIEF.md`](../[06]-champion-celebration-v2/BRIEF.md). V2 intentionally
+> supersedes V1's centered rear-to-front blocking and no-lateral-tracking rule while preserving the
+> trigger, bracket curtain, trophy continuity, silent lifecycle, fallbacks, and one-canvas ownership.
 
 ## Goal
 
 Add a hidden cinematic celebration to the mirrored bracket table. Four rapid activations of the
-champion country box should transform the bracket into a fully 3D low-poly winners-stage sequence
-rendered with Three.js, without adding a build step, external dependency, hosted model, player
-likeness, or backend service.
+champion country box should transform the bracket into a full-scale 3D soft-matte clay winners-stage
+sequence rendered with Three.js, without adding a build step, external dependency, hosted model,
+player likeness, or backend service.
 
-The standalone choreography mock is the visual reference for this contract, not production code.
-Production integration and execution-plan files remain deferred until the user explicitly approves
-the mock and this refined brief.
+The standalone choreography review now instantiates the production scene controller. It is a
+scrubbable review harness rather than a second renderer, so approved review frames and dashboard
+behavior share the same camera, rigs, trophy, environment, and choreography. The ranked planning
+request satisfied the planning gate, and the later build request authorized local implementation.
+Commit and main-branch push were deferred during implementation and later authorized for this release.
+
+Implementation evidence and remaining environment notes are recorded in [`RESULTS.md`](RESULTS.md).
 
 ## Trigger
 
@@ -56,12 +66,12 @@ Target duration: approximately 30 seconds.
 
 | Time | Required beat |
 | --- | --- |
-| `0.0-3.2s` | Mirrored bracket halves collapse outward and dissolve while the trophy settles, the plinth rises, and the stadium and crowd emerge. |
+| `0.0-3.2s` | Mirrored bracket cards leave in a center-out cascade while their connector halves travel with them; the trophy settles, the plinth rises, and the stadium, crowd, and champions banner emerge. |
 | `3.2-4.0s` | Hold the cleared trophy-and-stadium frame. |
-| `4.0-6.2s` | Captain enters from the left and performs viewer-facing hype moves. |
-| `6.2-8.25s` | Captain pauses for the viewer-facing golf swing; trophy remains on the plinth. |
+| `4.0-6.2s` | Captain enters from the centered rear tunnel toward the viewer and settles on the trophy axis. |
+| `6.2-8.25s` | Captain acknowledges the viewer, focuses on the trophy, and takes a measured approach; trophy remains on the plinth. |
 | `8.25-9.6s` | Captain resumes, masks the aligned trophy crossfade under the grab, and begins carrying it. |
-| `9.6-14.2s` | Camera follows the carry while the full staged team podium reveals from the right. |
+| `9.6-14.2s` | The camera pushes forward while the full staged team podium reveals symmetrically from depth. |
 | `14.2-15.4s` | Captain joins the podium and faces the viewer. |
 | `15.4-17.7s` | Captain and teammates hunch through two slow fake pumps. |
 | `17.7-19.9s` | Full lift and one synchronized team jump. |
@@ -75,41 +85,55 @@ approximately 30-second shape must not change without user approval.
 1. The existing bracket trophy remains continuously visible. As the cutscene opens, it settles
    smoothly downward and grows to cutscene scale while the plinth rises beneath it. It does not
    disappear or get replaced.
-2. The left bracket rounds collapse and dissolve toward the left edge while the right rounds mirror
-   that motion toward the right edge, opening the center like curtains.
+2. The left bracket rounds collapse toward the left edge while the right rounds mirror that motion
+   toward the right edge, opening the center like curtains.
 3. During the slower bracket fade:
+   - inner rounds leave before outer rounds so the center clears first;
+   - cards within each round receive a small row stagger and retain opacity during their initial
+     travel instead of vanishing immediately;
+   - every elbow connector is split into source and destination halves so each half can use the exact
+     transform and timing of the card it touches;
+   - the timeline does not start until the Three.js world has initialized and rendered frame zero,
+     leaving the bracket readable while the world loads;
    - the trophy plinth begins rising on the first fade frame beneath the settling trophy;
-   - the night-stadium environment emerges; and
-   - layered low-poly fans appear behind it and begin bopping.
+   - the night-stadium environment and `2026 WORLD CUP CHAMPIONS` country banner emerge; and
+   - layered procedural fans appear behind it and begin bopping.
 4. The cleared trophy-and-stadium frame holds briefly before the captain enters.
-5. A generic low-poly captain with a visible `C` armband on the right arm walks in from the left in
-   profile, then turns to face the viewer for a short pair of hype arm pumps and shoulder bounces.
-6. The captain pauses before the trophy and performs a viewer-facing golf-swing celebration with a
-   clear backswing, downstroke, and follow-through. The trophy is already fully settled on its
-   plinth and remains untouched throughout this celebration.
-7. The captain resumes walking, swipes the same continuously visible trophy from its plinth, and
-   keeps moving right while carrying it. The DOM-to-3D handoff occurs under the captain's grab.
-8. As the camera tracks with the captain, the winners podium comes into view from the right with all
-   six teammates already standing on it as one staged group.
-9. The captain joins the team, turns to face the viewer rather than the teammates, and holds the
-   trophy ready for the lift.
+5. A generic smooth clay-avatar captain with a visible `C` armband on the right arm walks out of the
+   centered rear tunnel toward the camera. The captain remains viewer-facing so the entrance reads as
+   direct interaction rather than a side-view traversal.
+6. The captain acknowledges the viewer with a brief wave and body lean, redirects focus to the
+   trophy, takes a controlled forward step, and settles into the pre-grab reach. The trophy is already
+   fully settled on its plinth and remains untouched throughout this beat.
+7. The captain resumes the centered approach, takes the same continuously visible trophy from its
+   plinth, and carries it toward the team. The DOM-to-3D handoff occurs under the captain's grab. The
+   now-empty plinth drops, shrinks, fades, and is gone by `10.3s` so it does not follow the carry.
+8. As the camera performs a restrained forward push, the winners podium advances into view from depth
+   with all six teammates already standing on it as one symmetric staged group.
+9. The captain joins the centered team formation while remaining oriented toward the viewer and holds
+   the trophy ready for the lift.
 10. The captain and teammates hunch down together and follow two slow fake trophy pumps.
 11. The captain commits to the full raise as the whole team performs one synchronized jump. The
     trophy remains visibly held and rises with the captain's hands throughout the jump, framed in a
-    hero shot with a subtle low-angle push, spotlight pulse, and photographer-style flashes.
+    centered frontal hero push with a spotlight pulse and photographer-style flashes.
 12. The payoff builds in sequence rather than all at once:
-    - the country flag unfurls;
-    - the crowd and original stadium anthem reach their peak;
+    - the country flag unfurls without hiding the champions banner;
+    - the crowd motion and stadium lighting reach their peak;
     - country-color confetti begins; and
     - teammates bounce and celebrate.
 13. The completed champion tableau holds for roughly six additional seconds so the user can watch
-    the raised trophy, teammates, flag, crowd, confetti, and stadium-anthem payoff before restoring
-    the previous bracket view, scroll position, and focus.
+    the raised trophy, teammates, flag, champions banner, crowd, confetti, and lighting payoff before
+    restoring the previous bracket view, scroll position, and focus.
 
 ## Visual direction
 
-- This is a 3D low-poly build, not a 2D animation or video overlay.
-- Low-poly geometry built procedurally with the locally vendored Three.js module.
+- This is a full-scale 3D soft-matte clay build, not a 2D animation or video overlay.
+- Bounded procedural geometry built with the locally vendored Three.js module.
+- Use a centered, straight-on elevated perspective composition with natural perspective and full
+  stadium depth. Camera, rear tunnel, plinth, trophy, captain, podium, team, flag, and champions banner
+  share one visual centerline. Do not use lateral camera tracking, a side-view presentation,
+  orthographic toy framing, miniature proportions, tilt-shift blur, depth-of-field blur, or a tabletop
+  base treatment.
 - One captain and six teammates.
 - The captain has a clearly readable `C` armband on the right arm.
 - Generic figures only:
@@ -122,35 +146,43 @@ approximately 30-second shape must not change without user approval.
 - Team identity comes from:
   - sampled flag colors;
   - kit materials;
-  - the bundled flag; and
-  - confetti colors.
-- The flag should unfurl behind the team as the trophy rises.
-- The crowd should read as a layered stadium mass, not hundreds of detailed characters.
-- The standalone mock is a choreography and capability blockout, not a production asset library or
-  visual-quality ceiling. Production must rebuild the figures, animation, trophy interaction,
-  stadium, lighting, materials, crowd, flag, and effects at substantially higher fidelity without
-  changing the approved staging.
+  - the bundled flag;
+  - confetti colors;
+  - the generated `2026 WORLD CUP CHAMPIONS` banner; and
+  - the winning-country name rendered on that banner.
+- The flag should unfurl behind the team as the trophy rises without obscuring the banner's title.
+- The crowd should read as a layered stadium mass with separate bodies and heads, not hundreds of
+  detailed characters.
+- The standalone review is a production-backed inspection surface, not a second asset library. It must
+  import `createChampionScene()` and may add review controls around it, but it may not duplicate the
+  figures, trophy, camera, stadium, or choreography.
 
 ## Production quality bar
 
-The finished scene should feel like a bespoke low-poly tournament cinematic, not the standalone mock
+The finished scene should feel like a bespoke stylized tournament cinematic, not the standalone mock
 copied into the dashboard.
 
-- Use original procedural geometry with deliberate faceting, coherent proportions, strong
-  silhouettes, layered materials, and clean contact points.
+- Use original bounded smooth procedural geometry with rounded capsules, higher-resolution heads,
+  sculpted hair masses, layered clay kit forms, coherent proportions, strong silhouettes, and clean
+  contact points. Obvious faceting and coarse assembled-primitives silhouettes are regressions.
 - Replace blockout limb motion with a readable hierarchical rig: planted feet, believable weight
-  shifts, clear anticipation and follow-through, stable podium contact, and hands that remain
-  connected to the trophy.
+  shifts, clear anticipation and follow-through, stable podium contact, articulated clay palms,
+  fingers, and thumbs, and deterministic two-bone arm targeting.
+- Give the trophy named left/right grip anchors. Solve both arms to those real world-space targets
+  after the trophy is positioned on every frame; do not visually approximate the contact or parent the
+  trophy to one hand.
 - Give the captain and teammates distinct but coordinated secondary motion so the group feels alive
   without using real-player identity.
-- Build stadium depth through multiple crowd tiers, structural silhouettes, field markings,
-  atmospheric falloff, light rigs, and restrained motion variation rather than one flat backdrop.
-- Treat the trophy as the visual hero with refined low-poly geometry, controlled metallic response,
-  readable seams, glints, and uninterrupted continuity from bracket to plinth to hands.
-- Use cinematic composition throughout: purposeful low-angle framing, camera easing, parallax,
-  foreground/background separation, spotlight rhythm, photographer flashes, and a final frame that
-  remains visually strong for the full hold.
-- Make the flag a segmented low-poly cloth object with convincing unfurl and wave motion rather than
+- Build stadium depth through multiple crowd tiers, side wings, roof structure, lamps, field markings,
+  atmospheric falloff, a championship banner, light rigs, and restrained motion variation rather than
+  one flat backdrop.
+- Treat the trophy as the visual hero with a smooth globe, curved supports, a lathed stem and base,
+  controlled metallic response, readable seams, glints, and uninterrupted continuity from bracket to
+  plinth to hands.
+- Use cinematic composition throughout: centered frontal framing, a restrained long-lens perspective,
+  forward camera easing, foreground/background separation, spotlight rhythm, photographer flashes,
+  and a final frame that remains visually strong for the full hold.
+- Make the flag a segmented procedural cloth object with convincing unfurl and wave motion rather than
   a flat static rectangle.
 - Use country colors as an art-directed palette for kits, flag, crowd accents, light accents, and
   confetti without washing the entire scene in one color.
@@ -159,22 +191,13 @@ copied into the dashboard.
 - Deliver the visual impact through modeling, animation, lighting, timing, and composition—not
   unbounded geometry, particles, pixel ratio, external assets, or expensive post-processing.
 
-## Sound
+## Silence
 
-- Silent by default.
-- A visible sound control appears only inside the celebration.
-- Sound starts only from an explicit user activation.
-- Use procedural Web Audio for a pumped, original stadium-anthem score:
-  - layered crowd swell and chant texture;
-  - kick-and-clap pulse;
-  - low brass/choir-style synthesized motif;
-  - a golf-swing whoosh;
-  - a trophy-grab stinger; and
-  - a lift riser and payoff.
-- The score may evoke elite tournament ceremony energy, but must not reproduce the UEFA Champions
-  League anthem or any other existing melody or recording.
-- No audio file, remote request, autoplay, or persistent sound preference is required.
-- Stop and close every source, node, and audio context when sound is disabled or the scene ends.
+- The celebration is intentionally silent.
+- Do not show a sound control or create Web Audio, media elements, audio files, autoplay behavior, or
+  sound preferences.
+- Timing, choreography, crowd motion, lighting, flashes, flag motion, and confetti carry the full
+  emotional payoff.
 
 ## Input and lifecycle
 
@@ -184,7 +207,7 @@ copied into the dashboard.
 - Product Motion on/off continues to control only the landing-page balls.
 - Operating-system `prefers-reduced-motion` receives a short static or near-static champion tableau.
 - WebGL initialization failure or context loss receives a static fallback.
-- Pause timeline and audio while the document is hidden.
+- Pause the timeline while the document is hidden.
 - Hidden time must not advance the logical timeline or cause a wall-clock catch-up on resume.
 - Handle resize and orientation change without retaining stale bracket geometry.
 - Prevent duplicate starts while import or playback is active.
@@ -210,19 +233,24 @@ copied into the dashboard.
 - Vanilla HTML, CSS, and ES modules.
 - No frontend build step.
 - No package-manager runtime dependency.
-- No external model, texture, font, script, audio, analytics, or API request.
+- No sound/audio capability and no external model, texture, font, script, media, analytics, or API
+  request.
 - Reuse bundled flag SVG files and local Three.js.
 - Keep one celebration WebGL canvas.
 - The existing bracket trophy canvas is separate; pause unnecessary live trophy rendering while the
   celebration owns the screen and do not create celebration canvases on replay.
 - Bound device-pixel ratio and particle counts.
+- Bound player topology rather than importing or generating unbounded models; the production profile
+  uses 24 radial body segments, 32 head segments, and 10 capsule-cap segments.
 - Use instancing for crowd and confetti.
 - Cache geometry, materials, dimensions, and sampled palettes outside the frame loop.
 - Do not perform layout reads or create geometry, materials, or arrays per animation frame.
 - Pause or stop every frame loop when hidden, finished, skipped, or torn down.
-- Dispose WebGL, texture, geometry, material, listener, timer, frame, and audio resources.
+- Dispose WebGL, texture, geometry, material, listener, timer, and frame resources.
 - Keep stage heights such as podium top, player foot level, trophy carry, and jump offsets in shared
   constants so the trophy and bodies cannot drift apart.
+- Keep `trophyLift` within the captain's measured upper-arm plus forearm reach. A visually dramatic but
+  unreachable target is a rig defect, not an animation flourish.
 
 ## Architecture direction to validate
 
@@ -237,17 +265,25 @@ copied into the dashboard.
 - Share pure trophy geometry in production, but keep the cutscene trophy independent from the live
   trophy renderer.
 - Freeze or clone the live trophy visual, settle that same-looking object onto the emerging plinth,
-  and keep it visible through the golf celebration. Crossfade to the aligned independent 3D trophy
+  and keep it visible through the crowd-acknowledgment and trophy-approach beat. Crossfade to the aligned independent 3D trophy
   only under the captain's grab rather than reparenting the running trophy scene.
 - The visible trophy source may be a WebGL canvas on desktop or the SVG fallback on a narrow
   container. Cloning a canvas node does not clone its pixels, so production must use a reliable
   render-then-capture path for the active visible canvas and an image path for the fallback.
 - Ignore hidden trophy slots and measure only the active mirrored source.
-- Transfer the cutscene trophy to the captain with `Object3D.attach()` to preserve world position.
+- Keep the cutscene trophy as a scene child and drive it from a stable captain-owned world-space
+  carrier. After placing it, read the trophy's named left/right grip anchors and solve both arms to
+  those targets. This avoids hierarchy offsets, one-hand drift, and circular hand/trophy dependencies.
+- Split each bracket elbow connector at its midpoint and tag both halves with the touching card's
+  side, round, row, and row count so line and card transforms cannot drift.
+- Create the curtain animations only after scene creation succeeds and frame zero renders; slow scene
+  startup must delay the cutscene rather than expose an empty stage.
+- Generate the champions banner as a local disposable `CanvasTexture` with auto-fitted country text.
+- Dismiss the trophy plinth from `9.0-10.3s` after the grab rather than leaving an empty stand in the
+  carry shot.
 - Let the celebration own Escape while active so map expansion cannot also react.
-- Create or resume Web Audio synchronously inside the sound-button gesture.
-- Enabling sound after playback has started must join the current score state without replaying every
-  elapsed cue.
+- Keep production and the standalone mock silent; a sound control, audio module, cue API, or Web
+  Audio construction is a product regression.
 
 ## Production verification contract
 
@@ -263,6 +299,12 @@ without introducing a browser-test dependency.
 - Extend lifecycle/performance source guards to cover local Three.js, one celebration canvas,
   instancing, bounded pixel ratio and particles, no layout reads or resource creation in the frame
   loop, context-loss fallback, and complete teardown.
+- Add deterministic guards for the shared `3.2s` curtain duration, card-level center-out staggering,
+  split/tagged connector halves, scene-ready ordering, bounded player segments, generated pitch and
+  banner textures, named trophy grips, reachable lift height, two-arm targeting, production-backed
+  review, and `9.0-10.3s` plinth dismissal.
+- Add a silence guard that fails if a sound control, celebration audio module, audio cue API, or Web
+  Audio construction is introduced.
 - `npm test` must pass after focused tests and any intentional fixture review.
 - Browser review must cover desktop and phone widths, Actual and My picks, pre- and post-M104
   champions, at least England, France, Spain, Argentina, Switzerland, and Germany, click/tap and
@@ -273,17 +315,13 @@ without introducing a browser-test dependency.
   trigger, proving the final threshold rather than only testing four immediate clicks.
 - Repeated activation must not select champion text or open the browser's text-selection menu on
   Edge/Chrome desktop or touch review.
-- Human review must confirm the original procedural score, golf cue, grab cue, and lift payoff; an
-  automated lifecycle check alone cannot approve sound design.
 
-## Fresh-session planning handoff
+## Planning handoff history
 
-After explicit approval, a fresh session must read `dev-docs/CLAUDE.md`,
-`dev-docs/TECHNICAL_TASTE_COUNCIL.md`, this brief, `BASELINE.md`, and the current production source
-and tests. It must decide and justify the number of ranked production `PLAN-<slug>.md` files needed
-to execute the feature. Those plans build the real dashboard feature; they are not mock-refinement
-plans. Each plan must be self-contained, name exact files and interfaces, carry hidden edge cases and
-cleanup paths, and provide concrete machine- and user-verifiable acceptance criteria.
+The implementation session read `dev-docs/CLAUDE.md`,
+`dev-docs/TECHNICAL_TASTE_COUNCIL.md`, this brief, `BASELINE.md`, the ranked plans, and the current
+production source/tests before building the feature. The seven plans remain as the mechanical
+execution history and review contract.
 
 ## Mock review controls
 
@@ -294,41 +332,49 @@ The standalone mock may expose controls that production will not:
 - Timeline scrubber.
 - Labeled phase display.
 - Team selector.
-- Sound toggle.
 - Reduced-motion preview.
 - Skip/reset.
 
 ## Mock review questions
 
 - Does the trophy feel like one continuous physical object?
-- Does the trophy settle smoothly onto the plinth and remain there through the golf swing?
-- Does the outward bracket-curtain motion create enough room and anticipation?
+- Does the trophy settle smoothly onto the plinth and remain there through the acknowledgment and approach?
+- Do inner cards move first, outer cards linger, and opacity remain readable during travel?
+- Do both connector halves remain visually attached to their respective moving cards?
 - Does the trophy plinth and bopping stadium crowd emerge clearly during the fade?
+- Does the empty trophy plinth disappear during the carry rather than lingering in frame?
+- Is `2026 WORLD CUP CHAMPIONS` and the winning country readable without fighting the final flag?
 - Is the cleared-stage hold long enough before the captain enters?
-- Does the left-to-right walk make the moving trophy swipe understandable?
-- Does the team reveal naturally from the right while the captain carries the trophy?
+- Does the rear-to-front entrance make the captain feel like they are interacting directly with the
+  viewer?
+- Does the team reveal symmetrically from depth while the captain carries the trophy?
 - Is the `C` armband readable?
-- Is the viewer-facing golf swing readable as a backswing, strike, and follow-through?
-- Does the captain clearly turn to face the viewer for the final celebration?
+- Does the acknowledgment read as gratitude before the captain visibly redirects focus to the trophy?
+- Does the captain remain readable and viewer-facing throughout the entrance, acknowledgment, carry,
+  and final celebration?
 - Do the slower crouched fake pumps feel like a team taunt rather than the real lift?
-- Does the synchronized jump keep the trophy visibly connected to the captain's hands?
-- Does the low-angle push, lighting pulse, and flash rhythm make the lift feel larger?
+- Do both hands remain on the named trophy grips through grab, carry, pumps, lift, jump, and hold?
+- Does the centered frontal push, lighting pulse, and flash rhythm make the lift feel larger?
+- Do the trophy, plinth, tunnel, team, banner, flag, and camera stay on one coherent centerline?
 - Is the buildup to crowd, flag, and confetti paced correctly?
-- Does the original hype score feel pumped without overwhelming the scene?
-- Does the low-poly treatment feel intentional?
+- Do the rounded clay avatars, smooth trophy, and matte stadium language feel cohesive without reading
+  as miniature, faceted, or toy-scaled?
 - Is the duration right?
 - Does the scene restore the bracket cleanly?
 
 ## Acceptance gate before production plans
 
 - The standalone mock demonstrates the complete sequence.
-- The user approves the timing, camera, staging, team count, flag, confetti, crowd, and sound.
+- The user approves the timing, camera, staging, team count, flag, confetti, and crowd.
 - The reduced-motion and WebGL fallback direction is approved.
 - The brief is revised to match the approved mock.
 - No production ambiguity remains that would require a cloud agent to infer intent.
-- Only then may `dev-docs/champion-celebration/plans/` be created.
+- Only then may `dev-docs/[05]-champion-celebration/plans/` be created. This gate was crossed by the
+  user's direct production-planning request. The later build request authorized local implementation,
+  and separate owner approval later authorized this release's commit and main-branch push.
 
 ## Publishing gate
 
 Keep the feature package and mock local and uncommitted during review. Do not push, deploy, create a
-PR, or start a GitHub cloud-agent task without separate approval.
+PR, or start a GitHub cloud-agent task without separate approval. That approval was granted for this
+release's commit and main-branch push.

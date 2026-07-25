@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>sled-mywcbracket — Build Story, Codebase Analysis & Learning Moments</title>
+<!-- Round 2 (Jul 8): repo promoted from pilot to main, renamed; nav fixes; actual-path rebuild -->
+<style>
+:root{
+  --bg:#0e1116;--panel:#161b23;--panel2:#1c232e;--border:#2a3342;--text:#e6ebf2;
+  --muted:#8b98ab;--blue:#4da3ff;--teal:#2fd6b0;--gold:#f2c14e;--red:#ff6b6b;
+  --purple:#b28dff;--green:#7ed957;
+}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 20px 100px}
+h1{font-size:1.9rem;margin:.2em 0;background:linear-gradient(120deg,var(--gold),#ff9f43);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+h2{font-size:1.3rem;margin:1.6em 0 .5em;border-bottom:1px solid var(--border);padding-bottom:.3em}
+h3{font-size:1.05rem;margin:1.2em 0 .4em}
+.sub{color:var(--muted);margin:0 0 18px}
+code{background:var(--panel2);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.86em;color:var(--teal)}
+a{color:var(--blue)}
+nav{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:0;background:linear-gradient(var(--bg) 85%,transparent);padding:14px 0 10px;z-index:5}
+nav button{font:inherit;font-weight:600;font-size:.9rem;color:var(--muted);background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:7px 16px;cursor:pointer;transition:.15s}
+nav button:hover{color:var(--text);border-color:var(--gold)}
+nav button.on{color:#1a1200;background:linear-gradient(120deg,var(--gold),#ff9f43);border-color:transparent}
+section.tab{display:none;animation:fade .25s}
+section.tab.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.eli5toggle{display:flex;align-items:center;gap:10px;margin:10px 0 0;font-size:.9rem;color:var(--muted);user-select:none;cursor:pointer}
+.eli5toggle input{width:38px;height:22px;appearance:none;background:var(--panel2);border:1px solid var(--border);border-radius:999px;position:relative;cursor:pointer;transition:.2s}
+.eli5toggle input:checked{background:var(--gold);border-color:var(--gold)}
+.eli5toggle input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--text);transition:.2s}
+.eli5toggle input:checked::after{left:18px;background:#3a2c00}
+.eli5{display:none;background:rgba(242,193,78,.08);border:1px solid rgba(242,193,78,.35);border-left:4px solid var(--gold);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:.92rem}
+body.eli5-on .eli5{display:block}
+.eli5 b{color:var(--gold)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:12px 0}
+details{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin:10px 0;overflow:hidden}
+details summary{cursor:pointer;padding:12px 16px;font-weight:700;list-style:none;display:flex;align-items:center;gap:10px}
+details summary::before{content:"▸";color:var(--gold);transition:.15s}
+details[open] summary::before{transform:rotate(90deg)}
+details .body{padding:0 16px 14px;border-top:1px solid var(--border)}
+.pill{display:inline-block;font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 10px;margin-right:6px;vertical-align:middle}
+.p-blue{background:rgba(77,163,255,.15);color:var(--blue);border:1px solid rgba(77,163,255,.4)}
+.p-teal{background:rgba(47,214,176,.13);color:var(--teal);border:1px solid rgba(47,214,176,.4)}
+.p-gold{background:rgba(242,193,78,.13);color:var(--gold);border:1px solid rgba(242,193,78,.4)}
+.p-red{background:rgba(255,107,107,.13);color:var(--red);border:1px solid rgba(255,107,107,.4)}
+.p-green{background:rgba(126,217,87,.13);color:var(--green);border:1px solid rgba(126,217,87,.4)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:10px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+.flow{display:grid;gap:8px;margin:16px 0}
+.fl-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.fl-box{flex:1 1 190px;max-width:270px;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;text-align:center;font-size:.86rem;transition:.15s}
+.fl-box:hover{border-color:var(--gold);transform:translateY(-2px)}
+.fl-box b{display:block;font-size:.95rem}
+.fl-box small{color:var(--muted)}
+.fl-arrow{text-align:center;color:var(--muted)}
+.stage{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:12px 0}
+.stage .n{flex:0 0 44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.1rem;font-weight:800;color:#04121a;background:linear-gradient(120deg,var(--blue),var(--teal))}
+.stage h3{margin:0 0 2px}
+.stage .meta{font-size:.8rem;color:var(--muted);margin-bottom:6px}
+.bump{background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.3);border-radius:10px;padding:8px 12px;margin:8px 0;font-size:.88rem}
+.bump b{color:var(--red)}
+.good{background:rgba(126,217,87,.07);border:1px solid rgba(126,217,87,.3);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:.92rem}
+.voice{border-left:4px solid var(--purple);padding-left:14px;margin:12px 0;font-size:.94rem}
+.voice b{color:var(--purple)}
+kbd{background:var(--panel2);border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;padding:1px 6px;font-size:.8em}
+footer{margin-top:40px;color:var(--muted);font-size:.8rem;text-align:center}
+.big{font-size:1.05rem}
+.urlbox{font-family:ui-monospace,monospace;font-size:.8rem;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;word-break:break-all;color:var(--teal)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>sled-mywcbracket — the build story</h1>
+<p class="sub">How the zero-backend social layer got planned, built, verified, and shipped — first as a pilot (5 stages), then promoted to the main repo and hardened in <b>Round 2</b> (rename, navigation, and the actual-path bracket rebuild). What I did, why, what went wrong, and what each bump teaches. Built July 7–8, 2026, mid-tournament.</p>
+<label class="eli5toggle"><input type="checkbox" id="eli5"> <span>🧒 ELI5 mode — plain-English explanations everywhere</span></label>
+
+<nav id="nav">
+  <button data-tab="t-what" class="on">🎯 What we built</button>
+  <button data-tab="t-stages">📋 Stage by stage</button>
+  <button data-tab="t-round2">🔁 Round 2</button>
+  <button data-tab="t-code">🗺️ The codebase now</button>
+  <button data-tab="t-council">🧠 Technical Taste Council calls</button>
+  <button data-tab="t-learn">🎓 Learning moments</button>
+  <button data-tab="t-try">✅ Try it yourself</button>
+</nav>
+
+<!-- ================= TAB: WHAT ================= -->
+<section class="tab on" id="t-what">
+<h2>The problem, in one sentence</h2>
+<p class="big">Let coworkers compare World Cup brackets <b>for $0</b> and <b>without putting anyone's name or picks anywhere they didn't personally opt into</b>.</p>
+
+<h2>Your insight became the architecture</h2>
+<p>You said: <i>"could I do like a share link that adds that user into your dashboard, so we're not compromising everyone who doesn't want it to be surfaceable?"</i> — that IS the design. No backend was needed because:</p>
+<div class="card">
+<b>A bracket is only 31 yes/no choices.</b> Each match has two possible winners, and there are 31 matches (16+8+4+2+1). That's 31 bits ≈ 4 bytes of real information. Add a name and a tiebreaker and the whole thing fits in a ~140-character URL. Something that small doesn't need a database — <b>the link itself is the database</b>.
+</div>
+<div class="eli5">🧒 <b>ELI5:</b> Your bracket is like 31 coin flips written down. That's so little information it fits on the address line of an envelope — you don't need to rent a warehouse to store it.</div>
+
+<h2>The social loop (what shipped)</h2>
+<div class="flow">
+  <div class="fl-row"><div class="fl-box"><b>1 · Share</b><small>tap 🔗 Share link, optionally change the name ("share as E.L.")</small></div></div>
+  <div class="fl-arrow">▼ send the link to whoever YOU choose (chat, email)</div>
+  <div class="fl-row"><div class="fl-box"><b>2 · View</b><small>they see your full live-scored dashboard, view-only — their own bracket untouched</small></div></div>
+  <div class="fl-arrow">▼ one tap</div>
+  <div class="fl-row"><div class="fl-box"><b>3 · ➕ Add to my leaderboard</b><small>your bracket lands on THEIR device only</small></div></div>
+  <div class="fl-arrow">▼</div>
+  <div class="fl-row"><div class="fl-box"><b>4 · 🏆 Leaderboard</b><small>live ranking + "where we differ" for the games still to play</small></div></div>
+</div>
+<p>There is no step 5. No server, no pool code, no registry, no bill, nothing to deprecate.</p>
+
+<h2>Why this wins on your two constraints</h2>
+<table>
+<tr><th>Constraint</th><th>How the design satisfies it</th></tr>
+<tr><td><b>Free forever</b></td><td>GitHub Pages is the only infrastructure. There is no free tier to outgrow because there is no tier at all.</td></tr>
+<tr><td><b>Coworker privacy</b></td><td>A person's name + picks exist in exactly two places: their own browser, and links <i>they</i> created and sent. Nobody appears on a leaderboard unless they sent a link AND the recipient added it. Bonus: the bracket rides in the URL <i>fragment</i> (<code>#b=…</code>) which browsers never transmit to any server — even GitHub's access logs can't see it. The "share as" field lets anyone use initials instead of their full name.</td></tr>
+</table>
+<div class="eli5">🧒 <b>ELI5:</b> The part of a web address after the <code>#</code> is like a note you keep in your pocket while showing someone your ID — the security guard (the server) never sees the note. Only the web page running on YOUR computer reads it.</div>
+
+<div class="good">✅ <b>Live now:</b> <a href="https://eriic-builds.github.io/sled-mywcbracket/">eriic-builds.github.io/sled-mywcbracket</a> · repo: <a href="https://github.com/eriic-builds/sled-mywcbracket">github.com/eriic-builds/sled-mywcbracket</a> · production (<a href="https://eriic-builds.github.io/my-wc26-bracket/">my-wc26-bracket</a>) untouched.</div>
+</section>
+
+<!-- ================= TAB: STAGES ================= -->
+<section class="tab" id="t-stages">
+<h2>Five stages, five commits, each verified before moving on</h2>
+
+<div class="stage"><div class="n">0</div><div style="flex:1">
+<h3>Repo setup + safety net</h3>
+<div class="meta">commit <code>003c056</code> · clone-with-history → new public repo, hermetic tests, CI, CLAUDE.md/SPEC.md/TECHNICAL_TASTE_COUNCIL.md</div>
+<p><b>Why first:</b> we were about to modify the glue code hard, mid-tournament. The golden snapshot (render output frozen against <b>frozen inputs</b>) + CI meant every later stage had a tripwire. The results.json inputs had to be frozen too, because a bot rewrites the live file 3×/day — a snapshot reading it would break daily.</p>
+<div class="bump"><b>Bump 1:</b> GitHub can't fork a repo into the same account — so it's a clone-with-full-history pushed to a fresh repo. Also, the PLAN-*.md files were <i>untracked</i> in the source repo, so <code>git clone</code> silently didn't bring them; they were copied by hand. <i>Lesson: clone copies commits, not your desk.</i></div>
+<div class="bump"><b>Bump 2:</b> The permission system refused to create a <i>public</i> repo without your explicit OK — correct behavior, given the whole conversation was about privacy. You confirmed; only then did it publish. <i>Lesson: irreversible/outward-facing actions deserve a human gate even when a plan mentioned them.</i></div>
+<div class="eli5">🧒 <b>ELI5:</b> Before renovating, we installed smoke detectors (tests that run on every change) and photocopied the blueprints (SPEC.md) — in a practice house, so the real house stays safe.</div>
+</div></div>
+
+<div class="stage"><div class="n">1</div><div style="flex:1">
+<h3>Share links — the bracket-in-a-URL</h3>
+<div class="meta">commit <code>97e3c67</code> · new <code>share.js</code> (pure encode/decode), view-only mode, "share as" alias, 10-check test</div>
+<p><b>What:</b> encode = walk the 31 matches in canonical order, write "0" or "1" per pick, wrap with name + tiebreaker in JSON, base64url it. Decode = replay the bits in the same order (later rounds depend on earlier picks, so order is load-bearing). Result: a 138-character URL carrying a whole bracket.</p>
+<p><b>The two data-loss traps dodged:</b> (a) opening someone's link must never overwrite your saved bracket — the shared view renders without persisting; (b) previews used to <i>wipe your what-if edits</i> (a pre-existing bug: viewing the demo destroyed them) — fixed with a stash/restore in <code>storage.js</code>.</p>
+<div class="bump"><b>Bump 3:</b> First E2E screenshot showed "✓ saved on this device" on a <i>shared</i> bracket — untrue and creepy. Caught only because the flow was walked in a real browser, not just unit-tested. <i>Lesson: unit tests prove the math; only using the thing catches the lies in the UI.</i></div>
+<div class="bump"><b>Bump 4:</b> A broken link's error message was being instantly covered by the auto-opening saved bracket — silent failure. Now a bad link keeps you on the landing with a plain-words explanation ("ask the sender to copy it again"). <i>Lesson (Hanselman): every error must say what broke and what to do.</i></div>
+<div class="eli5">🧒 <b>ELI5:</b> We taught the site to write your bracket as a secret code on the envelope, and taught it to read such envelopes from friends — while promising to never scribble over YOUR homework when you look at theirs.</div>
+</div></div>
+
+<div class="stage"><div class="n">2+3</div><div style="flex:1">
+<h3>Add-to-leaderboard + the leaderboard itself</h3>
+<div class="meta">commit <code>22d4bb5</code> · new <code>compare.js</code>: rivals store, standings, diff, rename/remove; 12-check test</div>
+<p><b>The one-button social loop:</b> viewing a shared bracket shows <b>➕ Add to my leaderboard</b>; tapping it stores the bracket locally and drops you straight into the ranked standings — the payoff moment. Rivals are deduped by a content hash (not by name — two Alexes are legal), capped at 20.</p>
+<p><b>The number that can't lie:</b> the leaderboard's "confirmed" column is computed by the same <code>computeState()</code> the dashboard uses, and a test asserts the leaderboard number equals the number rendered on the dashboard for the same bracket. The two can never drift apart.</p>
+<p><b>The diff that matters:</b> "where we differ" lists only <i>undecided</i> games (decided ones are already in the score), sorted by points at stake — so the top line is always the biggest remaining swing. Compared by bracket slot, not by team: two brackets can both "have Spain in the semis" via different paths.</p>
+<div class="bump"><b>Bump 5:</b> Verified in-browser: rename to "Dave from Sales" persisted; pasting your own link answers "That's your own bracket 🙂". The "diff" button also rendered when you had no bracket of your own to diff against — clicking did nothing. Now it's hidden until your bracket exists. <i>Lesson: every button visible on screen is a promise; don't show promises you can't keep.</i></div>
+<div class="eli5">🧒 <b>ELI5:</b> Friends' guess-sheets go on your fridge (and only your fridge). The fridge sorts them by score, and highlights exactly which upcoming games could shuffle the order.</div>
+</div></div>
+
+<div class="stage"><div class="n">4</div><div style="flex:1">
+<h3>Polish: make the payoff visible + honest words</h3>
+<div class="meta">commit <code>65d4019</code> · gold Leaderboard button (first in the bar, with count), landing "Your pool" card, demo affordance, privacy copy, README</div>
+<p><b>Why:</b> the leaderboard is the whole point of the pilot, but it was one grey button among five. Now it's gold, first, and shows the count — "🏆 Leaderboard (2)". A returning visitor with rivals sees a "Your pool — N saved" card right on the landing. A solo visitor can add the demo bracket to feel the leaderboard before any friend sends a link.</p>
+<div class="bump"><b>Bump 6 (deployment):</b> The Pages deploys for Stages 0–1 failed: <code>actions/configure-pages</code> can't <i>create</i> the Pages site on a brand-new repo — the workflow token isn't an admin ("Resource not accessible by integration"). On the original repo this never showed because Pages had been enabled by hand once. Fix: one API call (<code>gh api POST /repos/…/pages -f build_type=workflow</code>), then re-run — green ever since. <i>Lesson: "works in repo A" can hide one-time manual setup someone did long ago; new environments flush those assumptions out.</i></div>
+<div class="bump"><b>Bump 7 (verification craft):</b> Twice, a screenshot showed a stale mid-load frame that contradicted reality (viewer bar "visible" on the landing). Reading the actual DOM state (<code>element.hidden</code>, localStorage) settled it each time. And one "Save as mine" click landed on stale coordinates — a direct DOM click proved the handler was fine. <i>Lesson (Willison): when evidence conflicts, prefer the ground truth (DOM/state) over the rendering of it (pixels).</i></div>
+<div class="eli5">🧒 <b>ELI5:</b> We put the trophy button in gold at the front, added a "your fridge already has 2 sheets" reminder at the door, and rewrote the fine print so a non-lawyer can read it.</div>
+</div></div>
+
+<h2>Verification, end to end</h2>
+<table>
+<tr><th>Check</th><th>Kind</th><th>Result</th></tr>
+<tr><td>Scoring engine vs independent scorer, 3,001 brackets + points-sum invariant</td><td>unit (inherited)</td><td><span class="pill p-green">pass</span></td></tr>
+<tr><td>Golden snapshot: render output byte-identical, frozen inputs</td><td>snapshot</td><td><span class="pill p-green">pass</span></td></tr>
+<tr><td>Share: round-trip, 500-bracket fuzz, emoji names, alias-changes-name-only, 4 malformed-link cases</td><td>unit (new)</td><td><span class="pill p-green">10/10</span></td></tr>
+<tr><td>Compare: leaderboard numbers == dashboard numbers, diff undecided-only + sorted, rank order</td><td>unit (new)</td><td><span class="pill p-green">12/12</span></td></tr>
+<tr><td>Full browser E2E: share → view → add → rank → diff → rename → guards</td><td>manual, real Chrome</td><td><span class="pill p-green">pass</span></td></tr>
+<tr><td>CI on GitHub Actions (every push) + Pages deploy</td><td>pipeline</td><td><span class="pill p-green">green</span></td></tr>
+</table>
+</section>
+
+<!-- ================= TAB: ROUND 2 ================= -->
+<section class="tab" id="t-round2">
+<h2>Round 2 — pilot promoted to main (July 8)</h2>
+<p class="sub">You test-drove the pilot, liked it, and reported four things. Here's what each one was, what the real cause turned out to be, and what got shipped.</p>
+
+<div class="stage"><div class="n">①</div><div style="flex:1">
+<h3>Rename: wc26-pool-pilot → sled-mywcbracket</h3>
+<div class="meta">one <code>gh repo rename</code> + a sweep of every URL in the repo</div>
+<p>GitHub migrated the Pages site to the new address automatically and redirects the old repo URLs. Every reference — README badges, <code>&lt;link rel="canonical"&gt;</code>, og:tags, the deploy workflow's environment URL, CLAUDE.md, this file — was swept in one pass, then the "Pilot" framing was retired: this is now the main social edition.</p>
+<div class="bump"><b>Gotcha for later:</b> any share links or bookmarks made under the OLD Pages URL (<code>…/wc26-pool-pilot/</code>) do <b>not</b> redirect — GitHub redirects repo pages, not github.io sites. Only test links existed, so nothing was lost — but it's why renames should happen early.</div>
+<div class="eli5">🧒 <b>ELI5:</b> We changed the restaurant's name before printing the real menus. The post office forwards mail to the new name, but the old street sign is just gone — good thing only friends had the old address.</div>
+</div></div>
+
+<div class="stage"><div class="n">②③</div><div style="flex:1">
+<h3>Navigation: trapped in the demo + "New bracket" → "🏠 Home"</h3>
+<div class="meta">files: <code>main.js</code>, <code>index.html</code></div>
+<p><b>Your bug report was two symptoms of one design gap:</b> every "go back" button was secretly destructive. "New bracket" and "Clear" both wiped your saved bracket — and the demo view showed <i>no</i> buttons at all, because all the owner buttons hide in demo mode and nothing non-destructive existed to show. So: no way out of the demo, and a scary mislabeled "New bracket".</p>
+<p><b>The fix is a separation of concerns:</b> <b>🏠 Home</b> goes to the start page and <i>never deletes anything</i> (it also restores stashed what-if edits and cleans the URL) — so it's safe to show in every mode: own, demo, and shared. <b>Clear</b> remains the one destructive button, and says so. And since the landing can now be reached <i>while</i> a bracket is saved, it gained an "📊 Open my dashboard — Eric's bracket is saved here" card, closing the loop.</p>
+<div class="eli5">🧒 <b>ELI5:</b> Before, the only doors out of any room were marked "burn the house down." Now there's a normal front door (Home) in every room, and the matches are in a clearly-labeled drawer (Clear).</div>
+</div></div>
+
+<div class="stage"><div class="n">④</div><div style="flex:1">
+<h3>The big one: the actual-path bracket rebuild</h3>
+<div class="meta">files: <code>render.js</code> (the byte-locked engine — intentionally), <code>interact.js</code>, <code>dashboard.css</code> + new <code>tests/bracketmap.mjs</code></div>
+<p><b>Reproduce before you fix:</b> I generated a worst-case bracket (every pick a loser) and rendered it headlessly. Result: the "Actual path" view showed <b>8 dead-blank cells</b> — fine through the QF column, then nothing: 4 blank semifinal cells, 2 blank final cells, blank champion. And since blank boxes carry no team identity, connector lines had nothing to attach to — <i>your "lines don't connect" symptom was the same bug wearing a different hat.</i></p>
+<p><b>Root cause:</b> the old code derived "who actually advanced" by walking <i>your pick tree</i> (asking "what happened in the match where my pick played?"). When your picks bust out early, that chain of questions dead-ends — even though the real tournament data knows exactly who's in each slot.</p>
+<p><b>The rebuild:</b> each bracket slot now reads its occupant <b>directly from real results</b> — "who won this slot's feeder match?" — completely independent of your picks. Decided slot + not your pick → blue ▲ box. Undecided slot + your pick busted → a dashed <i>"Winner M97"</i> placeholder instead of a void, so the path structure stays visible (and column heights stable) all the way to the champion. Your-pick-alive cells are untouched, and the "My picks" view wasn't touched at all — you said it was accurate, and the tests confirm it.</p>
+<p><b>Connectors got a second fix too:</b> a <code>ResizeObserver</code> on the bracket plus a redraw when webfonts finish loading. Lines used to be drawn once at load; any layout shift afterward (font swap, collapsing/expanding a section, theme change) left them pointing at stale coordinates.</p>
+<div class="bump"><b>Testing surprise worth learning from:</b> after the rebuild, the golden snapshot… passed <i>unchanged</i>. Why? The demo bracket is a good bracket — its actual view never had a blank cell, so the snapshot never exercised the broken path. The fixture only protects what its data reaches. That's why a dedicated <code>tests/bracketmap.mjs</code> now locks the worst case: all-losers bracket → zero blanks, every decided slot shows its real occupant, every undecided busted slot shows "Winner MXX", and an all-correct bracket shows no ▲ at all.</div>
+<div class="eli5">🧒 <b>ELI5 (the bug):</b> The old map drew the river by following YOUR paper boat. When your boat sank at the first waterfall, the map just… stopped drawing the river. The new map draws the river from the river itself — your boat is a sticker on top.</div>
+<div class="eli5">🧒 <b>ELI5 (the testing surprise):</b> A smoke detector in the kitchen can't notice a fire in the garage. The golden test watched a good bracket; the bug only lived in terrible brackets — so we installed a detector in the garage too.</div>
+</div></div>
+
+<div class="stage"><div class="n">⑤</div><div style="flex:1">
+<h3>Bonus bump: the robot pushed while we worked</h3>
+<div class="meta"><code>git push</code> rejected mid-round</div>
+<p>The results-sync bot committed fresh World Cup results to the repo while this round was in progress (it's QF week — that's its job). A quick <code>git pull --rebase</code>, all 7 test suites re-run green on top of the <i>new</i> results, push. Note what that proves: the golden test kept passing because its inputs are frozen fixtures — live data changing under us broke nothing.</p>
+<div class="eli5">🧒 <b>ELI5:</b> The mailman delivered while we were painting the hallway. Because the "before" photos we compare against are kept in an album (frozen fixtures), new mail on the table doesn't make the photos wrong.</div>
+</div></div>
+
+<h2>Your question: "can I kill a share link later?"</h2>
+<div class="card">
+<p><b>The honest answer: no — and no design could truly give you that.</b> A share link IS the data (the 31 picks + name travel inside it), like an email attachment or a photocopy. There's no server that recipients "check back with," so there's nothing to revoke against. And even a server-based revocation can't reach the copies people already saved, or a screenshot of the leaderboard.</p>
+<p><b>What you CAN do, today:</b></p>
+<ul>
+<li><b>Control the blast radius up front</b> — the "share as" field exists exactly for this: share as "E.L." or an alias, and the link never contained your full name to begin with. That's prevention, which beats revocation.</li>
+<li><b>Know what's actually at risk</b> — a link contains picks + the display name you typed. Nothing else. Worst case of a leaked link: someone sees World Cup guesses.</li>
+<li><b>Ask recipients to remove you</b> — one ✕ on their leaderboard; brackets live only on devices, so removal there is complete.</li>
+<li><b>Future option, recorded in SPEC.md</b> — if real revocation ever matters, that's the one feature that justifies a tiny backend (links become <i>references</i> to stored brackets, and deleting the stored bracket kills every link). Deferred deliberately, not forgotten.</li>
+</ul>
+<div class="eli5">🧒 <b>ELI5:</b> Once you hand someone a photocopy, no button un-photocopies it — that's true for every app, even ones with servers (screenshots exist!). So instead of a magic eraser, we gave you a pen name: don't write your full name on the copy in the first place.</div>
+</div>
+
+<h2>Round 2 scorecard</h2>
+<table>
+<tr><th>Item</th><th>Shipped as</th><th>Proof</th></tr>
+<tr><td>Repo rename + URL sweep</td><td><code>sled-mywcbracket</code> live on Pages</td><td>badges green, canonical/og updated, zero stale references (grep)</td></tr>
+<tr><td>Demo trap + Home</td><td>🏠 Home in all modes, never destructive; "Open my dashboard" card</td><td>manual walk: demo → Home → dashboard reopens, picks + what-ifs intact</td></tr>
+<tr><td>Actual-path rebuild</td><td>slot-level occupants + "Winner MXX" placeholders</td><td><code>bracketmap.mjs</code> 5/5; worst-case bracket: 0 blanks (was 8); visual: blue path + lines flow R32→Champion</td></tr>
+<tr><td>Connector robustness</td><td>ResizeObserver + fonts.ready redraw</td><td>lines survive section collapse/expand and font load</td></tr>
+<tr><td>Share-link revocation</td><td>answered honestly (above) + SPEC.md decision</td><td>—</td></tr>
+</table>
+</section>
+
+<!-- ================= TAB: CODE ================= -->
+<section class="tab" id="t-code">
+<h2>The codebase after the pilot</h2>
+<table>
+<tr><th>File</th><th>Status</th><th>What it does</th></tr>
+<tr><td><code>docs/js/share.js</code></td><td><span class="pill p-gold">NEW · 60 lines</span></td><td>Pure encode/decode: picks ⇄ 31-bit string ⇄ base64url URL payload. No DOM, no storage, no network — fully unit-testable.</td></tr>
+<tr><td><code>docs/js/compare.js</code></td><td><span class="pill p-gold">NEW · ~180 lines</span></td><td>Rivals store (localStorage, hash-deduped, cap 20) + pure <code>standings()</code>/<code>diffPicks()</code> + the leaderboard overlay UI. Zero <code>fetch()</code> by design.</td></tr>
+<tr><td><code>docs/js/main.js</code></td><td><span class="pill p-blue">extended</span></td><td>Glue: share-link hash handling, view-only mode, share popover, add-rival wiring, landing pool card.</td></tr>
+<tr><td><code>docs/js/storage.js</code></td><td><span class="pill p-blue">+stash/restore</span></td><td>What-if edits survive previews (demo/shared) via stash-if-absent → restore.</td></tr>
+<tr><td><code>docs/js/render.js</code></td><td><span class="pill p-teal">UNTOUCHED</span></td><td>The 725-line render engine — byte-locked by the golden snapshot. All new UI went <i>around</i> it, never through it.</td></tr>
+<tr><td><code>docs/js/builder.js</code>, <code>parse-excel.js</code>, <code>interact.js</code></td><td><span class="pill p-teal">untouched</span></td><td>share.js/compare.js <i>reuse</i> the builder's pure core (<code>deriveStructure/teamsFor/buildPicks</code>) instead of duplicating bracket math.</td></tr>
+<tr><td><code>tests/</code> (6 files)</td><td><span class="pill p-gold">2 new, 2 fixed</span></td><td>All hermetic now: golden reads repo fixtures; parse self-skips without the private workbook; share + compare added. <code>npm test</code> runs everything.</td></tr>
+<tr><td><code>SPEC.md</code>, <code>CLAUDE.md</code></td><td><span class="pill p-gold">NEW</span></td><td>The spec is the durable artifact: wire format, 8 numbered invariants, deliberate decisions. CLAUDE.md carries the "render.js is byte-locked" rule so future sessions can't forget it.</td></tr>
+<tr><td><code>.github/workflows/tests.yml</code></td><td><span class="pill p-gold">NEW</span></td><td>CI on every push/PR. Plus sync-results.yml + deploy-pages.yml inherited and rebranded.</td></tr>
+</table>
+
+<h2>The two design rules that shaped every line</h2>
+<div class="card"><b>1 · New code goes around the byte-locked engine, not through it.</b> <code>render.js</code> output is snapshot-frozen; the share popover, viewer-bar buttons, and overlay all live in <code>index.html</code>/<code>main.js</code>/new modules. Result: the golden test passed unchanged through all five stages — proof the dashboard every visitor sees is bit-for-bit what it was before the pilot.</div>
+<div class="card"><b>2 · Pure core, thin shell.</b> Everything testable is a pure function (<code>encodeShare</code>, <code>decodeShare</code>, <code>standings</code>, <code>diffPicks</code>); the DOM code is a thin shell around it. That's why 22 new unit checks could cover the real logic while the browser pass only had to verify wiring.</div>
+<div class="eli5">🧒 <b>ELI5:</b> The math lives in little calculator boxes you can test on a bench. The buttons and screens are just wires to the boxes. Test the boxes hard, then just check the wires are plugged in.</div>
+
+<h2>Privacy invariants — how you can audit them yourself</h2>
+<table>
+<tr><th>Claim</th><th>How to check</th></tr>
+<tr><td>Social code makes no network calls</td><td><code>grep -n "fetch(" docs/js/share.js docs/js/compare.js</code> → no matches</td></tr>
+<tr><td>Rivals never leave the device</td><td>DevTools → Network tab while using the leaderboard → only <code>data/*.json</code> static fetches</td></tr>
+<tr><td>Picks never reach a server via links</td><td>the payload is after <code>#</code> — check any server log: the fragment isn't in the request line</td></tr>
+<tr><td>No re-sharing others' brackets</td><td>there is deliberately no "export pool" button — documented as a decision in SPEC.md</td></tr>
+</table>
+</section>
+
+<!-- ================= TAB: COUNCIL ================= -->
+<section class="tab" id="t-council">
+<h2>Where each Technical Taste Council voice earned its seat</h2>
+<div class="voice"><b>Karpathy — simplest thing that works:</b> the URL is the database. Also base64(JSON) over clever bit-packing: 60 characters "wasted," debuggability won (you can read any share link with one <code>atob()</code> in the console).</div>
+<div class="voice"><b>Naval — leverage & options:</b> rejected even a tiny free-tier backend. Free tiers become bills or deprecations; links + localStorage have no cliff. And the decision keeps every future option open — a backend can still be added later if real usage demands it; the reverse migration would be painful.</div>
+<div class="voice"><b>Grove — the spec is the artifact:</b> SPEC.md's 8 numbered invariants each map to a test or a manual check. When a future session (or a different AI) touches this code, intent survives in the spec, not in anyone's memory.</div>
+<div class="voice"><b>Hanselman — the next human:</b> "That share link couldn't be opened… ask the sender to copy it again — links are safe to resend." Privacy copy in words, not legalese. Buttons named for what they do ("Add to my leaderboard", "Save as mine", "Back to my bracket").</div>
+<div class="voice"><b>Russinovich — what's underneath:</b> the URL fragment never reaches server logs (that's a property of HTTP, not a promise); localStorage quota math (20 rivals × ~4KB ≪ limits, Safari private mode wrapped in try/catch); the Pages-enablement failure diagnosed from the actual API error, not guessed.</div>
+<div class="voice"><b>Willison/Hamel — verify, don't trust:</b> every stage got both unit tests and a real-browser walk. When a screenshot contradicted the DOM, the DOM won. When a click "didn't work," a direct DOM click isolated wiring-vs-code before touching anything.</div>
+<div class="voice"><b>Yegge — review-sized increments:</b> five commits, each independently green, each reported. You could have stopped the pilot after any stage and had something whole.</div>
+<div class="voice"><b>Litt — you can own this:</b> no framework, no build step, no dependency added. Every new file is vanilla JS in the same style as the old ones. "Make the leaderboard button more evident" was a 6-line CSS change — that's the malleability test passing.</div>
+<div class="voice"><b>Context engineering — curate what the AI sees:</b> CLAUDE.md in the pilot is 40 lines of high-signal rules (the byte-lock, the privacy invariants, the commands) rather than a dump of everything known.</div>
+</section>
+
+<!-- ================= TAB: LEARN ================= -->
+<section class="tab" id="t-learn">
+<h2>Learning moments 🎓</h2>
+<p class="sub">Seven transferable ideas, each with what happened here, the general principle, and the ELI5.</p>
+
+<details open><summary>1 · Count the information before you build the infrastructure</summary><div class="body">
+<p><b>Here:</b> "social platform" sounded like servers, accounts, databases. Counting first — 31 binary picks ≈ 4 bytes — collapsed the whole backend question. The feature shipped as a URL format.</p>
+<p><b>Principle:</b> the size of the data, not the size of the idea, determines the architecture. Measure it before designing anything.</p>
+<div class="eli5">🧒 You don't rent a truck to move a house key. Weigh the cargo first — sometimes it fits in your pocket.</div>
+</div></details>
+
+<details><summary>2 · The URL fragment is a privacy feature, not a hack</summary><div class="body">
+<p><b>Here:</b> the bracket travels after the <code>#</code> in the URL. By HTTP's own rules, browsers never send the fragment to the server — so picks and names stay out of every server log on earth, including GitHub's.</p>
+<p><b>Principle:</b> the strongest privacy guarantee is structural ("the data cannot arrive there") rather than promissory ("we won't look at it").</p>
+<div class="eli5">🧒 It's a note stapled to the inside of your jacket, not written on the envelope. The post office never reads it because it never gets it.</div>
+</div></details>
+
+<details><summary>3 · Previews must never eat real data (the stash pattern)</summary><div class="body">
+<p><b>Here:</b> "view the demo" and "open a shared link" both re-render the dashboard — and the old code's cleanup logic treated that like a real bracket swap, deleting your what-if edits. Fix: stash the real state before a preview, restore when your bracket returns, and only stash-if-absent so two previews in a row can't overwrite the stash with preview junk.</p>
+<p><b>Principle:</b> when destructive cleanup is triggered by "state changed," enumerate every path that changes state. Demos, previews, and just-looking flows are the classic false positives.</p>
+<div class="eli5">🧒 The robot vacuum shouldn't eat your LEGO castle just because you stepped out to look at a friend's castle. Put yours on the shelf first, take it down when you're back.</div>
+</div></details>
+
+<details><summary>4 · Two numbers that must agree should come from one function</summary><div class="body">
+<p><b>Here:</b> the leaderboard's "confirmed" and the dashboard's "confirmed" both come from the same <code>computeState()</code>, and a test asserts they're equal for the same bracket. There is no way for the leaderboard to say 23 while the dashboard says 25.</p>
+<p><b>Principle:</b> never re-derive the same fact in two places. If you must, chain them with a test so drift is impossible.</p>
+<div class="eli5">🧒 One referee, shown on two scoreboards — not two referees who might disagree.</div>
+</div></details>
+
+<details><summary>5 · Screenshots are testimony; state is evidence</summary><div class="body">
+<p><b>Here:</b> twice a screenshot showed a UI state that turned out to be a stale mid-load frame; and one click "failed" only because it hit stale coordinates. Each time, reading the actual DOM (<code>element.hidden</code>, localStorage) or clicking via the DOM resolved it in one step.</p>
+<p><b>Principle:</b> when what-you-see contradicts what-should-be, check the underlying state before "fixing" code. Debugging the rendering of reality wastes hours; debugging reality is fast.</p>
+<div class="eli5">🧒 If the photo of the scoreboard looks wrong, walk over and read the scoreboard before accusing the scorekeeper.</div>
+</div></details>
+
+<details><summary>6 · New environments flush out forgotten manual setup</summary><div class="body">
+<p><b>Here:</b> Pages deploys failed on the new repo though the identical workflow "worked" on the old one — because someone (past you!) had once enabled Pages by hand in the old repo's Settings. The workflow never had the power to do that itself.</p>
+<p><b>Principle:</b> every "works here, fails there" hides an undocumented one-time action. Pilots and clean-room clones are worth doing partly <i>because</i> they surface these.</p>
+<div class="eli5">🧒 The recipe "worked" at grandma's because her oven was already preheated. Cooking in a new kitchen reveals the missing first step.</div>
+</div></details>
+
+<details><summary>7 · Deliberate omissions belong in the spec</summary><div class="body">
+<p><b>Here:</b> there is no "export the whole pool" button — on purpose: re-broadcasting someone else's bracket without their consent is exactly the leak this design exists to prevent. SPEC.md records it as a <i>decision</i>, so a future contributor doesn't "helpfully" add it.</p>
+<p><b>Principle:</b> the features you chose NOT to build are design decisions too. Undocumented, they read as gaps and get "fixed."</p>
+<div class="eli5">🧒 The playground has no gate on purpose — put a sign on the fence saying so, or someone will kindly install a gate.</div>
+</div></details>
+
+<h2>If you remember one thing</h2>
+<div class="card" style="border-color:var(--gold)">
+<b>Constraints did the designing.</b> "Free" eliminated every backend. "Nobody surfaced without opting in" eliminated every registry. What survived both filters — a link one person creates and another person accepts — wasn't a compromise; it was the best version of the feature. Good constraints aren't the enemy of ambitious builds; they're the search algorithm.
+</div>
+</section>
+
+<!-- ================= TAB: TRY ================= -->
+<section class="tab" id="t-try">
+<h2>Try the whole loop in 3 minutes</h2>
+<div class="card">
+<b>Solo (one browser):</b>
+<ol>
+<li>Open <a href="https://eriic-builds.github.io/sled-mywcbracket/">the live pilot</a> → <b>Build my bracket</b> (or upload your Excel).</li>
+<li>Tap <b>🏆 Leaderboard</b> → "Add the demo bracket to try it" → you're ranked against the demo.</li>
+<li>Tap <b>diff</b> on the demo row → see exactly which remaining games separate you, biggest points first.</li>
+</ol>
+<b>The real thing (with a coworker):</b>
+<ol>
+<li>You: <b>🔗 Share link</b> → optionally change "share as" to initials → Copy → send it in Teams.</li>
+<li>Them: open the link (their own bracket, if any, is untouched) → <b>➕ Add to my leaderboard</b>.</li>
+<li>Them: send you <i>their</i> link back; you add it. Now you each have a private leaderboard that updates itself as results sync.</li>
+</ol>
+</div>
+
+<h2>What a share link actually looks like</h2>
+<div class="urlbox">https://eriic-builds.github.io/sled-mywcbracket/#b=eyJ2IjoxLCJiIjoiMDAxMTAwMDAxMTAwMDAwMDExMTAwMTAxMDAxMDAwMSIsIm4iOiJFcmljIExhbSIsInQiOjR9</div>
+<p>Paste the part after <code>#b=</code> into <code>atob('…')</code> in any console and you'll see exactly what it carries: <code>{"v":1,"b":"0011000011…","n":"Eric Lam","t":4}</code> — the 31 coin-flips, a name, a tiebreaker. Nothing else. That transparency is itself a privacy feature.</p>
+
+<h2>Commands (pilot repo)</h2>
+<table>
+<tr><td><code>cd docs && python3 -m http.server 8000</code></td><td>run locally</td></tr>
+<tr><td><code>npm test</code></td><td>all 6 suites, hermetic, ~10s</td></tr>
+<tr><td><code>node tests/golden.mjs --update</code></td><td>accept an intentional render change (review the diff!)</td></tr>
+</table>
+
+<h2>Where to go next (only if the pilot earns it)</h2>
+<table>
+<tr><th>If you observe…</th><th>Then consider…</th></tr>
+<tr><td>Coworkers love it, link-swapping feels fine</td><td>Ship it: merge the social layer back into my-wc26-bracket after the tournament (the code was built to transplant — same file layout, render.js untouched).</td></tr>
+<tr><td>People lose links / want one shared board</td><td>Revisit the tiny-backend question with evidence in hand (SPEC.md documents why it was deferred, not rejected).</td></tr>
+<tr><td>QF results feel stale on match days</td><td>The later <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[02]-live-tournament-readiness/plans/PLAN-01-match-day-freshness.md">match-day freshness plan</a> addresses this directly.</td></tr>
+</table>
+</section>
+
+<footer>Built July 7–8, 2026 · <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[01]-zero-backend-social-loop/BRIEF.md">Read the brief</a> · <a href="https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[01]-zero-backend-social-loop/plans">Read the plans</a> · <a href="../">All development reports</a></footer>
+</div>
+
+<script>
+document.querySelectorAll("#nav button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll("#nav button").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll("section.tab").forEach(s => s.classList.toggle("on", s.id === b.dataset.tab));
+  window.scrollTo({ top: 0 });
+}));
+document.getElementById("eli5").addEventListener("change", e =>
+  document.body.classList.toggle("eli5-on", e.target.checked));
+</script>
+</body>
+</html>

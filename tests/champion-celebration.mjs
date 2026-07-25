@@ -127,8 +127,8 @@ const timeline = read("../docs/js/champion-celebration-timeline.js");
 const scene = read("../docs/js/champion-celebration-scene.js");
 const models = read("../docs/js/champion-celebration-models.js");
 const effects = read("../docs/js/champion-celebration-effects.js");
-const mock = read("../dev-docs/dev-reports/champion-celebration/mock.js");
-const mockIndex = read("../dev-docs/dev-reports/champion-celebration/index.html");
+const mock = read("../dev-docs/[00]-dev-reports/[05]-champion-celebration/mock.js");
+const mockIndex = read("../dev-docs/[00]-dev-reports/[05]-champion-celebration/index.html");
 
 check("trigger uses one click path and keyboard repeat protection", () => {
   assert.match(trigger, /wrap\.addEventListener\("click"/);

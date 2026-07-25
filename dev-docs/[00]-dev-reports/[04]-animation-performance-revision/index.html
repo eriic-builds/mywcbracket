@@ -1,0 +1,1842 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Animation Performance Revision Results</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #10151d;
+  --panel: #18212d;
+  --panel-2: #202c3a;
+  --text: #f5f7fa;
+  --muted: #aab6c5;
+  --line: #344256;
+  --blue: #54b8ff;
+  --teal: #4ed6bc;
+  --gold: #ffd166;
+  --red: #ff7b86;
+  --green: #93d36b;
+  --radius: 18px;
+  --shadow: 0 18px 50px rgba(0, 0, 0, .28);
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(84, 184, 255, .13), transparent 34rem),
+    radial-gradient(circle at 90% 10%, rgba(78, 214, 188, .10), transparent 30rem),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.55;
+}
+button,
+input {
+  font: inherit;
+}
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+a {
+  color: var(--blue);
+}
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+[hidden] {
+  display: none !important;
+}
+.wrap {
+  width: min(1180px, calc(100% - 28px));
+  margin: 0 auto;
+}
+.hero {
+  padding: 48px 0 24px;
+}
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--teal);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 900px;
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -.04em;
+}
+.hero-copy {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 2vw, 1.16rem);
+}
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+.badge {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .035);
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 700;
+}
+.badge.good {
+  color: var(--green);
+}
+.badge.done {
+  border-color: color-mix(in srgb, var(--green) 55%, var(--line));
+  background: color-mix(in srgb, var(--green) 12%, var(--panel));
+  color: var(--green);
+}
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 12px 0;
+  border-block: 1px solid rgba(255, 255, 255, .08);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(14px);
+}
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.tabs,
+.depth {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.tabs button,
+.depth button,
+.print-button,
+.hotspot-list button,
+.reset-button,
+.copy-button {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--muted);
+  cursor: pointer;
+  padding: 8px 11px;
+  transition: color .15s, background-color .15s, border-color .15s, transform .15s;
+}
+.tabs button:hover,
+.depth button:hover,
+.print-button:hover,
+.hotspot-list button:hover,
+.reset-button:hover,
+.copy-button:hover {
+  color: var(--text);
+  border-color: var(--blue);
+  transform: translateY(-1px);
+}
+.tabs button[aria-selected="true"],
+.depth button[aria-pressed="true"],
+.hotspot-list button[aria-selected="true"] {
+  border-color: var(--blue);
+  background: color-mix(in srgb, var(--blue) 18%, var(--panel));
+  color: var(--text);
+}
+.depth-label {
+  align-self: center;
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 700;
+}
+main {
+  padding: 26px 0 70px;
+}
+.panel {
+  animation: panel-in .24s ease-out both;
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+body[data-depth="eli5"] .technical {
+  display: none;
+}
+body[data-depth="technical"] .eli5 {
+  display: none;
+}
+.callout,
+.card,
+details,
+.hotspot-detail,
+.check-group {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(150deg, rgba(255, 255, 255, .035), transparent), var(--panel);
+  box-shadow: var(--shadow);
+}
+.callout {
+  padding: 22px;
+}
+.callout strong {
+  color: var(--gold);
+}
+.callout p:last-child {
+  margin-bottom: 0;
+}
+.section-head {
+  margin: 34px 0 14px;
+}
+.section-head h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 3vw, 2.15rem);
+}
+.section-head p {
+  max-width: 760px;
+  margin: 7px 0 0;
+  color: var(--muted);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.card {
+  padding: 18px;
+}
+.card h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+.card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .9rem;
+}
+.rank {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 12px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--blue) 18%, var(--panel-2));
+  color: var(--blue);
+  font-weight: 900;
+}
+.plan-link {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: .82rem;
+  font-weight: 800;
+}
+.route {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+.route-step {
+  position: relative;
+  min-height: 84px;
+  padding: 12px 9px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  text-align: center;
+}
+.route-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 1px);
+  width: 8px;
+  height: 2px;
+  background: var(--blue);
+}
+.route-step b {
+  display: block;
+  color: var(--blue);
+  font-size: 1.05rem;
+}
+.route-step span {
+  color: var(--muted);
+  font-size: .72rem;
+}
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.stage {
+  min-height: 220px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.stage-number {
+  color: var(--gold);
+  font-size: 2rem;
+  font-weight: 900;
+}
+.stage h3 {
+  margin: 2px 0 7px;
+}
+.stage p {
+  color: var(--muted);
+}
+.stage.expensive {
+  border-color: color-mix(in srgb, var(--red) 52%, var(--line));
+}
+.stage.target {
+  border-color: color-mix(in srgb, var(--green) 52%, var(--line));
+}
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.compare .card:first-child {
+  border-color: color-mix(in srgb, var(--red) 45%, var(--line));
+}
+.compare .card:last-child {
+  border-color: color-mix(in srgb, var(--green) 45%, var(--line));
+}
+.compare ul,
+.plan-body ul,
+.plan-body ol {
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+.compare li,
+.plan-body li {
+  margin: 6px 0;
+  color: var(--muted);
+}
+.hotspot-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 14px;
+}
+.hotspot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hotspot-list button {
+  width: 100%;
+  text-align: left;
+}
+.hotspot-detail {
+  min-height: 360px;
+  padding: 24px;
+}
+.hotspot-detail h3 {
+  margin-top: 0;
+  font-size: 1.35rem;
+}
+.hotspot-detail h4 {
+  margin: 22px 0 5px;
+  color: var(--teal);
+}
+.hotspot-detail p {
+  color: var(--muted);
+}
+code {
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #0d131b;
+  color: #d5edff;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: .88em;
+}
+.prompt-box {
+  max-height: 560px;
+  margin: 16px 0;
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #0d131b;
+  color: #d5edff;
+  white-space: pre-wrap;
+  word-break: normal;
+  font: .86rem/1.55 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+.prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.copy-status {
+  color: var(--muted);
+  font-size: .82rem;
+}
+.file-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.file-table th,
+.file-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.file-table th {
+  color: var(--teal);
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.file-table td {
+  color: var(--muted);
+}
+.file-table tr:last-child td {
+  border-bottom: 0;
+}
+.file-table code {
+  color: var(--text);
+}
+details {
+  margin-bottom: 12px;
+  overflow: clip;
+}
+summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 17px 19px;
+  cursor: pointer;
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary::after {
+  content: "+";
+  margin-left: auto;
+  color: var(--blue);
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+details[open] summary::after {
+  content: "-";
+}
+.plan-rank {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--panel-2);
+  color: var(--gold);
+  font-weight: 900;
+}
+.summary-text b {
+  display: block;
+}
+.summary-text small {
+  color: var(--muted);
+}
+.plan-body {
+  padding: 0 19px 19px 63px;
+}
+.plan-body p {
+  color: var(--muted);
+}
+.plan-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.plan-files code {
+  display: inline-block;
+}
+.council-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.voice {
+  padding: 17px;
+  border-left: 3px solid var(--blue);
+}
+.voice h3 {
+  margin: 0 0 6px;
+}
+.voice p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .88rem;
+}
+.meter {
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #0d131b;
+}
+.meter span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--teal));
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left center;
+  transition: transform .2s ease;
+}
+.check-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 16px;
+}
+.check-group {
+  padding: 18px;
+}
+.check-group h3 {
+  margin-top: 0;
+}
+.check {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 9px;
+  align-items: start;
+  margin: 10px 0;
+  color: var(--muted);
+}
+.check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--teal);
+}
+.check-status {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0 7px;
+  color: var(--muted);
+  font-size: .84rem;
+}
+.reset-button {
+  margin-top: 12px;
+}
+.warning {
+  border-color: color-mix(in srgb, var(--gold) 50%, var(--line));
+}
+.warning strong {
+  color: var(--gold);
+}
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.metric-card {
+  min-height: 150px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.metric-card span {
+  display: block;
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.metric-card strong {
+  display: block;
+  margin: 10px 0 5px;
+  color: var(--green);
+  font-size: clamp(1.65rem, 4vw, 2.55rem);
+  line-height: 1;
+}
+.metric-card small {
+  color: var(--muted);
+}
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.result-table th,
+.result-table td {
+  padding: 11px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  vertical-align: middle;
+}
+.result-table th:first-child,
+.result-table td:first-child {
+  text-align: left;
+}
+.result-table th {
+  color: var(--teal);
+  font-size: .76rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.result-table td {
+  color: var(--muted);
+}
+.result-table tr:last-child td {
+  border-bottom: 0;
+}
+.after {
+  color: var(--green) !important;
+  font-weight: 900;
+}
+.code-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+.code-sample {
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0d131b;
+}
+.code-sample b {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: .72rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.code-sample.good {
+  border-color: color-mix(in srgb, var(--green) 52%, var(--line));
+}
+.code-sample code {
+  padding: 0;
+  border: 0;
+  white-space: normal;
+}
+.learning-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.learning-grid .card {
+  border-top: 3px solid var(--teal);
+}
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 8px 0;
+  color: var(--muted);
+}
+.status-line::before {
+  content: "✓";
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--green) 18%, var(--panel-2));
+  color: var(--green);
+  font-weight: 900;
+}
+footer {
+  padding: 22px 0 40px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .82rem;
+}
+@media (max-width: 900px) {
+  .grid,
+  .pipeline,
+  .council-grid,
+  .metric-grid,
+  .learning-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .route {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .route-step:nth-child(3)::after {
+    display: none;
+  }
+  .hotspot-layout {
+    grid-template-columns: 1fr;
+  }
+  .hotspot-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 620px) {
+  .hero {
+    padding-top: 32px;
+  }
+  .toolbar {
+    position: static;
+  }
+  .toolbar-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .tabs button {
+    width: 100%;
+  }
+  .grid,
+  .pipeline,
+  .compare,
+  .council-grid,
+  .metric-grid,
+  .learning-grid,
+  .code-pair,
+  .check-grid {
+    grid-template-columns: 1fr;
+  }
+  .route {
+    grid-template-columns: 1fr 1fr;
+  }
+  .route-step:nth-child(2n)::after {
+    display: none;
+  }
+  .route-step:nth-child(3)::after {
+    display: block;
+  }
+  .hotspot-list {
+    grid-template-columns: 1fr;
+  }
+  .plan-body {
+    padding-left: 19px;
+  }
+  .file-table {
+    display: block;
+    overflow-x: auto;
+  }
+  .result-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+@media print {
+  :root {
+    color-scheme: light;
+    --bg: #fff;
+    --panel: #fff;
+    --panel-2: #f2f5f8;
+    --text: #17202a;
+    --muted: #425466;
+    --line: #c7d0da;
+    --shadow: none;
+  }
+  body {
+    background: #fff;
+  }
+  .toolbar,
+  .print-button,
+  .reset-button {
+    display: none !important;
+  }
+  .panel {
+    display: block !important;
+    animation: none;
+    break-before: page;
+  }
+  .panel:first-child {
+    break-before: auto;
+  }
+  details {
+    break-inside: avoid;
+  }
+  details > * {
+    display: block;
+  }
+}
+</style>
+</head>
+<body data-depth="eli5">
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Completed Technical Taste Council guided revision</p>
+    <h1>The browser does less work. The fun stays.</h1>
+    <p class="hero-copy eli5">
+      The soccer balls still fall and the trophy still spins. The browser now rests when it
+      should, slides finished pieces instead of rebuilding them, and releases 3D resources on
+      phones.
+    </p>
+    <p class="hero-copy technical">
+      Six completed plans removed animation-time layout hot paths, reduced repainting, bounded
+      passive WebGL work, and proved the result in matched Chrome and Edge traces.
+    </p>
+    <div class="badges" aria-label="Architecture constraints">
+      <span class="badge done">6 of 6 plans complete</span>
+      <span class="badge good">Static and zero-backend</span>
+      <span class="badge good">Vanilla and no-build</span>
+      <span class="badge good">No new dependencies</span>
+      <span class="badge">Existing localStorage remains</span>
+    </div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap toolbar-row">
+    <nav class="tabs" role="tablist" aria-label="Guide sections">
+      <button type="button" role="tab" aria-selected="true" data-panel-target="overview">Overview</button>
+      <button type="button" role="tab" aria-selected="false" data-panel-target="results">Results</button>
+      <button type="button" role="tab" aria-selected="false" data-panel-target="browser">Browser 101</button>
+      <button type="button" role="tab" aria-selected="false" data-panel-target="hotspots">What changed</button>
+      <button type="button" role="tab" aria-selected="false" data-panel-target="plans">Six plans</button>
+      <button type="button" role="tab" aria-selected="false" data-panel-target="council">Council</button>
+      <button type="button" role="tab" aria-selected="false" data-panel-target="reuse">Reuse prompt</button>
+      <button type="button" role="tab" aria-selected="false" data-panel-target="checklist">Validation</button>
+    </nav>
+    <div class="depth" aria-label="Explanation depth">
+      <span class="depth-label">Explain as:</span>
+      <button type="button" aria-pressed="true" data-depth-target="eli5">ELI5</button>
+      <button type="button" aria-pressed="false" data-depth-target="technical">Technical</button>
+      <button class="print-button" type="button" data-print>Print</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="panel" id="overview" role="tabpanel">
+    <div class="callout">
+      <p class="eli5"><strong>Outcome:</strong> the browser now rebuilds fewer boxes, repaints
+        fewer pixels, and stops drawing settled or hidden 3D scenes.</p>
+      <p class="technical"><strong>Outcome:</strong> matched CDP traces show lower Layout,
+        Paint, WebGL, GPU-task, and draw-frame counts while all 16 test modules pass.</p>
+      <p><a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/RESULTS.md">Read the complete measured results</a> ·
+        <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/BASELINE.md">Read the baseline</a> ·
+        <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/BRIEF.md">Read the original brief</a></p>
+    </div>
+
+    <div class="section-head">
+      <h2>The result at a glance</h2>
+      <p>These are controlled before-and-after measurements, not guesses from reading source.</p>
+    </div>
+    <div class="metric-grid">
+      <article class="metric-card">
+        <span>Pointer Layout</span>
+        <strong>585 → 4</strong>
+        <small>Chrome landing pointer trace</small>
+      </article>
+      <article class="metric-card">
+        <span>Mobile Layout</span>
+        <strong>440 → 0</strong>
+        <small>Chrome at 4x CPU slowdown</small>
+      </article>
+      <article class="metric-card">
+        <span>Trophy WebGL</span>
+        <strong>700 → 182</strong>
+        <small>Chrome trace events</small>
+      </article>
+      <article class="metric-card">
+        <span>Settled ball work</span>
+        <strong>0 RAF</strong>
+        <small>Chrome and Edge after real pile sleep</small>
+      </article>
+    </div>
+
+    <div class="section-head">
+      <h2>Six completed pieces of work</h2>
+      <p>The plans ran in order because several shared CSS, HTML, and regression-test files.</p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <span class="rank">1</span>
+        <h3>Baseline and safety rails</h3>
+        <span class="badge done">Complete</span>
+        <p class="eli5">Measure the old car before replacing parts.</p>
+        <p class="technical">Capture controlled Layout, Paint, long-task, RAF, and compositing evidence.</p>
+        <a class="plan-link" href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-01-baseline-and-safety-rails.md">Read Plan 01</a>
+      </article>
+      <article class="card">
+        <span class="rank">2</span>
+        <h3>Ball-pit runtime budget</h3>
+        <span class="badge done">Complete</span>
+        <p class="eli5">Let the soccer balls go to sleep when nothing is moving.</p>
+        <p class="technical">Remove frame-loop layout writes, add deterministic sleep/wake, and cap passive mobile work.</p>
+        <a class="plan-link" href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-02-ballpit-runtime-budget.md">Read Plan 02</a>
+      </article>
+      <article class="card">
+        <span class="rank">3</span>
+        <h3>DOM motion hot paths</h3>
+        <span class="badge done">Complete</span>
+        <p class="eli5">Slide the tooltip and progress bars. Do not rebuild their boxes.</p>
+        <p class="technical">Coalesce pointer updates and replace positional and width updates with translate/scaleX.</p>
+        <a class="plan-link" href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-03-dom-motion-hot-paths.md">Read Plan 03</a>
+      </article>
+      <article class="card">
+        <span class="rank">4</span>
+        <h3>CSS compositor primitives</h3>
+        <span class="badge done">Complete</span>
+        <p class="eli5">Move stickers. Do not repaint glowing rings every frame.</p>
+        <p class="technical">Use explicit transitions, transform/opacity pulses, and no layout-property animation.</p>
+        <a class="plan-link" href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-04-css-compositor-primitives.md">Read Plan 04</a>
+      </article>
+      <article class="card">
+        <span class="rank">5</span>
+        <h3>Trophy frame budget</h3>
+        <span class="badge done">Complete</span>
+        <p class="eli5">Spin the trophy half as often when nobody is touching it.</p>
+        <p class="technical">Cap passive renders at 30fps and dispose WebGL when the phone fallback takes over.</p>
+        <a class="plan-link" href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-05-trophy-frame-budget.md">Read Plan 05</a>
+      </article>
+      <article class="card">
+        <span class="rank">6</span>
+        <h3>Integrated performance gate</h3>
+        <span class="badge done">Complete</span>
+        <p class="eli5">Drive the whole car again and compare before versus after.</p>
+        <p class="technical">Repeat identical traces, run all tests, inspect the golden diff, and stop at local review.</p>
+        <a class="plan-link" href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-06-integrated-performance-gate.md">Read Plan 06</a>
+      </article>
+    </div>
+
+    <div class="section-head">
+      <h2>Execution route</h2>
+      <p>Every stage completed. No runtime dependency, framework, worker, or build step appeared.</p>
+    </div>
+    <div class="route" aria-label="Execution order">
+      <div class="route-step"><b>01</b><span>Measure</span></div>
+      <div class="route-step"><b>02</b><span>Ball pit</span></div>
+      <div class="route-step"><b>03</b><span>DOM motion</span></div>
+      <div class="route-step"><b>04</b><span>CSS motion</span></div>
+      <div class="route-step"><b>05</b><span>Trophy</span></div>
+      <div class="route-step"><b>06</b><span>Prove</span></div>
+    </div>
+
+    <div class="section-head">
+      <h2>Static versus stateless</h2>
+    </div>
+    <div class="compare">
+      <article class="card">
+        <h3>What this app is</h3>
+        <ul>
+          <li>Static files served by GitHub Pages</li>
+          <li>No backend and no server session</li>
+          <li>No network writes for social features</li>
+          <li>No build pipeline</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Why it is not fully stateless</h3>
+        <ul>
+          <li>Your browser remembers brackets and rivals</li>
+          <li>Theme and Motion preferences persist</li>
+          <li>That memory lives only in localStorage</li>
+          <li>This revision adds no new persisted state</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="panel" id="results" role="tabpanel" hidden>
+    <div class="section-head">
+      <h2>Measured browser results</h2>
+      <p>Same browser versions, Mac, temporary profiles, viewports, interaction durations, and
+        4x CPU throttle where the baseline used it.</p>
+    </div>
+    <table class="result-table">
+      <thead>
+        <tr>
+          <th>Scenario and metric</th>
+          <th>Chrome before</th>
+          <th>Chrome after</th>
+          <th>Edge before</th>
+          <th>Edge after</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Landing pointer Layout</td><td>585</td><td class="after">4</td><td>596</td><td class="after">4</td></tr>
+        <tr><td>Mobile ball pit Layout</td><td>440</td><td class="after">0</td><td>408</td><td class="after">0</td></tr>
+        <tr><td>Landing idle Paint</td><td>1,203</td><td class="after">5</td><td>1,202</td><td class="after">0</td></tr>
+        <tr><td>Score progress Layout</td><td>50</td><td class="after">8</td><td>49</td><td class="after">8</td></tr>
+        <tr><td>Overlay sequence Paint</td><td>558</td><td class="after">23</td><td>565</td><td class="after">23</td></tr>
+        <tr><td>Trophy WebGL events</td><td>700</td><td class="after">182</td><td>690</td><td class="after">183</td></tr>
+        <tr><td>Trophy GPU tasks</td><td>728</td><td class="after">209</td><td>695</td><td class="after">218</td></tr>
+        <tr><td>Trophy draw frames</td><td>392</td><td class="after">119</td><td>392</td><td class="after">131</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-head">
+      <h2>What the numbers mean</h2>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <h3>More than 99% less pointer Layout</h3>
+        <p class="eli5">The invisible touch circle now slides instead of changing four box
+          measurements every frame.</p>
+        <p class="technical">Cached dimensions plus one <code>translate3d()</code> write
+          reduce 585 or 596 Layout events to 4 lifecycle events.</p>
+      </article>
+      <article class="card">
+        <h3>Real ball-pit sleep</h3>
+        <p class="eli5">After the pile becomes still, the ball engine stops asking for work.</p>
+        <p class="technical">A real 24-ball drop reached the 45-frame settled threshold. The
+          next three seconds recorded 0 Layout, 0 Paint, and 0 module RAF callbacks.</p>
+      </article>
+      <article class="card">
+        <h3>About 74% less trophy WebGL work</h3>
+        <p class="eli5">The untouched trophy draws half as often and the phone picture turns
+          the 3D engine off.</p>
+        <p class="technical">Passive work is timestamp-gated at 30fps. Input remains immediate.
+          The responsive gate reported zero phone canvases and one recreated desktop canvas.</p>
+      </article>
+    </div>
+
+    <div class="section-head">
+      <h2>Main-thread gate</h2>
+    </div>
+    <div class="callout">
+      <p class="eli5"><strong>Every interaction stayed far under budget.</strong> No final
+        pointer, touch, score, overlay, or trophy recording had a task longer than 50ms.</p>
+      <p class="technical"><strong>All direct interactions passed.</strong> Zero interaction
+        tasks exceeded 50ms. The highest p95 task was 0.61ms against an 8ms target.</p>
+      <p>Cold landing load still had one startup task in each browser: 77.58ms in Chrome and
+        63.24ms in Edge. It is reported separately because it is not steady animation work.</p>
+    </div>
+
+    <div class="section-head">
+      <h2>Remaining costs and uncertainty</h2>
+    </div>
+    <div class="compare">
+      <article class="card">
+        <h3>Work that still exists</h3>
+        <ul>
+          <li>Moving balls still require JavaScript physics and WebGL.</li>
+          <li>The trophy has a one-time Three.js and WebGL startup cost.</li>
+          <li>Display-rate RAF callbacks may return early before 30fps scene work.</li>
+          <li>Static fact-card placement still uses left and top by design.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>What the trace does not prove</h3>
+        <ul>
+          <li>Headless macOS is not every physical Windows device.</li>
+          <li>Transform is compositor-eligible, not a forced GPU layer.</li>
+          <li>Chrome and Edge retain control over layer promotion.</li>
+          <li>Physical lower-end Windows hardware remains outside this measured matrix.</li>
+        </ul>
+      </article>
+    </div>
+    <p><a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/RESULTS.md">Open the full result report with method and exact files</a></p>
+  </section>
+
+  <section class="panel" id="browser" role="tabpanel" hidden>
+    <div class="section-head">
+      <h2>How a browser draws movement</h2>
+      <p class="eli5">The browser measures, paints, then moves the finished layers.</p>
+      <p class="technical">The rendering pipeline is simplified here, but the distinction is
+        enough to reason about this refactor.</p>
+    </div>
+    <div class="pipeline">
+      <article class="stage expensive">
+        <span class="stage-number">1</span>
+        <h3>Layout</h3>
+        <p class="eli5">Measure every box and decide where it belongs.</p>
+        <p class="technical">Geometry-affecting changes can trigger style recalculation and
+          layout for the changed element and related descendants.</p>
+        <p><code>left</code> <code>top</code> <code>width</code> <code>height</code></p>
+      </article>
+      <article class="stage expensive">
+        <span class="stage-number">2</span>
+        <h3>Paint</h3>
+        <p class="eli5">Color the pixels again.</p>
+        <p class="technical">Paint records visual output. Animated shadows, filters, and some
+          backgrounds can repaint even when layout is stable.</p>
+        <p><code>box-shadow</code> <code>filter</code></p>
+      </article>
+      <article class="stage target">
+        <span class="stage-number">3</span>
+        <h3>Composite</h3>
+        <p class="eli5">Slide or fade a finished picture.</p>
+        <p class="technical">Compositor-eligible transforms and opacity can reuse painted
+          layers, subject to browser promotion and memory decisions.</p>
+        <p><code>transform</code> <code>opacity</code></p>
+      </article>
+    </div>
+
+    <div class="section-head">
+      <h2>The core comparison</h2>
+    </div>
+    <div class="compare">
+      <article class="card">
+        <h3>More work</h3>
+        <ul>
+          <li><code>left: 2px</code> to <code>left: 18px</code></li>
+          <li><code>width: 20%</code> to <code>width: 70%</code></li>
+          <li>Writing touch-target width, height, left, and top every frame</li>
+          <li>Animating a growing box shadow forever</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Preferred motion</h3>
+        <ul>
+          <li><code>transform: translateX(16px)</code></li>
+          <li><code>transform: scaleX(.7)</code></li>
+          <li>Resize once, then move with one transform</li>
+          <li>Pulse a pseudo-element with scale and opacity</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="section-head">
+      <h2>Important myth check</h2>
+    </div>
+    <div class="callout warning">
+      <p class="eli5"><strong>A transform is a better request, not a magic GPU button.</strong>
+        The browser still decides how to draw it.</p>
+      <p class="technical"><strong>Compositor eligible is not compositor guaranteed.</strong>
+        JavaScript calculations remain on the main thread. Layer promotion depends on paint
+        dependencies, device limits, browser heuristics, and memory pressure. Verify with the
+        Performance and Layers tools.</p>
+    </div>
+
+    <div class="section-head">
+      <h2>Eight learning moments</h2>
+      <p>Use these ideas when you inspect future motion changes.</p>
+    </div>
+    <div class="learning-grid">
+      <article class="card">
+        <h3>1. Layout</h3>
+        <p class="eli5">Changing box size or coordinates can make the browser measure again.</p>
+        <p class="technical">Repeated width, left, top, and height writes are risky in
+          event-frequency or frame-frequency paths.</p>
+      </article>
+      <article class="card">
+        <h3>2. Paint</h3>
+        <p class="eli5">A changing glow can recolor pixels every frame.</p>
+        <p class="technical">Animated box-shadow is paint-heavy. A prepared ring with
+          transform and opacity is easier to reuse.</p>
+      </article>
+      <article class="card">
+        <h3>3. Composite</h3>
+        <p class="eli5">Slide or fade a finished picture when possible.</p>
+        <p class="technical">Transforms and opacity are compositor-eligible because they do
+          not change document geometry.</p>
+      </article>
+      <article class="card">
+        <h3>4. RAF</h3>
+        <p class="eli5">A screen clock is not proof useful work happened.</p>
+        <p class="technical">A RAF callback may return early. Count physics, render, WebGL,
+          and draw work before claiming a frame cap.</p>
+      </article>
+      <article class="card">
+        <h3>5. Sleep</h3>
+        <p class="eli5">A still scene should stop asking for another turn.</p>
+        <p class="technical">The ball pit requests no new module frame after 45 consecutive
+          settled physics frames.</p>
+      </article>
+      <article class="card">
+        <h3>6. Frame pacing</h3>
+        <p class="eli5">Untouched decoration does not need every screen refresh.</p>
+        <p class="technical">Timestamp gates bound coarse ball work and passive trophy work
+          while direct input bypasses the passive budget.</p>
+      </article>
+      <article class="card">
+        <h3>7. Reduced motion</h3>
+        <p class="eli5">Less motion is a user setting, not a broken animation.</p>
+        <p class="technical">Pseudo-elements need explicit reduced-motion coverage because
+          stopping the parent animation does not target a new child effect.</p>
+      </article>
+      <article class="card">
+        <h3>8. Eligibility</h3>
+        <p class="eli5">A transform asks for the faster road. The browser picks the road.</p>
+        <p class="technical">Do not promise a separate GPU thread or force permanent layers.
+          Promotion depends on each browser and device.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="panel" id="hotspots" role="tabpanel" hidden>
+    <div class="section-head">
+      <h2>What changed in the code</h2>
+      <p>Select a hotspot to compare the old request with the completed implementation.</p>
+    </div>
+    <div class="hotspot-layout">
+      <div class="hotspot-list" role="tablist" aria-label="Animation hotspots">
+        <button type="button" role="tab" aria-selected="true" data-hotspot-target="ballpit">Ball-pit frame loop</button>
+        <button type="button" role="tab" aria-selected="false" data-hotspot-target="statcard">Team stat card</button>
+        <button type="button" role="tab" aria-selected="false" data-hotspot-target="progress">Progress bars</button>
+        <button type="button" role="tab" aria-selected="false" data-hotspot-target="toggle">Toggle knob</button>
+        <button type="button" role="tab" aria-selected="false" data-hotspot-target="pulse">Live pulses</button>
+        <button type="button" role="tab" aria-selected="false" data-hotspot-target="trophy">3D trophy</button>
+      </div>
+
+      <article class="hotspot-detail" data-hotspot-panel="ballpit">
+        <h3>Landing soccer-ball frame loop</h3>
+        <p class="eli5">The touch circle now slides without rebuilding its box. The ball
+          engine sleeps after a real collision pile becomes still.</p>
+        <p class="technical"><code>landing-ballpit.js</code> caches dimensions in resize,
+          writes one <code>translate3d()</code>, gates coarse work at 30fps, and stops
+          requesting module frames after 45 settled physics frames.</p>
+        <div class="code-pair">
+          <div class="code-sample">
+            <b>Before</b>
+            <code>style.left = x + "px"<br>style.top = y + "px"</code>
+          </div>
+          <div class="code-sample good">
+            <b>After</b>
+            <code>style.transform = "translate3d(...)"<br>sleeping = settledFrames >= 45</code>
+          </div>
+        </div>
+        <h4>Why not CSS only?</h4>
+        <p>CSS cannot model pair collisions, pointer impulses, bounded gravity, or flag decals
+          attached to each ball's 3D matrix.</p>
+      </article>
+
+      <article class="hotspot-detail" data-hotspot-panel="statcard" hidden>
+        <h3>Team stat-card pointer tracking</h3>
+        <p class="eli5">Fast mouse events now share one screen update. Old events do not queue
+          extra card moves.</p>
+        <p class="technical"><code>interact.js</code> measures on open or resize, stores only
+          the newest pointer coordinates, and coalesces placement into one RAF callback with
+          the individual CSS <code>translate</code> property.</p>
+        <div class="code-pair">
+          <div class="code-sample">
+            <b>Before</b>
+            <code>card.style.left = x + "px"<br>card.style.top = y + "px"</code>
+          </div>
+          <div class="code-sample good">
+            <b>After</b>
+            <code>if (!cardFrame) nextFrame(placeCard)<br>card.style.translate = x + "px " + y + "px"</code>
+          </div>
+        </div>
+        <h4>Composition detail</h4>
+        <p>Individual <code>translate</code> preserves the existing entrance
+          <code>transform</code>. The two effects compose instead of overwriting each other.</p>
+      </article>
+
+      <article class="hotspot-detail" data-hotspot-panel="progress" hidden>
+        <h3>Score and builder progress bars</h3>
+        <p class="eli5">The bars stay full size and reveal progress by scaling from the left.
+          Their boxes no longer resize during updates.</p>
+        <p class="technical">Score and builder fills use clamped zero-to-one
+          <code>scaleX()</code> values with a left transform origin.</p>
+        <div class="code-pair">
+          <div class="code-sample">
+            <b>Before</b>
+            <code>bar.style.width = percent + "%"</code>
+          </div>
+          <div class="code-sample good">
+            <b>After</b>
+            <code>bar.style.transform = "scaleX(" + ratio + ")"</code>
+          </div>
+        </div>
+        <h4>Golden safety rail</h4>
+        <p>The byte-locked fixture changed only from <code>width:33%</code> to the reviewed
+          <code>transform:scaleX(0.3375)</code> representation.</p>
+      </article>
+
+      <article class="hotspot-detail" data-hotspot-panel="toggle" hidden>
+        <h3>Dashboard toggle knob</h3>
+        <p class="eli5">The knob stays anchored and slides visually to the same endpoint.</p>
+        <p class="technical"><code>.tsw::after</code> keeps one layout position and
+          transitions only background color and transform.</p>
+        <div class="code-pair">
+          <div class="code-sample">
+            <b>Before</b>
+            <code>left: 2px → left: 18px</code>
+          </div>
+          <div class="code-sample good">
+            <b>After</b>
+            <code>left: 2px<br>transform: translateX(16px)</code>
+          </div>
+        </div>
+        <h4>Result</h4>
+        <p>The visual endpoints remain unchanged without a layout-property transition.</p>
+      </article>
+
+      <article class="hotspot-detail" data-hotspot-panel="pulse" hidden>
+        <h3>Live status pulses</h3>
+        <p class="eli5">A prepared transparent ring now grows and fades. The dot no longer
+          redraws a larger shadow every frame.</p>
+        <p class="technical">Landing and dashboard pulse pseudo-elements animate only
+          <code>transform</code> and <code>opacity</code>.</p>
+        <div class="code-pair">
+          <div class="code-sample">
+            <b>Before</b>
+            <code>@keyframes pulse { box-shadow: 0 0 0 9px ... }</code>
+          </div>
+          <div class="code-sample good">
+            <b>After</b>
+            <code>@keyframes pulse { transform: scale(2.4); opacity: 0; }</code>
+          </div>
+        </div>
+        <h4>Theme and access coverage</h4>
+        <p>Reduced motion, Easy, and GeoCities rules now target the pulse pseudo-elements.</p>
+      </article>
+
+      <article class="hotspot-detail" data-hotspot-panel="trophy" hidden>
+        <h3>Interactive 3D trophy</h3>
+        <p class="eli5">The untouched trophy draws 30 times each second. A phone uses the
+          picture and releases the 3D scene.</p>
+        <p class="technical">Passive rotation uses a 33.3ms timestamp gate. Drag and keyboard
+          input render directly. The 600px breakpoint calls scene disposal and eligible
+          desktop return initializes one canvas.</p>
+        <div class="code-pair">
+          <div class="code-sample">
+            <b>Before</b>
+            <code>render on every passive RAF<br>phone: stopLoop()</code>
+          </div>
+          <div class="code-sample good">
+            <b>After</b>
+            <code>now - lastFrame &lt; 33.3ms → skip<br>phone: disposeScene()</code>
+          </div>
+        </div>
+        <h4>Measured result</h4>
+        <p>WebGL trace events fell from 700 to 182 in Chrome and from 690 to 183 in Edge.</p>
+      </article>
+    </div>
+
+    <div class="section-head">
+      <h2>Codebase map</h2>
+      <p>Only first-party runtime files are revised. Vendored libraries remain boundaries.</p>
+    </div>
+    <table class="file-table">
+      <thead>
+        <tr><th>File</th><th>Role</th><th>Risk note</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>docs/index.html</code></td>
+          <td>Landing pulse, touch target, and builder progress CSS</td>
+          <td>Selector-specific changes preserve the no-build single-page shell.</td>
+        </tr>
+        <tr>
+          <td><code>docs/css/dashboard.css</code></td>
+          <td>Explicit transitions, progress, toggle, pulse, and stat-card motion</td>
+          <td>Easy and GeoCities overrides were updated with the new primitives.</td>
+        </tr>
+        <tr>
+          <td><code>docs/js/landing-ballpit.js</code></td>
+          <td>Sleep, wake, frame pacing, cached geometry, and transform movement</td>
+          <td>Collision physics, flag decals, and lifecycle behavior remain intact.</td>
+        </tr>
+        <tr>
+          <td><code>docs/js/interact.js</code></td>
+          <td>RAF-coalesced stat card and transform score updates</td>
+          <td>Existing AbortController cleanup now cancels pending card frames too.</td>
+        </tr>
+        <tr>
+          <td><code>docs/js/builder.js</code> and <code>render.js</code></td>
+          <td>Builder and initial score progress use scaleX</td>
+          <td>The golden fixture records only the reviewed score-bar style change.</td>
+        </tr>
+        <tr>
+          <td><code>docs/js/trophy.js</code></td>
+          <td>Passive 30fps work and phone scene disposal</td>
+          <td>Direct input, fallback, context-loss, and desktop recreation remain supported.</td>
+        </tr>
+        <tr>
+          <td><code>tests/landing-ballpit.mjs</code> and <code>animation-performance.mjs</code></td>
+          <td>Deterministic runtime and source-level regression guards</td>
+          <td>Static fact-card positions remain a documented exception.</td>
+        </tr>
+        <tr>
+          <td><code>package.json</code> and golden fixture</td>
+          <td>Run the new guard in the full suite and lock renderer output</td>
+          <td>No package or runtime dependency was added.</td>
+        </tr>
+        <tr>
+          <td><code>BASELINE.md</code>, <code>RESULTS.md</code>, and this report</td>
+          <td>Measured evidence and teaching material</td>
+          <td>Lives under dev-docs and does not alter production routing.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel" id="plans" role="tabpanel" hidden>
+    <div class="section-head">
+      <h2>The six completed execution plans</h2>
+      <p>Each plan kept a bounded scope. These are the files each stage changed.</p>
+    </div>
+
+    <details open>
+      <summary>
+        <span class="plan-rank">1</span>
+        <span class="summary-text"><b>Baseline and safety rails</b><small>Complete · no runtime change</small></span>
+      </summary>
+      <div class="plan-body">
+        <p class="eli5">Measure first. This protects you from a change that sounds fast but
+          moves work somewhere else.</p>
+        <p class="technical">Capture controlled Chrome and Edge traces, document Layout,
+          Paint, long tasks, RAF frequency, frame work, and active WebGL contexts.</p>
+        <div class="plan-files">
+          <code>BASELINE.md</code><code>tests/animation-performance.mjs</code>
+          <code>package.json</code>
+        </div>
+        <ol>
+          <li>Run untouched tests.</li>
+          <li>Trace desktop and throttled mobile scenarios.</li>
+          <li>Rank measured bottlenecks.</li>
+          <li>Change no app code.</li>
+        </ol>
+        <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-01-baseline-and-safety-rails.md">Open complete Plan 01</a>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="plan-rank">2</span>
+        <span class="summary-text"><b>Ball-pit runtime budget</b><small>Complete · largest continuous cost</small></span>
+      </summary>
+      <div class="plan-body">
+        <p class="eli5">Resize the touch circle only when the window changes. Let the balls
+          sleep when the pile becomes still.</p>
+        <p class="technical">Cache dimensions, use transform-only hit-target movement, add a
+          pure settled predicate, consecutive-frame sleep, wake triggers, and coarse frame
+          pacing.</p>
+        <div class="plan-files">
+          <code>docs/js/landing-ballpit.js</code><code>docs/index.html</code>
+          <code>tests/landing-ballpit.mjs</code><code>tests/animation-performance.mjs</code>
+        </div>
+        <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-02-ballpit-runtime-budget.md">Open complete Plan 02</a>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="plan-rank">3</span>
+        <span class="summary-text"><b>DOM motion hot paths</b><small>Complete · tooltip and progress bars</small></span>
+      </summary>
+      <div class="plan-body">
+        <p class="eli5">Move the tooltip once per screen frame and stretch finished progress
+          bars instead of resizing them.</p>
+        <p class="technical">Use individual translate for pointer placement, preserve the
+          entrance transform, convert score/builder fills to scaleX, and review one golden
+          output change.</p>
+        <div class="plan-files">
+          <code>docs/js/interact.js</code><code>docs/js/builder.js</code>
+          <code>docs/js/render.js</code><code>docs/css/dashboard.css</code>
+          <code>docs/index.html</code><code>tests/fixtures/golden-sections.json</code>
+          <code>tests/animation-performance.mjs</code>
+        </div>
+        <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-03-dom-motion-hot-paths.md">Open complete Plan 03</a>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="plan-rank">4</span>
+        <span class="summary-text"><b>CSS compositor primitives</b><small>Complete · toggle, pulses, transitions</small></span>
+      </summary>
+      <div class="plan-body">
+        <p class="eli5">Slide the switch. Grow a transparent ring. Stop telling every CSS
+          property to animate.</p>
+        <p class="technical">Remove duration-only transition shorthands, transition only named
+          properties, and move pulse animation from box-shadow to a pseudo-element.</p>
+        <div class="plan-files">
+          <code>docs/css/dashboard.css</code><code>docs/index.html</code>
+          <code>tests/animation-performance.mjs</code>
+        </div>
+        <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-04-css-compositor-primitives.md">Open complete Plan 04</a>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="plan-rank">5</span>
+        <span class="summary-text"><b>Trophy frame budget</b><small>Complete · 30fps and phone disposal</small></span>
+      </summary>
+      <div class="plan-body">
+        <p class="eli5">Spin less often when untouched. Turn off the 3D engine when the phone
+          only shows the picture.</p>
+        <p class="technical">Timestamp-gate passive renders, keep input event-driven, dispose
+          at the phone breakpoint, and preserve pause/fallback state.</p>
+        <div class="plan-files">
+          <code>docs/js/trophy.js</code><code>tests/animation-performance.mjs</code>
+        </div>
+        <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-05-trophy-frame-budget.md">Open complete Plan 05</a>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="plan-rank">6</span>
+        <span class="summary-text"><b>Integrated performance gate</b><small>Complete · measure, test, report, stop</small></span>
+      </summary>
+      <div class="plan-body">
+        <p class="eli5">Run the same course again. Compare the scorecard. Let the owner drive
+          it before shipping.</p>
+        <p class="technical">Repeat identical traces, inspect the golden diff, run the full
+          suite and browser matrix, then publish measured results after local review.</p>
+        <div class="plan-files">
+          <code>dev-docs/[04]-animation-performance-revision/RESULTS.md</code>
+          <code>dev-docs/[00]-dev-reports/[04]-animation-performance-revision/index.html</code>
+        </div>
+        <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[04]-animation-performance-revision/plans/PLAN-06-integrated-performance-gate.md">Open complete Plan 06</a>
+      </div>
+    </details>
+  </section>
+
+  <section class="panel" id="council" role="tabpanel" hidden>
+    <div class="section-head">
+      <h2>How the Technical Taste Council shaped the architecture</h2>
+      <p>No one voice controls every choice. Each voice owns its decision domain.</p>
+    </div>
+    <div class="council-grid">
+      <article class="card voice">
+        <h3>Russinovich</h3>
+        <p class="eli5">Look under the hood and use a meter before tuning.</p>
+        <p class="technical">Measure Layout, Paint, long tasks, RAF, contexts, and compositing before optimization.</p>
+      </article>
+      <article class="card voice">
+        <h3>Karpathy</h3>
+        <p class="eli5">Use the smallest tool that solves the real problem.</p>
+        <p class="technical">No framework, worker rewrite, physics package, or animation abstraction.</p>
+      </article>
+      <article class="card voice">
+        <h3>Naval</h3>
+        <p class="eli5">Keep the fun people value. Remove waste around it.</p>
+        <p class="technical">The approved ball pit and trophy earn their complexity, so preserve and budget them.</p>
+      </article>
+      <article class="card voice">
+        <h3>Sean Grove</h3>
+        <p class="eli5">The recipe matters as much as the cake.</p>
+        <p class="technical">Six bounded specs prevent later models from re-deriving or expanding intent.</p>
+      </article>
+      <article class="card voice">
+        <h3>Willison / Hamel</h3>
+        <p class="eli5">Do not trust a fix until you try it.</p>
+        <p class="technical">Source tests plus real browser traces verify the implementation claim.</p>
+      </article>
+      <article class="card voice">
+        <h3>Yegge</h3>
+        <p class="eli5">Review one box at a time, not the whole warehouse.</p>
+        <p class="technical">Sequential plans and local handoffs keep each diff reviewable.</p>
+      </article>
+      <article class="card voice">
+        <h3>Geoffrey Litt</h3>
+        <p class="eli5">Future you should understand how to change it.</p>
+        <p class="technical">Keep logic in existing focused modules with explicit names and no specialist-only layer hacks.</p>
+      </article>
+      <article class="card voice">
+        <h3>Hanselman</h3>
+        <p class="eli5">Name every switch so the next person knows what it does.</p>
+        <p class="technical">Use searchable frame-budget, sleep, and lifecycle names. Update the false "VERBATIM" comment.</p>
+      </article>
+      <article class="card voice">
+        <h3>Context Engineering</h3>
+        <p class="eli5">Give each worker only the recipe and ingredients it needs.</p>
+        <p class="technical">An execution model reads the active plan and its named files, not the whole project history.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="panel" id="reuse" role="tabpanel" hidden>
+    <div class="section-head">
+      <h2>Reuse this client-side performance review</h2>
+      <p>This prompt keeps the method and removes project-specific names, files, metrics, and
+        source material. Replace the bracketed fields before using it elsewhere.</p>
+    </div>
+    <div class="callout">
+      <p class="eli5"><strong>ELI5:</strong> keep the same inspection checklist, then swap in
+        the next project's rules and favorite motion.</p>
+      <p class="technical"><strong>Scope:</strong> CSS transitions, DOM motion, pointer
+        followers, sliding surfaces, modals, progress fills, canvas, WebGL, frame pacing,
+        reduced motion, responsive fallbacks, and teardown.</p>
+    </div>
+    <div class="prompt-actions">
+      <button class="copy-button" type="button" data-copy-prompt>Copy reusable prompt</button>
+      <span class="copy-status" data-copy-status aria-live="polite"></span>
+    </div>
+    <pre class="prompt-box" id="reusable-audit-prompt">Review and revise the client-side animation performance of [PROJECT].
+
+GOAL
+Keep approved motion and interaction quality while reducing unnecessary Layout, Paint,
+main-thread, canvas, and WebGL work. Prioritize lower-end mobile hardware and the browsers
+listed below.
+
+PROJECT CONTRACT
+- Runtime: [VANILLA / FRAMEWORK / OTHER]
+- Supported browsers and devices: [TARGETS]
+- Build and dependency constraints: [CONSTRAINTS]
+- Features and visual behavior that must remain: [PRESERVE]
+- Persistence, privacy, and reduced-motion rules: [RULES]
+
+AUDIT BEFORE EDITING
+1. Inventory every CSS animation and transition, JavaScript frame loop, pointer-following
+   element, sliding menu, modal, progress fill, canvas, and WebGL scene.
+2. Record a controlled baseline in each target browser. Use the same viewport, device pixel
+   ratio, CPU throttle, interaction script, and recording duration before and after.
+3. Measure Layout, Paint, scripting, long tasks, RAF activity, GPU or graphics work, canvas
+   count, and WebGL context lifetime where available.
+4. Find animation-time writes to left, right, top, bottom, width, and height. Separate real
+   frame-loop hot paths from one-time static placement.
+5. Find layout reads inside frame loops, unbounded requestAnimationFrame loops, hidden or
+   settled scenes that keep rendering, broad transition rules, and paint-heavy animated
+   shadows or filters.
+
+PLAN BEFORE REFACTORING
+Create a ranked plan set. Each plan must state the goal, exact files, implementation order,
+edge cases, tests, browser evidence, and acceptance criteria. Measure first. Change one
+bounded area at a time. Run overlapping plans sequentially.
+
+IMPLEMENTATION DIRECTION
+- Prefer transform and opacity for visual motion. Treat them as compositor-eligible, not a
+  guarantee of GPU execution or a separate browser thread.
+- Keep layout geometry stable during motion. Use translate or scale for pointer followers,
+  sliding surfaces, toggle knobs, and progress fills where behavior allows.
+- Coalesce high-frequency input into at most one DOM write per animation frame.
+- Cache dimensions outside hot loops and refresh them on explicit resize or content-change
+  events.
+- Replace repaint-heavy effects with prepared layers animated through transform and opacity
+  when the visual result stays equivalent.
+- Give every loop pause, resume, sleep, wake, visibility, and teardown rules.
+- Stop requesting frames when a simulation is settled. Wake only for real triggers.
+- Budget passive canvas and WebGL rendering. Keep direct input responsive.
+- Dispose WebGL resources and contexts when a responsive fallback replaces the scene.
+- Preserve prefers-reduced-motion and any in-product motion control.
+- Do not add blanket will-change rules. Permanent layers also consume memory.
+
+VERIFICATION
+1. Repeat the exact baseline scenarios after each bounded change.
+2. Compare source guards, unit tests, snapshots, browser behavior, and traces.
+3. Report raw before-and-after values. Do not claim a percentage when the scenarios do not
+   match.
+4. Separate cold-start cost from steady interaction cost.
+5. State limits honestly. Headless traces do not prove every physical device, and transform
+   use does not prove compositor promotion.
+
+DELIVERABLES
+- A brief that records the project contract and technical corrections.
+- A measured BASELINE.md.
+- Ranked, self-contained execution plans.
+- Focused regression tests for the identified hot paths and lifecycle rules.
+- A RESULTS.md with exact changes, matched measurements, validation, and remaining costs.
+- A no-build interactive report when the repository supports static HTML documentation.
+
+ACCEPTANCE GATE
+- Approved motion and controls still behave correctly.
+- No unapproved dependency, build step, storage key, or architecture change.
+- No repeated layout writes in identified animation hot paths.
+- Hidden or settled continuous scenes perform no useful frame work.
+- Responsive fallbacks release resources they replace.
+- Direct interactions stay below the agreed long-task and p95 main-thread budgets.
+- All existing tests, snapshots, reduced-motion checks, and target-browser checks pass.</pre>
+
+    <div class="section-head">
+      <h2>Six reusable components</h2>
+    </div>
+    <div class="learning-grid">
+      <article class="card"><h3>1. Contract</h3><p>Define what must stay before optimizing.</p></article>
+      <article class="card"><h3>2. Inventory</h3><p>Find CSS, DOM, canvas, and WebGL motion.</p></article>
+      <article class="card"><h3>3. Baseline</h3><p>Capture matched evidence before editing.</p></article>
+      <article class="card"><h3>4. Bounded refactors</h3><p>Separate layout, paint, frame pacing, and lifecycle work.</p></article>
+      <article class="card"><h3>5. Integrated gate</h3><p>Repeat tests and identical browser scenarios.</p></article>
+      <article class="card"><h3>6. Report</h3><p>Publish measurements, tradeoffs, and uncertainty.</p></article>
+    </div>
+  </section>
+
+  <section class="panel" id="checklist" role="tabpanel" hidden>
+    <div class="section-head">
+      <h2>Validation record</h2>
+      <p>The automated gate is complete. The final headed review belongs to you before
+        anything is committed or pushed.</p>
+    </div>
+    <div class="check-grid">
+      <section class="check-group">
+        <h3>Repository gate</h3>
+        <p class="status-line">All 16 npm test modules passed</p>
+        <p class="status-line">All 15 golden sections matched</p>
+        <p class="status-line">Only the score-bar style changed in the golden fixture</p>
+        <p class="status-line">Animation performance source guards passed</p>
+        <p class="status-line">Independent code review found no significant issue</p>
+        <p class="status-line">No dependency, build step, vendor edit, or generated bundle</p>
+      </section>
+      <section class="check-group">
+        <h3>Browser gate</h3>
+        <p class="status-line">Chrome 150 full trace matrix passed</p>
+        <p class="status-line">Edge 150 full trace matrix passed</p>
+        <p class="status-line">All 13 focused behavior checks passed in both browsers</p>
+        <p class="status-line">Zero direct-interaction tasks over 50ms</p>
+        <p class="status-line">Maximum direct-interaction p95 task was 0.61ms</p>
+        <p class="status-line">Settled ball pit recorded zero module RAF callbacks</p>
+        <p class="status-line">Phone trophy had zero canvases and one visible fallback</p>
+      </section>
+    </div>
+
+    <div class="section-head">
+      <h2>Your local review</h2>
+      <p>This checklist stays in page memory only. Reloading resets it. It does not use
+        localStorage.</p>
+    </div>
+    <div class="check-status">
+      <span data-check-label>0 of 6 reviewed</span>
+      <span>Owner review gate</span>
+    </div>
+    <div class="meter" aria-hidden="true"><span data-check-meter></span></div>
+    <div class="check-grid">
+      <section class="check-group">
+        <h3>Landing</h3>
+        <label class="check"><input type="checkbox" data-check><span>I reviewed desktop and phone layouts in dark and light modes.</span></label>
+        <label class="check"><input type="checkbox" data-check><span>I pushed the soccer balls and confirmed flags remain attached while they rotate.</span></label>
+        <label class="check"><input type="checkbox" data-check><span>I turned Motion off and on and saw a fresh ball drop.</span></label>
+      </section>
+      <section class="check-group">
+        <h3>Dashboard</h3>
+        <label class="check"><input type="checkbox" data-check><span>I reviewed progress, overlays, the stat card, Easy, and fun themes.</span></label>
+        <label class="check"><input type="checkbox" data-check><span>I tested trophy drag, keyboard control, pause, and the phone fallback.</span></label>
+        <label class="check"><input type="checkbox" data-check><span>I approve this local result as the candidate to commit.</span></label>
+      </section>
+    </div>
+    <button class="reset-button" type="button" data-reset-checks>Reset owner checklist</button>
+
+    <div class="section-head">
+      <h2>Current status</h2>
+    </div>
+    <div class="callout warning">
+      <p><strong>Implementation, automated validation, and owner review are complete.</strong></p>
+      <p>This dashboard is published with the repository revision it documents.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    Standalone final execution report. No external assets, network requests, persistence,
+    dependency, or build step.
+  </div>
+</footer>
+
+<script>
+const panelButtons = [...document.querySelectorAll("[data-panel-target]")];
+const panels = [...document.querySelectorAll("[role='tabpanel']")];
+const depthButtons = [...document.querySelectorAll("[data-depth-target]")];
+const hotspotButtons = [...document.querySelectorAll("[data-hotspot-target]")];
+const hotspotPanels = [...document.querySelectorAll("[data-hotspot-panel]")];
+const checks = [...document.querySelectorAll("[data-check]")];
+const checkLabel = document.querySelector("[data-check-label]");
+const checkMeter = document.querySelector("[data-check-meter]");
+const copyPrompt = document.querySelector("[data-copy-prompt]");
+const copyStatus = document.querySelector("[data-copy-status]");
+
+function showPanel(id, focus = false) {
+  panelButtons.forEach((button) => {
+    const active = button.dataset.panelTarget === id;
+    button.setAttribute("aria-selected", String(active));
+    button.tabIndex = active ? 0 : -1;
+    if (active && focus) button.focus();
+  });
+  panels.forEach((panel) => {
+    panel.hidden = panel.id !== id;
+  });
+  history.replaceState(null, "", `#${id}`);
+}
+
+panelButtons.forEach((button, index) => {
+  button.addEventListener("click", () => showPanel(button.dataset.panelTarget));
+  button.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const next = (index + direction + panelButtons.length) % panelButtons.length;
+    showPanel(panelButtons[next].dataset.panelTarget, true);
+  });
+});
+
+depthButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    document.body.dataset.depth = button.dataset.depthTarget;
+    depthButtons.forEach((candidate) => {
+      candidate.setAttribute("aria-pressed", String(candidate === button));
+    });
+  });
+});
+
+function showHotspot(id) {
+  hotspotButtons.forEach((button) => {
+    button.setAttribute("aria-selected", String(button.dataset.hotspotTarget === id));
+  });
+  hotspotPanels.forEach((panel) => {
+    panel.hidden = panel.dataset.hotspotPanel !== id;
+  });
+}
+
+hotspotButtons.forEach((button) => {
+  button.addEventListener("click", () => showHotspot(button.dataset.hotspotTarget));
+});
+
+function updateChecklist() {
+  const complete = checks.filter((check) => check.checked).length;
+  const ratio = checks.length ? complete / checks.length : 0;
+  checkLabel.textContent = `${complete} of ${checks.length} reviewed`;
+  checkMeter.style.transform = `scaleX(${ratio})`;
+}
+
+checks.forEach((check) => check.addEventListener("change", updateChecklist));
+document.querySelector("[data-reset-checks]").addEventListener("click", () => {
+  checks.forEach((check) => {
+    check.checked = false;
+  });
+  updateChecklist();
+});
+document.querySelector("[data-print]").addEventListener("click", () => window.print());
+copyPrompt.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(document.getElementById("reusable-audit-prompt").textContent);
+    copyStatus.textContent = "Prompt copied.";
+  } catch {
+    copyStatus.textContent = "Copy was blocked. Select the prompt text and copy it manually.";
+  }
+});
+
+const initialPanel = location.hash.slice(1);
+if (panels.some((panel) => panel.id === initialPanel)) showPanel(initialPanel);
+else showPanel("overview");
+updateChecklist();
+</script>
+</body>
+</html>

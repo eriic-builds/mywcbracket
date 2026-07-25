@@ -23,8 +23,8 @@ World Cup bracket dashboard showing the legend, actual path, match results, and 
 [![Tests](https://github.com/eriic-builds/sled-mywcbracket/actions/workflows/tests.yml/badge.svg)](https://github.com/eriic-builds/sled-mywcbracket/actions/workflows/tests.yml)
 
 [Read the project history](dev-docs/PROJECT-HISTORY.md) ·
-[Explore the interactive history](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/project-history/) ·
-[Open the development reports](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/)
+[Explore the interactive history](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/project-history/) ·
+[Open the development reports](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/)
 
 ## See what you get
 
@@ -146,7 +146,7 @@ explains how it is built, tested, and deployed.
 
 The app is zero-backend, not fully stateless. Browser-local persistence is intentional.
 The consent model and deliberate social omissions are specified in
-[`dev-docs/zero-backend-social-loop/BRIEF.md`](dev-docs/zero-backend-social-loop/BRIEF.md).
+[`dev-docs/[01]-zero-backend-social-loop/BRIEF.md`](dev-docs/[01]-zero-backend-social-loop/BRIEF.md).
 Because there is no build step, a local server runs the same checked-in files that GitHub Pages
 serves.
 
@@ -214,10 +214,10 @@ verification, and the no-build contract.
 
 | Workstream | Source | Result | Interactive report |
 | --- | --- | --- | --- |
-| [Zero-backend social loop](dev-docs/zero-backend-social-loop/README.md) | Original spec and preserved plans | Share links and local comparison | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/zero-backend-social-loop/) |
-| [Live tournament readiness](dev-docs/live-tournament-readiness/README.md) | Six committed plans and reconstructed brief | Freshness, validation, flags, access, and voice | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/live-tournament-readiness/) |
-| [Production match experience](dev-docs/production-match-experience/README.md) | Shipped report and reconstructed brief | Two bracket layouts, facts, portraits, and trophy | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/production-match-experience/) |
-| [Animation performance revision](dev-docs/animation-performance-revision/README.md) | Original brief, baseline, and six plans | Lower Layout, Paint, RAF, and WebGL work | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/animation-performance-revision/) |
+| [Zero-backend social loop](dev-docs/[01]-zero-backend-social-loop/README.md) | Original spec and preserved plans | Share links and local comparison | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[01]-zero-backend-social-loop/) |
+| [Live tournament readiness](dev-docs/[02]-live-tournament-readiness/README.md) | Six committed plans and reconstructed brief | Freshness, validation, flags, access, and voice | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[02]-live-tournament-readiness/) |
+| [Production match experience](dev-docs/[03]-production-match-experience/README.md) | Shipped report and reconstructed brief | Two bracket layouts, facts, portraits, and trophy | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[03]-production-match-experience/) |
+| [Animation performance revision](dev-docs/[04]-animation-performance-revision/README.md) | Original brief, baseline, and six plans | Lower Layout, Paint, RAF, and WebGL work | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[04]-animation-performance-revision/) |
 
 The [project history](dev-docs/PROJECT-HISTORY.md) maps smaller milestones that did not need
 formal brief packages, including typography, themes, scoring clarity, pool backup, and the

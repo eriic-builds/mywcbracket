@@ -1,7 +1,7 @@
 // share.js — encode a picks object into a URL-safe string and back. Pure module:
 // no DOM, no storage, no network. A bracket is 31 binary choices, so it travels as a
 // bitstring inside the URL *fragment* — which browsers never send to any server.
-// Wire format (dev-docs/zero-backend-social-loop/BRIEF.md):
+// Wire format (dev-docs/[01]-zero-backend-social-loop/BRIEF.md):
 // #b=<base64url(UTF-8 JSON {v:1, b:"31x 0|1", n:name, t:int})>
 import { deriveStructure, teamsFor, buildPicks } from "./builder.js";
 

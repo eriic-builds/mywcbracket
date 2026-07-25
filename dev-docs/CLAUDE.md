@@ -92,7 +92,7 @@ A regenerated passing snapshot does not prove the new output is correct.
 
 ## Social and privacy rules
 
-[`zero-backend-social-loop/BRIEF.md`](zero-backend-social-loop/BRIEF.md) is the source of
+[`[01]-zero-backend-social-loop/BRIEF.md`]([01]-zero-backend-social-loop/BRIEF.md) is the source of
 truth.
 
 Non-negotiable rules:
@@ -115,7 +115,7 @@ Non-negotiable rules:
 - Preserve `prefers-reduced-motion` and the in-product Motion setting.
 
 The reusable audit method is in
-[`animation-performance-revision/BRIEF.md`](animation-performance-revision/BRIEF.md#reusable-client-side-performance-review-prompt).
+[`[04]-animation-performance-revision/BRIEF.md`]([04]-animation-performance-revision/BRIEF.md#reusable-client-side-performance-review-prompt).
 
 ## Documentation process
 
@@ -131,7 +131,7 @@ RESULTS.md
 README.md
 ```
 
-Put interactive reports in `dev-docs/dev-reports/<brief-name>/` and link either the repo file path
+Put interactive reports in `dev-docs/[00]-dev-reports/<brief-name>/` and link either the repo file path
 or the GitHub repository URL from the package README.
 
 Preserve original source artifacts. Mark reconstructed briefs. Do not invent missing

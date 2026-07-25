@@ -1,6 +1,6 @@
 // compare.js — the local pool leaderboard. Rivals live ONLY in this browser
 // (localStorage). No network anywhere in this file, by design
-// (dev-docs/zero-backend-social-loop/BRIEF.md invariant 7):
+// (dev-docs/[01]-zero-backend-social-loop/BRIEF.md invariant 7):
 // entries arrive through owner-created share links or an explicit private pool backup.
 import { computeState } from "./render.js";
 import { hashPicks, loadPicks } from "./storage.js";
