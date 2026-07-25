@@ -16,7 +16,7 @@ verified.
 3. [`plans/PLAN-04-compare-brackets.md`](plans/PLAN-04-compare-brackets.md) specifies the
    local leaderboard and pick-difference flow.
 4. [`RESULTS.md`](RESULTS.md) maps the brief to the shipped files and commits.
-5. [Open the interactive build story](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/zero-backend-social-loop/)
+5. [Open the interactive build story](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/zero-backend-social-loop/)
    for the stage-by-stage explanation and ELI5 view.
 
 ## Historical note

@@ -32,9 +32,9 @@ path.
 - `tests/champion-celebration.mjs` - timeline boundaries, pause/resume, duplicate start, handoff,
   and source guards.
 - `tests/animation-performance.mjs` - no layout/resource creation in the frame path.
-- `docs/dev-reports/champion-celebration/mock.js` - synchronize paused-WAAPI curtain timing, connector
+- `dev-docs/dev-reports/champion-celebration/mock.js` - synchronize paused-WAAPI curtain timing, connector
   halves, plinth dismissal, and deterministic review controls.
-- `docs/dev-reports/champion-celebration/mock.css` - remove old simultaneous column/dissolve rules now
+- `dev-docs/dev-reports/champion-celebration/mock.css` - remove old simultaneous column/dissolve rules now
   owned by WAAPI.
 
 Do not touch final flag/confetti implementation, render fixtures, or vendor code.

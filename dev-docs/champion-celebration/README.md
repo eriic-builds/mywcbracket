@@ -40,7 +40,7 @@ handling, accessibility isolation, and exact restoration before visual work crea
 - [`RESULTS.md`](RESULTS.md) - implementation decisions, evidence, tradeoffs, and lessons.
 - [`Brief_5_EXECUTION_REVIEW.HTML`](Brief_5_EXECUTION_REVIEW.HTML) - self-contained executive and
   engineering review artifact.
-- [Interactive review](../../docs/dev-reports/champion-celebration/) - local controls for playing and
+- [Interactive review](../dev-reports/champion-celebration/) - local controls for playing and
   scrubbing the production `createChampionScene()` renderer. The review surface no longer owns a
   duplicate camera, model, trophy, stadium, or choreography implementation.
 
@@ -52,13 +52,13 @@ self-contained executive and engineering review.
 To review the standalone choreography mock, from the repository root:
 
 ```powershell
-python -m http.server 8000 --directory docs
+python -m http.server 8000
 ```
 
 Open:
 
 ```text
-http://127.0.0.1:8000/dev-reports/champion-celebration/?scoutTheme=dark
+http://127.0.0.1:8000/dev-docs/dev-reports/champion-celebration/?scoutTheme=dark
 ```
 
 To review the production feature, open the main dashboard, choose **Demo**, navigate to the mirrored

@@ -23,8 +23,8 @@ World Cup bracket dashboard showing the legend, actual path, match results, and 
 [![Tests](https://github.com/eriic-builds/sled-mywcbracket/actions/workflows/tests.yml/badge.svg)](https://github.com/eriic-builds/sled-mywcbracket/actions/workflows/tests.yml)
 
 [Read the project history](dev-docs/PROJECT-HISTORY.md) ·
-[Explore the interactive history](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/project-history/) ·
-[Open the development reports](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/)
+[Explore the interactive history](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/project-history/) ·
+[Open the development reports](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/)
 
 ## See what you get
 
@@ -214,10 +214,10 @@ verification, and the no-build contract.
 
 | Workstream | Source | Result | Interactive report |
 | --- | --- | --- | --- |
-| [Zero-backend social loop](dev-docs/zero-backend-social-loop/README.md) | Original spec and preserved plans | Share links and local comparison | [Open](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/zero-backend-social-loop/) |
-| [Live tournament readiness](dev-docs/live-tournament-readiness/README.md) | Six committed plans and reconstructed brief | Freshness, validation, flags, access, and voice | [Open](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/live-tournament-readiness/) |
-| [Production match experience](dev-docs/production-match-experience/README.md) | Shipped report and reconstructed brief | Two bracket layouts, facts, portraits, and trophy | [Open](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/production-match-experience/) |
-| [Animation performance revision](dev-docs/animation-performance-revision/README.md) | Original brief, baseline, and six plans | Lower Layout, Paint, RAF, and WebGL work | [Open](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/animation-performance-revision/) |
+| [Zero-backend social loop](dev-docs/zero-backend-social-loop/README.md) | Original spec and preserved plans | Share links and local comparison | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/zero-backend-social-loop/) |
+| [Live tournament readiness](dev-docs/live-tournament-readiness/README.md) | Six committed plans and reconstructed brief | Freshness, validation, flags, access, and voice | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/live-tournament-readiness/) |
+| [Production match experience](dev-docs/production-match-experience/README.md) | Shipped report and reconstructed brief | Two bracket layouts, facts, portraits, and trophy | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/production-match-experience/) |
+| [Animation performance revision](dev-docs/animation-performance-revision/README.md) | Original brief, baseline, and six plans | Lower Layout, Paint, RAF, and WebGL work | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/animation-performance-revision/) |
 
 The [project history](dev-docs/PROJECT-HISTORY.md) maps smaller milestones that did not need
 formal brief packages, including typography, themes, scoring clarity, pool backup, and the

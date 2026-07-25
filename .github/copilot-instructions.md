@@ -42,4 +42,4 @@ This repository is a **static, zero-backend** app:
 - Snapshot tests are intentionally **hermetic**: golden/map tests use frozen fixture inputs, not live `docs/data/results.json`.
 - `docs/data/results.json`, `docs/data/match-details.json`, and `docs/data/match-portraits.json` are generated pipeline artifacts; prefer scripts + validators over manual edits.
 - `tests/parse.mjs` relies on a private workbook path and self-skips when unavailable (expected in CI).
-- For larger, multi-plan workstreams, follow the established `dev-docs/<brief-name>/` package pattern (`BRIEF.md`, optional `BASELINE.md`, `plans/`, `RESULTS.md`, `README.md`) and publish interactive reports under `docs/dev-reports/<brief-name>/`.
+- For larger, multi-plan workstreams, follow the established `dev-docs/<brief-name>/` package pattern (`BRIEF.md`, optional `BASELINE.md`, `plans/`, `RESULTS.md`, `README.md`) and publish interactive reports under `dev-docs/dev-reports/<brief-name>/`.

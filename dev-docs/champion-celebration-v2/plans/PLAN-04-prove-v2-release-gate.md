@@ -73,9 +73,9 @@ contracts, while browser frames prove hand contact, silhouettes, alignment, and 
     carrier quaternion/reset, hero appearance spread, and facial-hair geometry.
 - `tests/animation-performance.mjs`
   - final resource/frame bounds only if needed.
-- `docs/dev-reports/champion-celebration/index.html`
+- `dev-docs/dev-reports/champion-celebration/index.html`
   - final V2 review guidance and labels.
-- `docs/dev-reports/champion-celebration/mock.js`
+- `dev-docs/dev-reports/champion-celebration/mock.js`
   - only integration fixes; no duplicate renderer.
 - `dev-docs/champion-celebration-v2/BRIEF.md`
   - only corrections revealed by implementation.

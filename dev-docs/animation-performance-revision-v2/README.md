@@ -17,7 +17,7 @@ completed July 11 performance evidence and focuses on two questions:
 2. [Measured baseline](BASELINE.md)
 3. [Ranked execution plans](plans/)
 4. [Final measured results](RESULTS.md)
-5. [Interactive performance review](../../docs/dev-reports/animation-performance-revision-v2/index.html)
+5. [Interactive performance review](../dev-reports/animation-performance-revision-v2/index.html)
 
 ## Package structure
 

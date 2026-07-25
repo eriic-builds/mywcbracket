@@ -124,6 +124,6 @@ sender reveals before sharing.
 ## Final report
 
 Open the
-[interactive build story](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/zero-backend-social-loop/)
+[interactive build story](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/zero-backend-social-loop/)
 for the full stage timeline, Technical Taste Council calls, code map, verification table,
 and ELI5 explanations.

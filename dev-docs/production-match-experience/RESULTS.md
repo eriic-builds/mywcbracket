@@ -106,6 +106,6 @@ original 25-of-25 measurement as historical evidence instead of rewriting it.
 ## Final report
 
 Open the
-[interactive production report](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/production-match-experience/)
+[interactive production report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/production-match-experience/)
 for the parity table, architecture flow, six execution phases, review catches, screenshot
 gallery, and learning notes.

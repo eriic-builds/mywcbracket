@@ -108,11 +108,11 @@ root yaw; camera-facing posture returns only for trophy contact and the final ta
   - reachable lift derivation.
 - `docs/js/champion-celebration-effects.js`
   - flag, flashes, crowd, lighting, confetti, and secondary-motion timing.
-- `docs/dev-reports/champion-celebration/mock.js`
+- `dev-docs/dev-reports/champion-celebration/mock.js`
   - import shared crossfade constants;
   - phase labels;
   - remove duplicated handoff timing literals.
-- `docs/dev-reports/champion-celebration/index.html`
+- `dev-docs/dev-reports/champion-celebration/index.html`
   - review language for side-on entry, constant-speed watched carry, single jump, and final podium.
 - `tests/champion-celebration.mjs`
   - new exact phase boundaries;

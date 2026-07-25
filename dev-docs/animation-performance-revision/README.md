@@ -14,11 +14,11 @@ and the final result together.
 3. [Execution plans](plans/)
 4. [Final results](RESULTS.md)
 5. [Reusable audit prompt](BRIEF.md#reusable-client-side-performance-review-prompt)
-6. [Interactive report](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/animation-performance-revision/)
+6. [Interactive report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/animation-performance-revision/)
 
 The interactive report source lives at
-[`docs/dev-reports/animation-performance-revision/index.html`](../../docs/dev-reports/animation-performance-revision/index.html).
-Keeping it under `docs/` lets the existing GitHub Pages workflow render the dashboard.
+[`dev-docs/dev-reports/animation-performance-revision/index.html`](../dev-reports/animation-performance-revision/index.html).
+Keeping it under `dev-docs/` keeps the report alongside planning artifacts in one package.
 The report's **Reuse prompt** tab contains the same project-agnostic client-side audit
 prompt in a copy-ready format.
 

@@ -226,7 +226,7 @@ An LF environment remains the full-suite authority.
 - Focused source and lifecycle guards for changed hot paths.
 - `RESULTS.md` with raw matched before/after values.
 - A self-contained no-build report at
-  `docs/dev-reports/animation-performance-revision-v2/index.html`.
+  `dev-docs/dev-reports/animation-performance-revision-v2/index.html`.
 
 ## Acceptance gate
 

@@ -13,7 +13,7 @@ Complete locally.
 - Focused and unaffected tests pass; full `npm test` retains only the accepted unrelated
   Windows CRLF-sensitive landing-ballpit extractor failure.
 - The self-contained report is available at
-  `docs/dev-reports/animation-performance-revision-v2/index.html`.
+  `dev-docs/dev-reports/animation-performance-revision-v2/index.html`.
 - Claude Opus 4.8 returned **APPROVE**. Its two bounded follow-ups were applied: the duplicate
   shoulder-alignment call was removed and rigid batching gained a behavior-level geometry,
   normal, color, index, and disposal test.
@@ -34,7 +34,7 @@ runtime edits inside this plan; route it back to the owning plan.
 - `dev-docs/animation-performance-revision-v2/README.md`
 - `dev-docs/PROJECT-HISTORY.md`
 - `dev-docs/README.md`
-- `docs/dev-reports/animation-performance-revision-v2/index.html`
+- `dev-docs/dev-reports/animation-performance-revision-v2/index.html`
 - focused tests already owned by Plans 02 through 04
 
 No new production source should be introduced here.
@@ -99,7 +99,7 @@ test-harness failure that must not obscure new regressions.
     - tests;
     - remaining cost and unsupported targets.
 12. Build one self-contained no-build HTML report at
-    `docs/dev-reports/animation-performance-revision-v2/index.html`:
+    `dev-docs/dev-reports/animation-performance-revision-v2/index.html`:
     - required Clawpilot theme variables;
     - no external requests;
     - responsive light/dark layout;

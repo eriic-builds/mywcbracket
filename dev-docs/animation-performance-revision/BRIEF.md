@@ -104,9 +104,9 @@ safer and easier to review.
 - **Context Engineering:** load only the active plan and its named files during execution.
 
 ## Planning artifacts
-- Open the [live interactive report](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/animation-performance-revision/)
+- Open the [live interactive report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/animation-performance-revision/)
   or serve `docs/` and visit `/dev-reports/animation-performance-revision/` locally.
-- The report source is `docs/dev-reports/animation-performance-revision/index.html`.
+- The report source is `dev-docs/dev-reports/animation-performance-revision/index.html`.
 - Each `plans/PLAN-*.md` file is self-contained for a less capable execution model.
 - Plan 01 creates `BASELINE.md`.
 - Plan 06 creates `RESULTS.md` and updates the interactive guide with measured outcomes.

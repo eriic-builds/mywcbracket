@@ -187,7 +187,7 @@ Both final browsers reported:
 ### Plan 06: integrated gate and teaching report
 
 The complete browser matrix and all repository tests passed together. This file and
-`docs/dev-reports/animation-performance-revision/index.html` record the measured result,
+`dev-docs/dev-reports/animation-performance-revision/index.html` record the measured result,
 code examples, learning notes, and limits.
 
 ## Why each change helps

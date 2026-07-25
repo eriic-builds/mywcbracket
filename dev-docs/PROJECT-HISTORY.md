@@ -83,7 +83,7 @@ mind, and demand evidence before release.
 | `docs/js/` | Browser runtime, render model, interactions, storage, social features, match details, trophy, and ball pit |
 | `docs/css/` | Dashboard, bracket, font, and theme styles |
 | `docs/data/` | Fixed topology, demo picks, and bot-generated public match data |
-| `docs/dev-reports/` | Pages-rendered development and learning reports |
+| `dev-docs/dev-reports/` | Pages-rendered development and learning reports |
 | `docs/reports/` | Compatibility redirects for older report URLs |
 | `scripts/` | Result fetch, detail generation, and publishing validators |
 | `tests/` | Hermetic JavaScript and Python behavior, snapshot, and pipeline coverage |
@@ -98,7 +98,7 @@ mind, and demand evidence before release.
 - Link implementation commits so claims remain auditable.
 - Keep measured delivery evidence at its original point in time.
 - Record later fixes in the relevant results file.
-- Publish interactive HTML under `docs/dev-reports/` so GitHub Pages renders it.
+- Publish interactive HTML under `dev-docs/dev-reports/` so GitHub Pages renders it.
 - Keep compatibility redirects when an older tracked document links the previous path.
 
 ## Current brief packages

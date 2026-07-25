@@ -129,6 +129,6 @@ Each implementation commit recorded a green repository suite. The current suite 
 ## Final report
 
 Open the
-[interactive report](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/live-tournament-readiness/)
+[interactive report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/live-tournament-readiness/)
 for the visual plan map, data-flow explanation, shipped commit sequence, and ELI5 learning
 notes.

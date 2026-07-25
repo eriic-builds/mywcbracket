@@ -131,8 +131,8 @@ RESULTS.md
 README.md
 ```
 
-Put interactive reports in `docs/dev-reports/<brief-name>/` and link the rendered Pages URL
-from the package README.
+Put interactive reports in `dev-docs/dev-reports/<brief-name>/` and link either the repo file path
+or the GitHub repository URL from the package README.
 
 Preserve original source artifacts. Mark reconstructed briefs. Do not invent missing
 historical plans.

@@ -13,7 +13,7 @@ This package groups the six ranked plans created for the next live-tournament pa
 2. Read the six files in [`plans/`](plans/) in rank order.
 3. [`RESULTS.md`](RESULTS.md) records what shipped, which commit delivered it, and where the
    implementation differed from the proposal.
-4. [Open the interactive report](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/live-tournament-readiness/)
+4. [Open the interactive report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/live-tournament-readiness/)
    for a visual plan map and ELI5 explanation.
 
 The plans were committed together in

@@ -11,7 +11,7 @@ inside this plan. Route a failure back to the plan that owns the affected surfac
 
 ## Exact files to touch
 - `dev-docs/animation-performance-revision/RESULTS.md` - new final comparison report.
-- `docs/dev-reports/animation-performance-revision/index.html` - publish verified outcomes
+- `dev-docs/dev-reports/animation-performance-revision/index.html` - publish verified outcomes
   and completed plan cards as a GitHub Pages preview.
 
 Do not edit runtime code unless the user explicitly approves reopening one of Plans 02-05.
@@ -88,7 +88,7 @@ Do not edit runtime code unless the user explicitly approves reopening one of Pl
     - Any device/browser uncertainty.
     - Test result and browser matrix.
 13. Turn the interactive planning guide into the final execution report at
-    `docs/dev-reports/animation-performance-revision/index.html`. Keep the existing
+    `dev-docs/dev-reports/animation-performance-revision/index.html`. Keep the existing
     ELI5/technical switch and add:
     - Completed status for all six plans.
     - Actual files changed by each plan.
@@ -102,7 +102,7 @@ Do not edit runtime code unless the user explicitly approves reopening one of Pl
       not be proved.
     - The exact test and browser validation results.
     Do not add runtime dependencies, persistence, external assets, or dynamic report fetches.
-    Keep it under `docs/dev-reports/` so GitHub Pages renders the dashboard instead of
+    Keep it under `dev-docs/dev-reports/` so GitHub Pages renders the dashboard instead of
     showing its source code.
 14. Open the interactive report and the local app for user review.
 15. Stop. Do not commit, push, or deploy.

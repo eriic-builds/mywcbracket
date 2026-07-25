@@ -25,7 +25,7 @@ The figures are rigged and ready to animate, but Plan 05 owns all choreography.
   internally, and render the static hero composition.
 - `docs/js/champion-celebration.js` - select the desktop/phone quality profile before scene
   creation.
-- `docs/dev-reports/champion-celebration/mock.js` - after production still approval, mirror the bounded
+- `dev-docs/dev-reports/champion-celebration/mock.js` - after production still approval, mirror the bounded
   anatomy, stadium depth, pitch, banner, and contact fixes for visual review.
 - `tests/champion-celebration.mjs` - constants, player count, rig, bounded segments, armband, pitch,
   banner, local texture, and instancing guards.

@@ -8,8 +8,8 @@ Runtime files stay under `docs/`. Planning and engineering evidence stay here.
 | Document | Use it for |
 | --- | --- |
 | [`PROJECT-HISTORY.md`](PROJECT-HISTORY.md) | Follow the repository from the first client-side port through the current documentation system. |
-| [Interactive project history](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/project-history/) | Filter the twelve product phases and inspect the current system and build process. |
-| [Interactive report gallery](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/) | Review completed workstreams as rendered web pages. |
+| [Interactive project history](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/project-history/) | Filter the twelve product phases and inspect the current system and build process. |
+| [Interactive report gallery](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/) | Review completed workstreams as rendered web pages. |
 | [`TECHNICAL_TASTE_COUNCIL.md`](TECHNICAL_TASTE_COUNCIL.md) | Apply the architecture and execution review lens. |
 | [`CLAUDE.md`](CLAUDE.md) | Load current commands, safety rails, privacy rules, and agent-facing repository guidance. |
 
@@ -28,7 +28,7 @@ brief-name/
 └── README.md
 ```
 
-Interactive HTML belongs under `docs/dev-reports/<brief-name>/` so GitHub Pages renders it
+Interactive HTML belongs under `dev-docs/dev-reports/<brief-name>/` so GitHub Pages renders it
 instead of GitHub showing raw HTML source.
 
 If an original brief or plan is missing:
@@ -63,13 +63,13 @@ Goal / Context / Source / Expectations
 
 | Brief | Provenance | Status | Final report | Interactive preview |
 | --- | --- | --- | --- | --- |
-| [Zero-backend social loop](zero-backend-social-loop/README.md) | Original spec, two preserved product plans, one historical CI plan link | Complete | [Results](zero-backend-social-loop/RESULTS.md) | [Open build story](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/zero-backend-social-loop/) |
-| [Live tournament readiness](live-tournament-readiness/README.md) | Reconstructed from six committed plans | Complete | [Results](live-tournament-readiness/RESULTS.md) | [Open report](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/live-tournament-readiness/) |
-| [Production match experience](production-match-experience/README.md) | Reconstructed from the shipped report and production port | Complete | [Results](production-match-experience/RESULTS.md) | [Open report](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/production-match-experience/) |
-| [Animation performance revision](animation-performance-revision/README.md) | Original brief, baseline, six plans, matched browser traces | Complete | [Results](animation-performance-revision/RESULTS.md) | [Open report](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/animation-performance-revision/) |
-| [Champion celebration](champion-celebration/README.md) | Revised completed V1 contract, [preserved source brief](%5B05%5D-champion-celebration/BRIEF.md), seven plans, production-backed scene review | Complete | [Results](champion-celebration/RESULTS.md) | [Open choreography review](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/champion-celebration/) |
-| [Champion celebration V2](champion-celebration-v2/README.md) | Trophy Lift storyboard, four plans, repeated Technical Taste Council review | Complete | [Results](champion-celebration-v2/RESULTS.md) | [Open choreography review](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/champion-celebration/) |
-| [Animation performance revision V2](animation-performance-revision-v2/README.md) | Measured dormant/active celebration audit, five plans, matched Edge traces | Complete with known renderer limit | [Results](animation-performance-revision-v2/RESULTS.md) | [Open performance review](https://eriic-builds.github.io/sled-mywcbracket/dev-reports/animation-performance-revision-v2/) |
+| [Zero-backend social loop](zero-backend-social-loop/README.md) | Original spec, two preserved product plans, one historical CI plan link | Complete | [Results](zero-backend-social-loop/RESULTS.md) | [Open build story](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/zero-backend-social-loop/) |
+| [Live tournament readiness](live-tournament-readiness/README.md) | Reconstructed from six committed plans | Complete | [Results](live-tournament-readiness/RESULTS.md) | [Open report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/live-tournament-readiness/) |
+| [Production match experience](production-match-experience/README.md) | Reconstructed from the shipped report and production port | Complete | [Results](production-match-experience/RESULTS.md) | [Open report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/production-match-experience/) |
+| [Animation performance revision](animation-performance-revision/README.md) | Original brief, baseline, six plans, matched browser traces | Complete | [Results](animation-performance-revision/RESULTS.md) | [Open report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/animation-performance-revision/) |
+| [Champion celebration](champion-celebration/README.md) | Revised completed V1 contract, [preserved source brief](%5B05%5D-champion-celebration/BRIEF.md), seven plans, production-backed scene review | Complete | [Results](champion-celebration/RESULTS.md) | [Open choreography review](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/champion-celebration/) |
+| [Champion celebration V2](champion-celebration-v2/README.md) | Trophy Lift storyboard, four plans, repeated Technical Taste Council review | Complete | [Results](champion-celebration-v2/RESULTS.md) | [Open choreography review](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/champion-celebration/) |
+| [Animation performance revision V2](animation-performance-revision-v2/README.md) | Measured dormant/active celebration audit, five plans, matched Edge traces | Complete with known renderer limit | [Results](animation-performance-revision-v2/RESULTS.md) | [Open performance review](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/dev-reports/animation-performance-revision-v2/) |
 
 ## Smaller milestones
 
