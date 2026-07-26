@@ -67,10 +67,10 @@ export function renameRival(hash, alias) {
 }
 
 // ── pure core (unit-tested in tests/compare.mjs) ────────────────────────────
-export function standings(brackets, live, topology) {
+export function standings(brackets, live, topology, stateForPicks = null) {
   // brackets: [{picks, you?, alias?}] -> ranked display rows
   const rows = brackets.map(({ picks, you, alias }) => {
-    const D = computeState(picks, live, topology);
+    const D = stateForPicks ? stateForPicks(picks) : computeState(picks, live, topology);
     return { you: !!you, name: alias || picks.entrant || "?", conf: D.CONF, live: D.LIVE,
              attain: D.ATTAIN, champ: D.CHAMP, champAlive: D.CHAMP_ALIVE, hash: hashPicks(picks) };
   });
@@ -81,9 +81,9 @@ export function standings(brackets, live, topology) {
 // Differences that still matter: undecided slots only, biggest points first.
 // KO slots are compared by bracket position (match code), not by team — two brackets
 // can both "have Spain in the semis" via different paths.
-export function diffPicks(mine, theirs, live, topology) {
-  const Dm = computeState(mine, live, topology);
-  const Dt = computeState(theirs, live, topology);
+export function diffPicks(mine, theirs, live, topology, precomputed = null) {
+  const Dm = precomputed && precomputed.mine ? precomputed.mine : computeState(mine, live, topology);
+  const Dt = precomputed && precomputed.theirs ? precomputed.theirs : computeState(theirs, live, topology);
   const PTS = { r32: 1, r16: 2, qf: 4, sf: 8, final: 16 };
   const out = [];
   for (const [mc, dt, a, b, pk] of Dm.R32) {
@@ -113,6 +113,42 @@ export function openCompare(topology, live, { onAddLink, onAddDemo, onClose } = 
   host.setAttribute("aria-label", "Pool leaderboard");
   host.hidden = false;
   let openDiff = null;                                   // hash of the row whose diff is expanded
+  let modelCache = null;
+  const stateCache = new Map();
+
+  function getStateFor(picks) {
+    const h = hashPicks(picks);
+    const cached = stateCache.get(h);
+    if (cached) return cached;
+    const D = computeState(picks, live, topology);
+    stateCache.set(h, D);
+    return D;
+  }
+
+  function modelSignature(mine, rivals) {
+    const mineSig = mine ? hashPicks(mine) : "";
+    const rivalsSig = rivals.map(r => `${hashPicks(r.picks)}:${r.alias || ""}`).join("|");
+    return `${mineSig}::${rivalsSig}`;
+  }
+
+  function invalidateModel() { modelCache = null; }
+
+  function getModel() {
+    const mine = loadPicks();
+    const rivals = loadRivals();
+    const sig = modelSignature(mine, rivals);
+    if (modelCache && modelCache.sig === sig) return modelCache;
+
+    const entries = [];
+    if (mine) entries.push({ picks: mine, you: true });
+    for (const r of rivals) entries.push({ picks: r.picks, alias: r.alias });
+    const rows = standings(entries, live, topology, getStateFor);
+    const rivalByHash = new Map();
+    for (const r of rivals) rivalByHash.set(hashPicks(r.picks), r);
+
+    modelCache = { sig, mine, rivals, rows, rivalByHash };
+    return modelCache;
+  }
 
   function close() {
     host.hidden = true; inner.innerHTML = ""; document.removeEventListener("keydown", onKey);
@@ -123,12 +159,7 @@ export function openCompare(topology, live, { onAddLink, onAddDemo, onClose } = 
   document.addEventListener("keydown", onKey);
 
   function render() {
-    const mine = loadPicks();
-    const rivals = loadRivals();
-    const entries = [];
-    if (mine) entries.push({ picks: mine, you: true });
-    for (const r of rivals) entries.push({ picks: r.picks, alias: r.alias });
-    const rows = standings(entries, live, topology);
+    const { mine, rows, rivalByHash } = getModel();
     const medal = (i) => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1);
 
     let body;
@@ -145,14 +176,21 @@ export function openCompare(topology, live, { onAddLink, onAddDemo, onClose } = 
             `<button class="cmp-btn" data-remove="${r.hash}" title="Remove from your board">✕</button>`;
           let diffHtml = "";
           if (!r.you && openDiff === r.hash && mine) {
-            const rival = rivals.find(x => hashPicks(x.picks) === r.hash);
-            const ds = diffPicks(mine, rival.picks, live, topology);
+            const rival = rivalByHash.get(r.hash);
+            if (!rival) {
+              diffHtml = '<div class="cmp-diff"><div class="cmp-dline">That bracket is no longer on your board.</div></div>';
+            } else {
+              const ds = diffPicks(mine, rival.picks, live, topology, {
+                mine: getStateFor(mine),
+                theirs: getStateFor(rival.picks),
+              });
             diffHtml = '<div class="cmp-diff">' + (ds.length
               ? ds.map(d => `<div class="cmp-dline"><b class="cmp-pts">${d.pts} pt${d.pts > 1 ? "s" : ""}</b>` +
                   `<span class="cmp-code">${esc(d.code)} · ${ROUND_TAG[d.round]}</span>` +
                   `you: <b>${esc(d.mine)}</b> · them: <b>${esc(d.theirs)}</b></div>`).join("")
               : '<div class="cmp-dline">No differences left in the games still to play — it comes down to what’s already banked.</div>') +
               '</div>';
+            }
           }
           return `<div class="cmp-row${r.you ? " is-you" : ""}"><div>${medal(i)}</div>` +
             `<div class="cmp-name">${esc(r.name)}</div><div><b>${r.conf}</b></div><div>${r.live}</div>` +
@@ -178,14 +216,19 @@ export function openCompare(topology, live, { onAddLink, onAddDemo, onClose } = 
       </div>`;
 
     inner.querySelector("#cmp-close").onclick = close;
-    inner.querySelectorAll("[data-remove]").forEach(b => b.onclick = () => { removeRival(b.dataset.remove); if (openDiff === b.dataset.remove) openDiff = null; render(); });
+    inner.querySelectorAll("[data-remove]").forEach(b => b.onclick = () => {
+      removeRival(b.dataset.remove);
+      if (openDiff === b.dataset.remove) openDiff = null;
+      invalidateModel();
+      render();
+    });
     inner.querySelectorAll("[data-diff]").forEach(b => b.onclick = () => { openDiff = openDiff === b.dataset.diff ? null : b.dataset.diff; render(); });
     inner.querySelectorAll("[data-rename]").forEach(b => b.onclick = () => {
       const row = b.closest(".cmp-row"), nameEl = row.querySelector(".cmp-name");
       nameEl.innerHTML = `<input class="cmp-rename" type="text" maxlength="40" value="${esc(nameEl.textContent)}">`;
       const inp = nameEl.querySelector("input");
       inp.focus(); inp.select();
-      const commit = () => { renameRival(b.dataset.rename, inp.value); render(); };
+      const commit = () => { renameRival(b.dataset.rename, inp.value); invalidateModel(); render(); };
       inp.onkeydown = (e) => { if (e.key === "Enter") commit(); if (e.key === "Escape") render(); };
       inp.onblur = commit;
     });
@@ -194,7 +237,7 @@ export function openCompare(topology, live, { onAddLink, onAddDemo, onClose } = 
       const res = onAddLink ? onAddLink(linkIn.value) : { ok: false, reason: "Adding by link isn't wired up." };
       msg.textContent = res.ok ? (res.dup ? "Already on your board." : "Added ✓") : res.reason;
       msg.className = "cmp-msg " + (res.ok ? "ok" : "bad");
-      if (res.ok) { linkIn.value = ""; render(); }
+      if (res.ok) { linkIn.value = ""; invalidateModel(); render(); }
     };
     linkIn.onkeydown = (e) => { if (e.key === "Enter") inner.querySelector("#cmp-add").click(); };
     const demoBtn = inner.querySelector("#cmp-demo");
@@ -202,7 +245,7 @@ export function openCompare(topology, live, { onAddLink, onAddDemo, onClose } = 
       const res = await onAddDemo();
       msg.textContent = res.ok ? (res.dup ? "Already on your board." : "Added the demo ✓") : res.reason;
       msg.className = "cmp-msg " + (res.ok ? "ok" : "bad");
-      if (res.ok) render();
+      if (res.ok) { invalidateModel(); render(); }
     };
   }
 
