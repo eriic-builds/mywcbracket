@@ -9,7 +9,7 @@ fixture, testing, and documentation boundaries.
 
 ## Project contract
 
-`sled-mywcbracket` is a static, zero-backend World Cup bracket dashboard.
+`mywcbracket` is a static, zero-backend World Cup bracket dashboard.
 
 Preserve:
 

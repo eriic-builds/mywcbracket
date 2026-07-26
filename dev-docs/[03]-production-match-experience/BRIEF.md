@@ -5,7 +5,7 @@
 This brief was reconstructed from:
 
 - the production port committed in
-  [`38d6b5d`](https://github.com/eriic-builds/sled-mywcbracket/commit/38d6b5d6bf4722cf82813cf21365a2d7bab773e3)
+  [`38d6b5d`](https://github.com/eriic-builds/mywcbracket/commit/38d6b5d6bf4722cf82813cf21365a2d7bab773e3)
 - the six execution phases in the original interactive report
 - the tests, validators, data contracts, and follow-up fixes shipped with the port
 
@@ -15,7 +15,7 @@ claiming to be an original artifact.
 
 ## Goal
 
-Move the approved 31-game bracket and match-story experience into `sled-mywcbracket`
+Move the approved 31-game bracket and match-story experience into `mywcbracket`
 without replacing its newer social, storage, data, accessibility, or no-build contracts.
 
 The finished experience needs:

@@ -270,7 +270,7 @@ check(
   "dashboard footer links LinkedIn and GitHub icons",
   dashboard.includes('href="https://www.linkedin.com/in/ericxlam/"')
     && dashboard.includes('aria-label="Eric Lam on LinkedIn"')
-    && dashboard.includes('href="https://github.com/eriic-builds/sled-mywcbracket"')
+    && dashboard.includes('href="https://github.com/eriic-builds/mywcbracket"')
     && dashboard.includes('aria-label="This project on GitHub"'),
 );
 const railFilterAt = dashboard.indexOf('<div class="railfilter glass" id="railFilter">');

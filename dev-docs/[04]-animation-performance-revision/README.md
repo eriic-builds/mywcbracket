@@ -14,7 +14,7 @@ and the final result together.
 3. [Execution plans](plans/)
 4. [Final results](RESULTS.md)
 5. [Reusable audit prompt](BRIEF.md#reusable-client-side-performance-review-prompt)
-6. [Interactive report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[04]-animation-performance-revision/)
+6. [Interactive report](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/[04]-animation-performance-revision/)
 
 The interactive report source lives at
 [`dev-docs/[00]-dev-reports/[04]-animation-performance-revision/index.html`](../[00]-dev-reports/[04]-animation-performance-revision/index.html).

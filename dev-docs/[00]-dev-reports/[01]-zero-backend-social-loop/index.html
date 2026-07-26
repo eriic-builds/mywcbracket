@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>sled-mywcbracket — Build Story, Codebase Analysis & Learning Moments</title>
+<title>mywcbracket — Build Story, Codebase Analysis & Learning Moments</title>
 <!-- Round 2 (Jul 8): repo promoted from pilot to main, renamed; nav fixes; actual-path rebuild -->
 <style>
 :root{
@@ -75,7 +75,7 @@ footer{margin-top:40px;color:var(--muted);font-size:.8rem;text-align:center}
 <body>
 <div class="wrap">
 
-<h1>sled-mywcbracket — the build story</h1>
+<h1>mywcbracket — the build story</h1>
 <p class="sub">How the zero-backend social layer got planned, built, verified, and shipped — first as a pilot (5 stages), then promoted to the main repo and hardened in <b>Round 2</b> (rename, navigation, and the actual-path bracket rebuild). What I did, why, what went wrong, and what each bump teaches. Built July 7–8, 2026, mid-tournament.</p>
 <label class="eli5toggle"><input type="checkbox" id="eli5"> <span>🧒 ELI5 mode — plain-English explanations everywhere</span></label>
 
@@ -121,7 +121,7 @@ footer{margin-top:40px;color:var(--muted);font-size:.8rem;text-align:center}
 </table>
 <div class="eli5">🧒 <b>ELI5:</b> The part of a web address after the <code>#</code> is like a note you keep in your pocket while showing someone your ID — the security guard (the server) never sees the note. Only the web page running on YOUR computer reads it.</div>
 
-<div class="good">✅ <b>Live now:</b> <a href="https://eriic-builds.github.io/sled-mywcbracket/">eriic-builds.github.io/sled-mywcbracket</a> · repo: <a href="https://github.com/eriic-builds/sled-mywcbracket">github.com/eriic-builds/sled-mywcbracket</a> · production (<a href="https://eriic-builds.github.io/my-wc26-bracket/">my-wc26-bracket</a>) untouched.</div>
+<div class="good">✅ <b>Live now:</b> <a href="https://eriic-builds.github.io/mywcbracket/">eriic-builds.github.io/mywcbracket</a> · repo: <a href="https://github.com/eriic-builds/mywcbracket">github.com/eriic-builds/mywcbracket</a> · production (<a href="https://eriic-builds.github.io/my-wc26-bracket/">my-wc26-bracket</a>) untouched.</div>
 </section>
 
 <!-- ================= TAB: STAGES ================= -->
@@ -184,7 +184,7 @@ footer{margin-top:40px;color:var(--muted);font-size:.8rem;text-align:center}
 <p class="sub">You test-drove the pilot, liked it, and reported four things. Here's what each one was, what the real cause turned out to be, and what got shipped.</p>
 
 <div class="stage"><div class="n">①</div><div style="flex:1">
-<h3>Rename: wc26-pool-pilot → sled-mywcbracket</h3>
+<h3>Rename: wc26-pool-pilot → mywcbracket</h3>
 <div class="meta">one <code>gh repo rename</code> + a sweep of every URL in the repo</div>
 <p>GitHub migrated the Pages site to the new address automatically and redirects the old repo URLs. Every reference — README badges, <code>&lt;link rel="canonical"&gt;</code>, og:tags, the deploy workflow's environment URL, CLAUDE.md, this file — was swept in one pass, then the "Pilot" framing was retired: this is now the main social edition.</p>
 <div class="bump"><b>Gotcha for later:</b> any share links or bookmarks made under the OLD Pages URL (<code>…/wc26-pool-pilot/</code>) do <b>not</b> redirect — GitHub redirects repo pages, not github.io sites. Only test links existed, so nothing was lost — but it's why renames should happen early.</div>
@@ -234,7 +234,7 @@ footer{margin-top:40px;color:var(--muted);font-size:.8rem;text-align:center}
 <h2>Round 2 scorecard</h2>
 <table>
 <tr><th>Item</th><th>Shipped as</th><th>Proof</th></tr>
-<tr><td>Repo rename + URL sweep</td><td><code>sled-mywcbracket</code> live on Pages</td><td>badges green, canonical/og updated, zero stale references (grep)</td></tr>
+<tr><td>Repo rename + URL sweep</td><td><code>mywcbracket</code> live on Pages</td><td>badges green, canonical/og updated, zero stale references (grep)</td></tr>
 <tr><td>Demo trap + Home</td><td>🏠 Home in all modes, never destructive; "Open my dashboard" card</td><td>manual walk: demo → Home → dashboard reopens, picks + what-ifs intact</td></tr>
 <tr><td>Actual-path rebuild</td><td>slot-level occupants + "Winner MXX" placeholders</td><td><code>bracketmap.mjs</code> 5/5; worst-case bracket: 0 blanks (was 8); visual: blue path + lines flow R32→Champion</td></tr>
 <tr><td>Connector robustness</td><td>ResizeObserver + fonts.ready redraw</td><td>lines survive section collapse/expand and font load</td></tr>
@@ -346,7 +346,7 @@ footer{margin-top:40px;color:var(--muted);font-size:.8rem;text-align:center}
 <div class="card">
 <b>Solo (one browser):</b>
 <ol>
-<li>Open <a href="https://eriic-builds.github.io/sled-mywcbracket/">the live pilot</a> → <b>Build my bracket</b> (or upload your Excel).</li>
+<li>Open <a href="https://eriic-builds.github.io/mywcbracket/">the live pilot</a> → <b>Build my bracket</b> (or upload your Excel).</li>
 <li>Tap <b>🏆 Leaderboard</b> → "Add the demo bracket to try it" → you're ranked against the demo.</li>
 <li>Tap <b>diff</b> on the demo row → see exactly which remaining games separate you, biggest points first.</li>
 </ol>
@@ -359,7 +359,7 @@ footer{margin-top:40px;color:var(--muted);font-size:.8rem;text-align:center}
 </div>
 
 <h2>What a share link actually looks like</h2>
-<div class="urlbox">https://eriic-builds.github.io/sled-mywcbracket/#b=eyJ2IjoxLCJiIjoiMDAxMTAwMDAxMTAwMDAwMDExMTAwMTAxMDAxMDAwMSIsIm4iOiJFcmljIExhbSIsInQiOjR9</div>
+<div class="urlbox">https://eriic-builds.github.io/mywcbracket/#b=eyJ2IjoxLCJiIjoiMDAxMTAwMDAxMTAwMDAwMDExMTAwMTAxMDAxMDAwMSIsIm4iOiJFcmljIExhbSIsInQiOjR9</div>
 <p>Paste the part after <code>#b=</code> into <code>atob('…')</code> in any console and you'll see exactly what it carries: <code>{"v":1,"b":"0011000011…","n":"Eric Lam","t":4}</code> — the 31 coin-flips, a name, a tiebreaker. Nothing else. That transparency is itself a privacy feature.</p>
 
 <h2>Commands (pilot repo)</h2>
@@ -374,11 +374,11 @@ footer{margin-top:40px;color:var(--muted);font-size:.8rem;text-align:center}
 <tr><th>If you observe…</th><th>Then consider…</th></tr>
 <tr><td>Coworkers love it, link-swapping feels fine</td><td>Ship it: merge the social layer back into my-wc26-bracket after the tournament (the code was built to transplant — same file layout, render.js untouched).</td></tr>
 <tr><td>People lose links / want one shared board</td><td>Revisit the tiny-backend question with evidence in hand (SPEC.md documents why it was deferred, not rejected).</td></tr>
-<tr><td>QF results feel stale on match days</td><td>The later <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[02]-live-tournament-readiness/plans/PLAN-01-match-day-freshness.md">match-day freshness plan</a> addresses this directly.</td></tr>
+<tr><td>QF results feel stale on match days</td><td>The later <a href="https://github.com/eriic-builds/mywcbracket/blob/main/dev-docs/[02]-live-tournament-readiness/plans/PLAN-01-match-day-freshness.md">match-day freshness plan</a> addresses this directly.</td></tr>
 </table>
 </section>
 
-<footer>Built July 7–8, 2026 · <a href="https://github.com/eriic-builds/sled-mywcbracket/blob/main/dev-docs/[01]-zero-backend-social-loop/BRIEF.md">Read the brief</a> · <a href="https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[01]-zero-backend-social-loop/plans">Read the plans</a> · <a href="../">All development reports</a></footer>
+<footer>Built July 7–8, 2026 · <a href="https://github.com/eriic-builds/mywcbracket/blob/main/dev-docs/[01]-zero-backend-social-loop/BRIEF.md">Read the brief</a> · <a href="https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[01]-zero-backend-social-loop/plans">Read the plans</a> · <a href="../">All development reports</a></footer>
 </div>
 
 <script>

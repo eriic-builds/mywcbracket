@@ -829,8 +829,8 @@ export function initMatchDetails(root, detailsState, portraitState) {
     sources.className = "portrait-credit-group portrait-credit-sources";
     sources.append(
       creditLink(
-        "https://github.com/eriic-builds/sled-mywcbracket",
-        "sled-mywcbracket",
+        "https://github.com/eriic-builds/mywcbracket",
+        "mywcbracket",
         "SLED bracket project on GitHub",
       ),
       creditSeparator(),

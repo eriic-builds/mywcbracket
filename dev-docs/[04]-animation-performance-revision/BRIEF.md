@@ -1,7 +1,7 @@
 # Animation performance revision brief
 
 ## Goal
-Revise the first-party browser animations in `sled-mywcbracket` so visual motion avoids
+Revise the first-party browser animations in `mywcbracket` so visual motion avoids
 repeated layout work, the two WebGL scenes have bounded runtime cost, and the static site
 stays responsive on lower-end mobile hardware.
 
@@ -104,7 +104,7 @@ safer and easier to review.
 - **Context Engineering:** load only the active plan and its named files during execution.
 
 ## Planning artifacts
-- Open the [live interactive report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[04]-animation-performance-revision/)
+- Open the [live interactive report](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/[04]-animation-performance-revision/)
   or serve `docs/` and visit `/dev-reports/[04]-animation-performance-revision/` locally.
 - The report source is `dev-docs/[00]-dev-reports/[04]-animation-performance-revision/index.html`.
 - Each `plans/PLAN-*.md` file is self-contained for a less capable execution model.

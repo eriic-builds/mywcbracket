@@ -31,12 +31,12 @@ The plans were ranked by leverage. The commits landed in small review-sized unit
 
 | Plan | Commit | What shipped |
 | --- | --- | --- |
-| CI safety net | [`d47d038`](https://github.com/eriic-builds/sled-mywcbracket/commit/d47d03869b13ce19f90a09a795a81351959b5c41) | Added a standard-library result validator and placed it before commit in the sync workflow and in push CI. |
-| Hardening and accessibility | [`05445a0`](https://github.com/eriic-builds/sled-mywcbracket/commit/05445a0267b5b7bc52fcba4892845d9c7123b877) | Added a retryable load error, leaderboard dialog semantics and focus return, keyboard drop-zone activation, and a one-time blocked-storage notice. |
-| Bracket-map flags | [`cb8ccc4`](https://github.com/eriic-builds/sled-mywcbracket/commit/cb8ccc449a0d6f9e4e251126520da5c34f2da2e4) | Reused `flagImg()` for real teams in both bracket views and kept placeholders flag-free. |
-| Played-out revamp | [`d03a697`](https://github.com/eriic-builds/sled-mywcbracket/commit/d03a697847ad087b251ef08918ef98d5ff1e8a51) | Led the story with the latest completed round and clarified the costliest missed pick. |
-| Match-day freshness | [`c717610`](https://github.com/eriic-builds/sled-mywcbracket/commit/c71761070e03d39be5f324ecdfb309fadc9e1c50) | Added half-hour match-window schedules, date gating, and warnings after 3 and 6 hours without fresh data. |
-| Writing style | [`e9b0183`](https://github.com/eriic-builds/sled-mywcbracket/commit/e9b0183d31b80dfd147fa2c27737ae687f4c1157) | Rewrote visible prose and generated highlight copy while preserving score separators and status glyphs. |
+| CI safety net | [`d47d038`](https://github.com/eriic-builds/mywcbracket/commit/d47d03869b13ce19f90a09a795a81351959b5c41) | Added a standard-library result validator and placed it before commit in the sync workflow and in push CI. |
+| Hardening and accessibility | [`05445a0`](https://github.com/eriic-builds/mywcbracket/commit/05445a0267b5b7bc52fcba4892845d9c7123b877) | Added a retryable load error, leaderboard dialog semantics and focus return, keyboard drop-zone activation, and a one-time blocked-storage notice. |
+| Bracket-map flags | [`cb8ccc4`](https://github.com/eriic-builds/mywcbracket/commit/cb8ccc449a0d6f9e4e251126520da5c34f2da2e4) | Reused `flagImg()` for real teams in both bracket views and kept placeholders flag-free. |
+| Played-out revamp | [`d03a697`](https://github.com/eriic-builds/mywcbracket/commit/d03a697847ad087b251ef08918ef98d5ff1e8a51) | Led the story with the latest completed round and clarified the costliest missed pick. |
+| Match-day freshness | [`c717610`](https://github.com/eriic-builds/mywcbracket/commit/c71761070e03d39be5f324ecdfb309fadc9e1c50) | Added half-hour match-window schedules, date gating, and warnings after 3 and 6 hours without fresh data. |
+| Writing style | [`e9b0183`](https://github.com/eriic-builds/mywcbracket/commit/e9b0183d31b80dfd147fa2c27737ae687f4c1157) | Rewrote visible prose and generated highlight copy while preserving score separators and status glyphs. |
 
 ## What changed
 
@@ -129,6 +129,6 @@ Each implementation commit recorded a green repository suite. The current suite 
 ## Final report
 
 Open the
-[interactive report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[02]-live-tournament-readiness/)
+[interactive report](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/[02]-live-tournament-readiness/)
 for the visual plan map, data-flow explanation, shipped commit sequence, and ELI5 learning
 notes.

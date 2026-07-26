@@ -38,7 +38,7 @@ The two loose product plans were:
 | 4 of 5 | [`PLAN-04-compare-brackets.md`](plans/PLAN-04-compare-brackets.md) | Stages 2 and 3 |
 
 The original rank-1 CI plan is still readable in
-[commit `003c056`](https://github.com/eriic-builds/sled-mywcbracket/blob/003c0567d7b17c2673c6b8d2787e48614ae8c728/PLAN-ci-safety-net.md).
+[commit `003c056`](https://github.com/eriic-builds/mywcbracket/blob/003c0567d7b17c2673c6b8d2787e48614ae8c728/PLAN-ci-safety-net.md).
 The later live-tournament brief reused the filename, so this package links the exact
 historical version instead of duplicating or mislabeling it.
 
@@ -46,11 +46,11 @@ historical version instead of duplicating or mislabeling it.
 
 | Stage | Commit | Outcome |
 | --- | --- | --- |
-| 0 | [`003c056`](https://github.com/eriic-builds/sled-mywcbracket/commit/003c0567d7b17c2673c6b8d2787e48614ae8c728) | Added the brief, hermetic golden fixtures, CI, repo guidance, and the pilot foundation. |
-| 1 | [`97e3c67`](https://github.com/eriic-builds/sled-mywcbracket/commit/97e3c67) | Added pure share encode/decode, view-only shared brackets, aliases, malformed-link handling, and share tests. |
-| 2 and 3 | [`22d4bb5`](https://github.com/eriic-builds/sled-mywcbracket/commit/22d4bb5) | Added local rivals, add-by-link, standings, pick differences, rename and remove controls, and comparison tests. |
-| 4 | [`65d4019`](https://github.com/eriic-builds/sled-mywcbracket/commit/65d4019) | Made the leaderboard visible, added the landing pool card and demo path, and clarified privacy copy. |
-| Report | [`bd5ca44`](https://github.com/eriic-builds/sled-mywcbracket/commit/bd5ca44) | Added the interactive stage-by-stage build story. |
+| 0 | [`003c056`](https://github.com/eriic-builds/mywcbracket/commit/003c0567d7b17c2673c6b8d2787e48614ae8c728) | Added the brief, hermetic golden fixtures, CI, repo guidance, and the pilot foundation. |
+| 1 | [`97e3c67`](https://github.com/eriic-builds/mywcbracket/commit/97e3c67) | Added pure share encode/decode, view-only shared brackets, aliases, malformed-link handling, and share tests. |
+| 2 and 3 | [`22d4bb5`](https://github.com/eriic-builds/mywcbracket/commit/22d4bb5) | Added local rivals, add-by-link, standings, pick differences, rename and remove controls, and comparison tests. |
+| 4 | [`65d4019`](https://github.com/eriic-builds/mywcbracket/commit/65d4019) | Made the leaderboard visible, added the landing pool card and demo path, and clarified privacy copy. |
+| Report | [`bd5ca44`](https://github.com/eriic-builds/mywcbracket/commit/bd5ca44) | Added the interactive stage-by-stage build story. |
 
 ## Main implementation
 
@@ -111,12 +111,12 @@ render output.
 
 ## Round 2
 
-The pilot was promoted to `sled-mywcbracket` in commit
-[`f60c0f2`](https://github.com/eriic-builds/sled-mywcbracket/commit/f60c0f2).
+The pilot was promoted to `mywcbracket` in commit
+[`f60c0f2`](https://github.com/eriic-builds/mywcbracket/commit/f60c0f2).
 That round added non-destructive Home navigation and rebuilt the actual-path bracket so it
 derives occupants from live results instead of following the owner's pick tree.
 
-Commit [`ad380d4`](https://github.com/eriic-builds/sled-mywcbracket/commit/ad380d4)
+Commit [`ad380d4`](https://github.com/eriic-builds/mywcbracket/commit/ad380d4)
 updated the report and documented the revocation boundary: a link contains a copy of the
 data, so it cannot be revoked after another person saves it. The alias field limits what a
 sender reveals before sharing.
@@ -124,6 +124,6 @@ sender reveals before sharing.
 ## Final report
 
 Open the
-[interactive build story](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[01]-zero-backend-social-loop/)
+[interactive build story](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/[01]-zero-backend-social-loop/)
 for the full stage timeline, Technical Taste Council calls, code map, verification table,
 and ELI5 explanations.

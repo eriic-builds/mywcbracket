@@ -1,4 +1,4 @@
-# Copilot instructions for `sled-mywcbracket`
+# Copilot instructions for `mywcbracket`
 
 ## Build, test, and lint commands
 
