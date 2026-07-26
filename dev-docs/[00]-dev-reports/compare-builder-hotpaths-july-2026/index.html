@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compare + Builder Hot Path Optimization - July 2026</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0f1620;
+  --panel: #182433;
+  --line: #34506a;
+  --text: #eef4fb;
+  --muted: #a9bfd5;
+  --blue: #53bbff;
+  --green: #8cde68;
+  --gold: #f2c766;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(83, 187, 255, .18), transparent 38rem),
+    var(--bg);
+  color: var(--text);
+  font: 16px/1.55 system-ui, -apple-system, Segoe UI, sans-serif;
+}
+main { width: min(980px, calc(100% - 32px)); margin: 0 auto; padding: 36px 0 64px; }
+header {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px;
+  background: linear-gradient(135deg, #182433, #1f3045);
+}
+.eyebrow { margin: 0; color: var(--green); font-size: .78rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+h1 { margin: 8px 0 10px; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.08; }
+.sub { margin: 0; color: var(--muted); max-width: 72ch; }
+.kpis { margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.kpi { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: rgba(0, 0, 0, .16); }
+.kpi b { display: block; font-size: 1.28rem; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.tabs button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 12px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tabs button.on { background: linear-gradient(135deg, var(--blue), #7cd5ff); color: #041522; border-color: transparent; }
+.panel { display: none; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); padding: 16px; }
+.panel.on { display: block; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.card { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: rgba(0, 0, 0, .14); }
+.badge { display: inline-block; border-radius: 999px; padding: 3px 9px; font-size: .75rem; font-weight: 800; }
+.done { background: var(--green); color: #0e1c08; }
+.why { background: var(--gold); color: #291d00; }
+.code {
+  margin-top: 8px;
+  border: 1px solid #2c4358;
+  border-radius: 10px;
+  background: #0c141d;
+  padding: 10px;
+  white-space: pre-wrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .84rem;
+}
+ul { margin: 8px 0 0; padding-left: 18px; }
+li { margin: 4px 0; }
+a { color: var(--blue); }
+footer { margin-top: 16px; color: var(--muted); font-size: .86rem; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">sled-mywcbracket / implementation report</p>
+    <h1>Compare + builder hot path optimization</h1>
+    <p class="sub">This pass implemented the three performance actions from review: compare recompute reduction, compare diff state reuse, and builder rerender/listener churn reduction. Scope stayed local to <code>docs/js/compare.js</code> and <code>docs/js/builder.js</code>.</p>
+    <div class="kpis">
+      <div class="kpi"><b>2</b>files changed</div>
+      <div class="kpi"><b>3</b>hot-path fixes shipped</div>
+      <div class="kpi"><b>2</b>focused suites passed</div>
+      <div class="kpi"><b>1</b>full JS suite passed</div>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Report sections">
+    <button class="on" data-tab="implemented">Implemented</button>
+    <button data-tab="impact">Performance impact</button>
+    <button data-tab="verify">Verification</button>
+    <button data-tab="council">Taste council calls</button>
+  </nav>
+
+  <section class="panel on" id="implemented">
+    <h2>Implemented changes</h2>
+    <div class="grid">
+      <article class="card">
+        <span class="badge done">Done</span>
+        <h3>Compare model/state caching</h3>
+        <p>Leaderboard model now caches by local picks+rivals signature; UI-only actions no longer force full standings recomputation.</p>
+        <div class="code">docs/js/compare.js
++ modelCache + signature invalidation
++ stateCache for computeState reuse</div>
+      </article>
+
+      <article class="card">
+        <span class="badge done">Done</span>
+        <h3>Diff view state reuse</h3>
+        <p><code>diffPicks</code> now accepts precomputed states so reopening diff avoids duplicate <code>computeState</code> work for both brackets.</p>
+        <div class="code">docs/js/compare.js
++ diffPicks(..., precomputed)
++ standings(..., stateForPicks)</div>
+      </article>
+
+      <article class="card">
+        <span class="badge done">Done</span>
+        <h3>Builder persistent shell + delegated events</h3>
+        <p>Builder no longer tears down/rebuilds the full overlay DOM or rebinds handlers every render; it updates only dynamic regions and uses delegated listeners for the dialog lifecycle.</p>
+        <div class="code">docs/js/builder.js
++ ensureShell() stable container
++ partial section updates (steps/head/body/foot)
++ one click/input delegate + close teardown</div>
+      </article>
+    </div>
+  </section>
+
+  <section class="panel" id="impact">
+    <h2>Performance impact profile</h2>
+    <div class="grid">
+      <article class="card">
+        <span class="badge why">CPU</span>
+        <ul>
+          <li>Lower repeated bracket-state derivation in compare overlay.</li>
+          <li>Reduced duplicate work when toggling/opening diff rows.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <span class="badge why">DOM/GC</span>
+        <ul>
+          <li>Removed full builder container replacement on each interaction.</li>
+          <li>Removed handler churn from per-render rebinding loops.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <span class="badge why">Risk control</span>
+        <ul>
+          <li>No change to data model, storage format, or sharing contract.</li>
+          <li>No network behavior changes; zero-backend invariants preserved.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="panel" id="verify">
+    <h2>Verification run</h2>
+    <div class="code">node tests/compare.mjs
+node tests/builder.mjs
+npm test</div>
+    <p>All targeted and full JavaScript suites passed after implementation.</p>
+    <p><b>Implementation commit:</b> <code>b1157bc</code></p>
+  </section>
+
+  <section class="panel" id="council">
+    <h2>Taste council calls used</h2>
+    <div class="grid">
+      <article class="card"><b>Russinovich:</b> optimize where repeated runtime cost is visible (compute + rerender churn), not by speculative micro-tuning.</article>
+      <article class="card"><b>Karpathy + Grove:</b> small, targeted changes in-place before broader abstraction; keep behavior contract intact.</article>
+      <article class="card"><b>Willison/Hamel:</b> treat performance claims as untrusted until test suite confirms no regression.</article>
+      <article class="card"><b>Yegge:</b> one reviewable increment: two files, clear diff, isolated objective.</article>
+    </div>
+  </section>
+
+  <footer>
+    July 2026 optimization report · <a href="../">Back to development reports</a>
+  </footer>
+</main>
+
+<script>
+const tabs = [...document.querySelectorAll('.tabs button')];
+const panels = [...document.querySelectorAll('.panel')];
+for (const tab of tabs) {
+  tab.addEventListener('click', () => {
+    tabs.forEach(btn => btn.classList.toggle('on', btn === tab));
+    panels.forEach(panel => panel.classList.toggle('on', panel.id === tab.dataset.tab));
+  });
+}
+</script>
+</body>
+</html>
