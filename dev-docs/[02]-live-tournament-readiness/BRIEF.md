@@ -3,7 +3,7 @@
 ## Provenance
 
 This brief was reconstructed from the six plans committed together in
-[`2aec517`](https://github.com/eriic-builds/sled-mywcbracket/commit/2aec5175dda61431d05669c84e41b078f4523f2d),
+[`2aec517`](https://github.com/eriic-builds/mywcbracket/commit/2aec5175dda61431d05669c84e41b078f4523f2d),
 their implementation commits, and the repository state they describe.
 
 The planning prompt asked for the highest-leverage work after the self-hosted Poppins pass

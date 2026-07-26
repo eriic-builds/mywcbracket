@@ -26,7 +26,7 @@ privacy rules stayed in place.
 ## Main delivery
 
 Commit
-[`38d6b5d`](https://github.com/eriic-builds/sled-mywcbracket/commit/38d6b5d6bf4722cf82813cf21365a2d7bab773e3)
+[`38d6b5d`](https://github.com/eriic-builds/mywcbracket/commit/38d6b5d6bf4722cf82813cf21365a2d7bab773e3)
 added:
 
 - `docs/js/bracket-tree.js` for shared tournament geometry
@@ -45,10 +45,10 @@ generation, lifecycle, tests, and visual evidence formed one release boundary.
 
 | Commit | Outcome |
 | --- | --- |
-| [`cceb234`](https://github.com/eriic-builds/sled-mywcbracket/commit/cceb234) | Restored OpenDyslexic Easy mode, standing-label clearance, and seed-free maps after the port. |
-| [`fe2179d`](https://github.com/eriic-builds/sled-mywcbracket/commit/fe2179d) | Restored the standalone team filter and fan-project disclaimer. |
-| [`b8d2ead`](https://github.com/eriic-builds/sled-mywcbracket/commit/b8d2ead) | Polished dashboard navigation and credits. |
-| [`b13b34c`](https://github.com/eriic-builds/sled-mywcbracket/commit/b13b34c) | Automated portrait discovery, added the next match mapping, and replaced filter seeds with bundled flags. |
+| [`cceb234`](https://github.com/eriic-builds/mywcbracket/commit/cceb234) | Restored OpenDyslexic Easy mode, standing-label clearance, and seed-free maps after the port. |
+| [`fe2179d`](https://github.com/eriic-builds/mywcbracket/commit/fe2179d) | Restored the standalone team filter and fan-project disclaimer. |
+| [`b8d2ead`](https://github.com/eriic-builds/mywcbracket/commit/b8d2ead) | Polished dashboard navigation and credits. |
+| [`b13b34c`](https://github.com/eriic-builds/mywcbracket/commit/b13b34c) | Automated portrait discovery, added the next match mapping, and replaced filter seeds with bundled flags. |
 
 These follow-ups are recorded because a large port can preserve core contracts while still
 overwriting smaller production-specific polish. The fixes make that integration cost
@@ -106,6 +106,6 @@ original 25-of-25 measurement as historical evidence instead of rewriting it.
 ## Final report
 
 Open the
-[interactive production report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[03]-production-match-experience/)
+[interactive production report](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/[03]-production-match-experience/)
 for the parity table, architecture flow, six execution phases, review catches, screenshot
 gallery, and learning notes.

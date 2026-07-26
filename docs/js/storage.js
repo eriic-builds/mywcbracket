@@ -60,7 +60,7 @@ export function resetWhatIfsIfChanged(picks) {
   if (safeGet(KEY_HASH) !== h) { safeDel(KEY_SCORES); safeSet(KEY_HASH, h); }
 }
 
-export const POOL_BACKUP_FORMAT = "sled-mywcbracket-pool-backup";
+export const POOL_BACKUP_FORMAT = "mywcbracket-pool-backup";
 export const POOL_BACKUP_VERSION = 1;
 
 export function createPoolBackup(picks, rivals) {

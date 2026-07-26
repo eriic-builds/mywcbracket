@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: https://eriic-builds.github.io/sled-mywcbracket/
+      url: https://eriic-builds.github.io/mywcbracket/
     steps:
       - uses: actions/checkout@v5
       - uses: actions/configure-pages@v6

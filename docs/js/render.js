@@ -1155,7 +1155,7 @@ export function renderDashboard(picks, live, topology) {
     (D.CREDIT ? `<div class="src credit"><span>${esc(D.CREDIT)}</span>` +
       '<span class="credit-social" role="group" aria-label="Project links">' +
       `<a href="https://www.linkedin.com/in/ericxlam/" target="_blank" rel="noopener" aria-label="Eric Lam on LinkedIn" title="LinkedIn">${LINKEDIN_ICON}</a>` +
-      `<a href="https://github.com/eriic-builds/sled-mywcbracket" target="_blank" rel="noopener" aria-label="This project on GitHub" title="GitHub repo">${GITHUB_ICON}</a>` +
+      `<a href="https://github.com/eriic-builds/mywcbracket" target="_blank" rel="noopener" aria-label="This project on GitHub" title="GitHub repo">${GITHUB_ICON}</a>` +
       '</span></div>' : "") + '</div>' +
     '</div></div>';   // close .content, .shell
   DASHBOARD_HTML_CACHE.set(D, html);

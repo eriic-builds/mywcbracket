@@ -12,7 +12,7 @@ live SLED architecture.
 1. [`BRIEF.md`](BRIEF.md) reconstructs the production constraints and six execution phases
    from the shipped report and implementation commit.
 2. [`RESULTS.md`](RESULTS.md) maps the work to code, follow-up fixes, and release evidence.
-3. [Open the interactive report](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[03]-production-match-experience/)
+3. [Open the interactive report](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/[03]-production-match-experience/)
    for the visual parity gallery, ELI5 notes, and release review.
 
 No standalone plan files were committed for this port. The six phases embedded in the

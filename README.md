@@ -2,7 +2,7 @@
 
 Turn your World Cup picks into a live dashboard that scores itself against real results.
 
-## [Open the live dashboard ->](https://eriic-builds.github.io/sled-mywcbracket/)
+## [Open the live dashboard ->](https://eriic-builds.github.io/mywcbracket/)
 
 Built for anyone tracking a World Cup 2026 bracket, whether you are following your own picks or
 comparing a pool with friends.
@@ -18,13 +18,13 @@ device. No install or account is required, and your personal pool stays in your 
 
 World Cup bracket dashboard showing the legend, actual path, match results, and champion pick.
 
-[![Sync World Cup results](https://github.com/eriic-builds/sled-mywcbracket/actions/workflows/sync-results.yml/badge.svg)](https://github.com/eriic-builds/sled-mywcbracket/actions/workflows/sync-results.yml)
-[![Deploy GitHub Pages](https://github.com/eriic-builds/sled-mywcbracket/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/eriic-builds/sled-mywcbracket/actions/workflows/deploy-pages.yml)
-[![Tests](https://github.com/eriic-builds/sled-mywcbracket/actions/workflows/tests.yml/badge.svg)](https://github.com/eriic-builds/sled-mywcbracket/actions/workflows/tests.yml)
+[![Sync World Cup results](https://github.com/eriic-builds/mywcbracket/actions/workflows/sync-results.yml/badge.svg)](https://github.com/eriic-builds/mywcbracket/actions/workflows/sync-results.yml)
+[![Deploy GitHub Pages](https://github.com/eriic-builds/mywcbracket/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/eriic-builds/mywcbracket/actions/workflows/deploy-pages.yml)
+[![Tests](https://github.com/eriic-builds/mywcbracket/actions/workflows/tests.yml/badge.svg)](https://github.com/eriic-builds/mywcbracket/actions/workflows/tests.yml)
 
 [Read the project history](dev-docs/PROJECT-HISTORY.md) ·
-[Explore the interactive history](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/project-history/) ·
-[Open the development reports](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/)
+[Explore the interactive history](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/project-history/) ·
+[Open the development reports](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/)
 
 ## See what you get
 
@@ -71,7 +71,7 @@ can read at a glance.
 6. **Protect your pool.** Download a private backup of your bracket and locally saved rivals.
    Importing it restores the bracket and merges missing rivals without duplicates.
 
-**[Open the live dashboard ->](https://eriic-builds.github.io/sled-mywcbracket/)**
+**[Open the live dashboard ->](https://eriic-builds.github.io/mywcbracket/)**
 
 ## Your bracket stays private
 
@@ -108,7 +108,7 @@ through three repositories, with each version removing the next piece of frictio
 | --- | --- | --- |
 | [`wc26-bracket`](https://github.com/eriic-builds/wc26-bracket) | Can my own picks become a live dashboard? | A Python generator, validated public results, and scheduled GitHub Pages updates. |
 | [`my-wc26-bracket`](https://github.com/eriic-builds/my-wc26-bracket) | Can anyone use it without repository setup? | The engine moved into the browser, with Excel import, a pick builder, and local storage. |
-| [`sled-mywcbracket`](https://github.com/eriic-builds/sled-mywcbracket) | Can friends compare without accounts or a backend? | One-bracket share links, a local leaderboard, privacy boundaries, and pool backup. |
+| [`mywcbracket`](https://github.com/eriic-builds/mywcbracket) | Can friends compare without accounts or a backend? | One-bracket share links, a local leaderboard, privacy boundaries, and pool backup. |
 
 The practical capability I came away with is a repeatable way to turn varied source material--a
 private workbook, public match feeds, fallback results, and credited media--into one validated
@@ -214,10 +214,10 @@ verification, and the no-build contract.
 
 | Workstream | Source | Result | Interactive report |
 | --- | --- | --- | --- |
-| [Zero-backend social loop](dev-docs/[01]-zero-backend-social-loop/README.md) | Original spec and preserved plans | Share links and local comparison | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[01]-zero-backend-social-loop/) |
-| [Live tournament readiness](dev-docs/[02]-live-tournament-readiness/README.md) | Six committed plans and reconstructed brief | Freshness, validation, flags, access, and voice | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[02]-live-tournament-readiness/) |
-| [Production match experience](dev-docs/[03]-production-match-experience/README.md) | Shipped report and reconstructed brief | Two bracket layouts, facts, portraits, and trophy | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[03]-production-match-experience/) |
-| [Animation performance revision](dev-docs/[04]-animation-performance-revision/README.md) | Original brief, baseline, and six plans | Lower Layout, Paint, RAF, and WebGL work | [Open](https://github.com/eriic-builds/sled-mywcbracket/tree/main/dev-docs/[00]-dev-reports/[04]-animation-performance-revision/) |
+| [Zero-backend social loop](dev-docs/[01]-zero-backend-social-loop/README.md) | Original spec and preserved plans | Share links and local comparison | [Open](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/[01]-zero-backend-social-loop/) |
+| [Live tournament readiness](dev-docs/[02]-live-tournament-readiness/README.md) | Six committed plans and reconstructed brief | Freshness, validation, flags, access, and voice | [Open](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/[02]-live-tournament-readiness/) |
+| [Production match experience](dev-docs/[03]-production-match-experience/README.md) | Shipped report and reconstructed brief | Two bracket layouts, facts, portraits, and trophy | [Open](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/[03]-production-match-experience/) |
+| [Animation performance revision](dev-docs/[04]-animation-performance-revision/README.md) | Original brief, baseline, and six plans | Lower Layout, Paint, RAF, and WebGL work | [Open](https://github.com/eriic-builds/mywcbracket/tree/main/dev-docs/[00]-dev-reports/[04]-animation-performance-revision/) |
 
 The [project history](dev-docs/PROJECT-HISTORY.md) maps smaller milestones that did not need
 formal brief packages, including typography, themes, scoring clarity, pool backup, and the
