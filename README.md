@@ -56,6 +56,15 @@ Inspiration came from seeing Alexandre Bogachev's [data visualization post on Li
 Shown here in light mode, the live-standing section turns the current results into six signals you
 can read at a glance.
 
+<p align="center">
+  <img src="docs/assets/readme/champion-celebration-cutscene.png"
+    alt="Animated champion celebration cutscene showing the Spain squad lifting the trophy on a podium under falling confetti, with a 2026 World Cup Champions scoreboard and the Spanish flag behind them"
+    width="960">
+</p>
+
+Click the champion box four times in the mirror bracket layout for a fun cutscene: the winning
+squad lifts the trophy on the podium while confetti falls and the scoreboard names your champion.
+
 ## How to use the dashboard
 
 1. **Open the live site.** Choose **See a demo first** for a finished example, or continue with
